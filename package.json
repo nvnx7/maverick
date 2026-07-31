@@ -28,6 +28,7 @@
   },
   "workspaces": [
     "config",
-    "contracts"
+    "contracts",
+    "backend"
   ]
 }
