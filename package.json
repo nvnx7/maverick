@@ -29,6 +29,6 @@
   "workspaces": [
     "config",
     "contracts",
-    "backend"
+    "provider"
   ]
 }
