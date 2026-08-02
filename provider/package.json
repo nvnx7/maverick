@@ -10,6 +10,7 @@
     "check-types": "tsc --noEmit"
   },
   "dependencies": {
+    "dotenv": "^17.4.2",
     "hono": "^4.12.33",
     "viem": "^2.55.10",
     "zod": "^4.4.3"
