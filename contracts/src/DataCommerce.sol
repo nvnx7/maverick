@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.28;
 
-import {ERC8183} from "erc8183/contracts/ERC8183.sol";
+import {ERC8183} from "erc-8183/contracts/ERC8183.sol";
 
 contract DataCommerce is ERC8183 {
     /// @dev Disabled — the 2-arg initializer inherited from ERC8183 skips payout
     ///      token/fee setup. Use initialize(address,address,uint256,uint256).
     function initialize(address, address) public pure override {
-        revert("DataCommerce: use initialize(address,address,uint256,uint256)");
+        revert("Disabled initializer");
     }
 
     function initialize(address treasury_, address payoutToken_, uint256 platformFeeBps_, uint256 evaluatorFeeBps_)
