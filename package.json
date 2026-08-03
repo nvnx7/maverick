@@ -29,6 +29,7 @@
   "workspaces": [
     "config",
     "contracts",
-    "provider"
+    "provider",
+    "evaluator"
   ]
 }
