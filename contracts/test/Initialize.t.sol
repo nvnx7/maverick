@@ -2,8 +2,8 @@
 pragma solidity ^0.8.28;
 
 import {ERC1967Proxy} from "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol";
-import {DataCommerce} from "../../src/DataCommerce.sol";
-import {BaseTest} from "../BaseTest.sol";
+import {DataCommerce} from "../src/DataCommerce.sol";
+import {BaseTest} from "./fixtures/BaseTest.sol";
 
 contract InitializeTest is BaseTest {
     function test_storesConfiguration() public view {

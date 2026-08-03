@@ -2,7 +2,7 @@
 pragma solidity ^0.8.28;
 
 import {ERC8183} from "erc-8183/contracts/ERC8183.sol";
-import {BaseTest} from "../BaseTest.sol";
+import {BaseTest} from "./fixtures/BaseTest.sol";
 
 /// @dev Integration paths only; per-action validation lives in the sibling files.
 contract FullLifecycleTest is BaseTest {

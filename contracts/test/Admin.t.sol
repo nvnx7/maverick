@@ -3,8 +3,8 @@ pragma solidity ^0.8.28;
 
 import {ERC8183} from "erc-8183/contracts/ERC8183.sol";
 import {ERC8183WithAuthorization} from "erc-8183/contracts/ERC8183WithAuthorization.sol";
-import {DataCommerce} from "../../src/DataCommerce.sol";
-import {BaseTest} from "../BaseTest.sol";
+import {DataCommerce} from "../src/DataCommerce.sol";
+import {BaseTest} from "./fixtures/BaseTest.sol";
 
 contract AdminTest is BaseTest {
     function test_setCommerce_updates() public {

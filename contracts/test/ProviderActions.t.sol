@@ -2,7 +2,7 @@
 pragma solidity ^0.8.28;
 
 import {ERC8183} from "erc-8183/contracts/ERC8183.sol";
-import {BaseTest} from "../BaseTest.sol";
+import {BaseTest} from "./fixtures/BaseTest.sol";
 
 contract ProviderActionsTest is BaseTest {
     function test_setJobBudget_updatesWhileOpen() public {

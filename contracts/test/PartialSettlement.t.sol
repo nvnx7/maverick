@@ -2,7 +2,7 @@
 pragma solidity ^0.8.28;
 
 import {ERC8183} from "erc-8183/contracts/ERC8183.sol";
-import {BaseTest} from "../BaseTest.sol";
+import {BaseTest} from "./fixtures/BaseTest.sol";
 
 /// @dev Milestone claims move money while the job stays Funded. `settledAmount` is the
 ///      running total, so every later payout and refund is against the remainder.

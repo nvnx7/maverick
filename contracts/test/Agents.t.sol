@@ -3,11 +3,11 @@ pragma solidity ^0.8.28;
 
 import {ERC8183} from "erc-8183/contracts/ERC8183.sol";
 import {ERC8183WithAuthorization} from "erc-8183/contracts/ERC8183WithAuthorization.sol";
-import {DataCommerce} from "../../src/DataCommerce.sol";
-import {BaseAgent} from "../../src/agents/BaseAgent.sol";
-import {ProviderAgent} from "../../src/agents/ProviderAgent.sol";
-import {EvaluatorAgent} from "../../src/agents/EvaluatorAgent.sol";
-import {BaseTest} from "../BaseTest.sol";
+import {DataCommerce} from "../src/DataCommerce.sol";
+import {BaseAgent} from "../src/agents/BaseAgent.sol";
+import {ProviderAgent} from "../src/agents/ProviderAgent.sol";
+import {EvaluatorAgent} from "../src/agents/EvaluatorAgent.sol";
+import {BaseTest} from "./fixtures/BaseTest.sol";
 
 contract AgentsTest is BaseTest {
     function test_agentsAreWiredToEntrypointAndEscrow() public view {

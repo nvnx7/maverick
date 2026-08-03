@@ -3,10 +3,10 @@ pragma solidity ^0.8.28;
 
 import {ERC1967Proxy} from "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol";
 import {ERC8183WithAuthorization} from "erc-8183/contracts/ERC8183WithAuthorization.sol";
-import {DataCommerce} from "../src/DataCommerce.sol";
-import {ProviderAgent} from "../src/agents/ProviderAgent.sol";
-import {EvaluatorAgent} from "../src/agents/EvaluatorAgent.sol";
-import {Fixtures} from "./fixtures/Fixtures.sol";
+import {DataCommerce} from "../../src/DataCommerce.sol";
+import {ProviderAgent} from "../../src/agents/ProviderAgent.sol";
+import {EvaluatorAgent} from "../../src/agents/EvaluatorAgent.sol";
+import {Fixtures} from "./Fixtures.sol";
 
 abstract contract BaseTest is Fixtures {
     ERC8183WithAuthorization internal escrow;

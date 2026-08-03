@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.28;
 
-import {BaseTest} from "../BaseTest.sol";
+import {BaseTest} from "./fixtures/BaseTest.sol";
 
 /// @dev The escrow pays the evaluator fee to job.evaluator, which here is a keyless agent
 ///      rather than an operator key. These pin that routing and the sweep back to treasury.
