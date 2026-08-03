@@ -30,6 +30,7 @@
     "config",
     "contracts",
     "provider",
-    "evaluator"
+    "evaluator",
+    "sdk"
   ]
 }
