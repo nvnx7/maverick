@@ -19,6 +19,13 @@
       "skillPath": "plugins/circle/skills/bridge-stablecoin/SKILL.md",
       "computedHash": "1256fa22a35b0891568674552c949505c80ff62dcdf549162d25e78c80385002"
     },
+    "chakra-ui-migrate": {
+      "source": "chakra-ui/chakra-ui",
+      "ref": "main",
+      "sourceType": "github",
+      "skillPath": "skills/chakra-ui-migrate/SKILL.md",
+      "computedHash": "fc9b782572e8641aec8d13396b4d35d3b2bec45684c207fe5995d986e62b7fc2"
+    },
     "fund-agent-wallet": {
       "source": "circlefin/skills",
       "sourceType": "github",
