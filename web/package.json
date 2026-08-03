@@ -9,10 +9,14 @@
     "check-types": "tsc --noEmit"
   },
   "dependencies": {
+    "@chakra-ui/react": "^3.36.1",
+    "@emotion/react": "^11.14.0",
+    "@repo/sdk": "workspace:*",
     "next": "16.2.12",
+    "next-themes": "^0.4.6",
     "react": "19.2.4",
     "react-dom": "19.2.4",
-    "@repo/sdk": "workspace:*"
+    "react-icons": "^5.7.0"
   },
   "devDependencies": {
     "@types/node": "^20",

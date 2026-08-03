@@ -10,6 +10,7 @@ const nextConfig: NextConfig = {
   // Next 16 cannot use the TypeScript 7 compiler API; drive tsc through its CLI instead.
   experimental: {
     useTypeScriptCli: true,
+    optimizePackageImports: ["@chakra-ui/react"],
   },
 };
 
