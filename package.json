@@ -31,6 +31,7 @@
     "contracts",
     "provider",
     "evaluator",
-    "sdk"
+    "sdk",
+    "web"
   ]
 }
