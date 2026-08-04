@@ -56,6 +56,6 @@ export function buildManifest(
     files: sorted,
     dataHash: computeDataHash(sorted),
     status: "provisional",
-    createdAt: Math.floor(Date.now() / 1000),
+    createdAt: Date.now(),
   };
 }
