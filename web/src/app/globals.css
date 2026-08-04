@@ -1,17 +1,7 @@
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
+/* Chakra's preflight handles the reset; this covers what sits outside it. */
 
 html {
-  height: 100%;
+  color-scheme: dark;
 }
 
 html,
@@ -21,29 +11,34 @@ body {
 }
 
 body {
-  min-height: 100%;
-  display: flex;
-  flex-direction: column;
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-* {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
+/*
+ * Uppy's own dark theme does the heavy lifting (theme="dark" on the Dashboard).
+ * These only pull its surfaces onto our palette and square off its corners.
+ * !important is required to beat Uppy's stylesheet, which loads after this one.
+ */
+[data-uppy-theme="dark"] .uppy-Dashboard-inner,
+[data-uppy-theme="dark"] .uppy-Dashboard-AddFiles {
+  background-color: #121417 !important;
+  border-color: #2a2d31 !important;
+  border-radius: 0 !important;
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
+[data-uppy-theme="dark"] .uppy-StatusBar,
+[data-uppy-theme="dark"] .uppy-DashboardContent-bar {
+  background-color: #16181c !important;
+  border-color: #2a2d31 !important;
 }
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
+[data-uppy-theme="dark"] .uppy-StatusBar-progress {
+  background-color: #3eae76 !important;
+}
+
+[data-uppy-theme="dark"] .uppy-c-btn-primary {
+  background-color: #3eae76 !important;
+  border-radius: 0 !important;
+  color: #06120c !important;
 }
