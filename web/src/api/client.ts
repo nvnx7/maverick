@@ -1,7 +1,8 @@
 import axios from "axios";
+import { apiProvider } from "@/config/env";
 
 export const http = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_PROVIDER_URL ?? "http://localhost:3001",
+  baseURL: apiProvider,
   timeout: 15_000,
 });
 
