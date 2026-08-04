@@ -54,7 +54,7 @@ export type UploadInitResponse = {
   /** Canonical manifest hash — this is what the device signs later. */
   dataHash: `0x${string}`;
   /** Target subdir/prefix: job-{jobId}/data-{dataHash}/ */
-  uploadUrl: string;
+  uploadPath: string;
   manifest: StoredManifest;
 };
 
@@ -83,7 +83,7 @@ export const upload = new Hono().post("/init", async (c) => {
   // TODO: persist the manifest and provision the upload target before returning.
   const response: UploadInitResponse = {
     dataHash: manifest.dataHash,
-    uploadUrl: `job-${jobId}/data-${manifest.dataHash}/`,
+    uploadPath: `job-${jobId}/data-${manifest.dataHash}/`,
     manifest,
   };
 
