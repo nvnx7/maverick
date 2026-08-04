@@ -7,5 +7,10 @@
     "@openzeppelin/contracts-upgradeable": "^5.6.1",
     "erc-8183/base-contracts": "github:erc-8183/base-contracts#142e669c1fd318486a4628395b629f033654dd06",
     "forge-std": "github:foundry-rs/forge-std#v1.16.2"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-foundry": "^1.2.1",
+    "@nomicfoundation/hardhat-toolbox": "^6.1.2",
+    "hardhat": "^2.29.0"
   }
 }
