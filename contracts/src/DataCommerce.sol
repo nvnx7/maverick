@@ -6,7 +6,7 @@ import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/U
 import {AccessControlUpgradeable} from "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {ERC8183} from "erc-8183/contracts/ERC8183.sol";
-import {ERC8183WithAuthorization} from "erc-8183/contracts/ERC8183WithAuthorization.sol";
+import {AgenticCommerce} from "./AgenticCommerce.sol";
 import {BaseAgent} from "./agents/BaseAgent.sol";
 import {ProviderAgent} from "./agents/ProviderAgent.sol";
 import {EvaluatorAgent} from "./agents/EvaluatorAgent.sol";
@@ -20,7 +20,7 @@ contract DataCommerce is Initializable, AccessControlUpgradeable, UUPSUpgradeabl
     bytes32 public constant PROVIDER_ROLE = keccak256("PROVIDER_ROLE");
     bytes32 public constant EVALUATOR_ROLE = keccak256("EVALUATOR_ROLE");
 
-    ERC8183WithAuthorization public commerce;
+    AgenticCommerce public commerce;
     ProviderAgent public providerAgent;
     EvaluatorAgent public evaluatorAgent;
     address public treasury;
@@ -82,7 +82,7 @@ contract DataCommerce is Initializable, AccessControlUpgradeable, UUPSUpgradeabl
 
     function _setCommerce(address commerce_) internal {
         if (commerce_ == address(0)) revert ZeroAddress();
-        commerce = ERC8183WithAuthorization(commerce_);
+        commerce = AgenticCommerce(commerce_);
         emit CommerceUpdated(commerce_);
     }
 
@@ -153,12 +153,12 @@ contract DataCommerce is Initializable, AccessControlUpgradeable, UUPSUpgradeabl
     ///      signature, so a buyer who signed anything else fails verification.
     function createDataJob(
         CreateDataJobParams calldata params,
-        ERC8183WithAuthorization.Authorization calldata clientAuth
+        AgenticCommerce.Authorization calldata clientAuth
     ) external onlyRole(PROVIDER_ROLE) returns (uint256 jobId) {
         if (address(providerAgent) == address(0) || address(evaluatorAgent) == address(0)) revert AgentsNotSet();
 
-        ERC8183WithAuthorization.CreateJobAuthorizationParams memory createParams =
-            ERC8183WithAuthorization.CreateJobAuthorizationParams({
+        AgenticCommerce.CreateJobAuthorizationParams memory createParams =
+            AgenticCommerce.CreateJobAuthorizationParams({
                 provider: address(providerAgent),
                 evaluator: address(evaluatorAgent),
                 expiredAt: params.expiredAt,
