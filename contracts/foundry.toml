@@ -12,4 +12,14 @@ remappings = [
     "erc8183/=node_modules/erc-8183/base-contracts/",
 ]
 
-# See more config options https://github.com/foundry-rs/foundry/blob/master/crates/config/README.md#all-options
+# Deploy.s.sol reads its per-chain config and writes deployment records.
+fs_permissions = [
+    { access = "read", path = "scripts/config.json" },
+    { access = "read-write", path = "deployments" },
+]
+
+# Chain keys match scripts/config.json, so `--rpc-url <key>` lines up with the
+# `chainKey` argument Deploy.s.sol takes.
+[rpc_endpoints]
+local = "${RPC_LOCAL}"
+arcTestnet = "${RPC_ARC_TESTNET}"
