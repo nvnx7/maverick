@@ -1,0 +1,12 @@
+{
+  "local": {
+    "usdc": "0x3600000000000000000000000000000000000000",
+    "platformFeeBps": 250,
+    "evaluatorFeeBps": 500
+  },
+  "arcTestnet": {
+    "usdc": "0x3600000000000000000000000000000000000000",
+    "platformFeeBps": 250,
+    "evaluatorFeeBps": 500
+  }
+}
