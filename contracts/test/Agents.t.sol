@@ -2,7 +2,7 @@
 pragma solidity ^0.8.28;
 
 import {ERC8183} from "erc-8183/contracts/ERC8183.sol";
-import {ERC8183WithAuthorization} from "erc-8183/contracts/ERC8183WithAuthorization.sol";
+import {AgenticCommerce} from "../src/AgenticCommerce.sol";
 import {DataCommerce} from "../src/DataCommerce.sol";
 import {BaseAgent} from "../src/agents/BaseAgent.sol";
 import {ProviderAgent} from "../src/agents/ProviderAgent.sol";
@@ -84,7 +84,7 @@ contract AgentsTest is BaseTest {
     function test_createDataJob_revertsWhenAgentsUnset() public {
         DataCommerce fresh = _deployEntrypoint(address(escrow), treasury, address(paymentToken));
         // Build the signature first: it reads from the escrow, which would consume the cheatcodes.
-        ERC8183WithAuthorization.Authorization memory auth = _clientAuth(expiredAt, "data job", 1);
+        AgenticCommerce.Authorization memory auth = _clientAuth(expiredAt, "data job", 1);
 
         vm.prank(providerOperator);
         vm.expectRevert(DataCommerce.AgentsNotSet.selector);

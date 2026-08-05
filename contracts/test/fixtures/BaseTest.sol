@@ -2,14 +2,14 @@
 pragma solidity ^0.8.28;
 
 import {ERC1967Proxy} from "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol";
-import {ERC8183WithAuthorization} from "erc-8183/contracts/ERC8183WithAuthorization.sol";
+import {AgenticCommerce} from "../../src/AgenticCommerce.sol";
 import {DataCommerce} from "../../src/DataCommerce.sol";
 import {ProviderAgent} from "../../src/agents/ProviderAgent.sol";
 import {EvaluatorAgent} from "../../src/agents/EvaluatorAgent.sol";
 import {Fixtures} from "./Fixtures.sol";
 
 abstract contract BaseTest is Fixtures {
-    ERC8183WithAuthorization internal escrow;
+    AgenticCommerce internal escrow;
     DataCommerce internal dc;
     ProviderAgent internal providerAgent;
     EvaluatorAgent internal evaluatorAgent;
@@ -37,10 +37,10 @@ abstract contract BaseTest is Fixtures {
 
     // ──────────────────── Deployment ────────────────────
 
-    function _deployEscrow() internal returns (ERC8183WithAuthorization) {
-        ERC8183WithAuthorization implementation = new ERC8183WithAuthorization();
+    function _deployEscrow() internal returns (AgenticCommerce) {
+        AgenticCommerce implementation = new AgenticCommerce();
         vm.prank(admin);
-        return ERC8183WithAuthorization(
+        return AgenticCommerce(
             address(
                 new ERC1967Proxy(
                     address(implementation), abi.encodeWithSignature("initialize(address,address)", treasury, admin)
@@ -101,7 +101,7 @@ abstract contract BaseTest is Fixtures {
     function _clientAuth(uint48 expiredAt_, string memory description, uint72 nonce)
         internal
         view
-        returns (ERC8183WithAuthorization.Authorization memory)
+        returns (AgenticCommerce.Authorization memory)
     {
         return _clientAuthFor(address(providerAgent), address(evaluatorAgent), expiredAt_, description, nonce);
     }
@@ -112,7 +112,7 @@ abstract contract BaseTest is Fixtures {
         uint48 expiredAt_,
         string memory description,
         uint72 nonce
-    ) internal view returns (ERC8183WithAuthorization.Authorization memory) {
+    ) internal view returns (AgenticCommerce.Authorization memory) {
         uint256 deadline = block.timestamp + AUTH_WINDOW;
         bytes32 structHash = keccak256(
             abi.encode(
@@ -131,7 +131,7 @@ abstract contract BaseTest is Fixtures {
         bytes32 digest = keccak256(abi.encodePacked("\x19\x01", escrow.DOMAIN_SEPARATOR(), structHash));
         (uint8 v, bytes32 r, bytes32 s) = vm.sign(buyerPk, digest);
 
-        return ERC8183WithAuthorization.Authorization({
+        return AgenticCommerce.Authorization({
             signer: buyer, nonce: nonce, deadline: deadline, sig: abi.encodePacked(r, s, v)
         });
     }
@@ -154,7 +154,7 @@ abstract contract BaseTest is Fixtures {
 
     function _createJobWithBudget(uint256 budget) internal returns (uint256 jobId) {
         // Sign before pranking: the helper reads from the escrow, which would consume the prank.
-        ERC8183WithAuthorization.Authorization memory auth = _clientAuth(expiredAt, "data job", ++clientNonce);
+        AgenticCommerce.Authorization memory auth = _clientAuth(expiredAt, "data job", ++clientNonce);
 
         vm.prank(providerOperator);
         jobId = dc.createDataJob(_params(expiredAt, "data job", budget), auth);
