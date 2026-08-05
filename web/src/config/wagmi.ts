@@ -1,13 +1,16 @@
 import { createConfig, http } from "wagmi";
 import { injected } from "wagmi/connectors";
-import { chain } from "./chain";
-import { rpcArcTestnet } from "./env";
+import { arcTestnet, local, networkConfig } from "./network";
 
 export const wagmiConfig = createConfig({
-  chains: [chain],
+  chains: [networkConfig.chain],
   connectors: [injected()],
-  // Falls back to the chain's default RPC when the env var is unset.
-  transports: { [chain.id]: http(rpcArcTestnet) },
+  // wagmi's transports type wants every chain id reachable across the union
+  // networkConfig.chain can take, not just whichever one is active.
+  transports: {
+    [local.chain.id]: http(local.rpcUrl),
+    [arcTestnet.chain.id]: http(arcTestnet.rpcUrl),
+  },
   ssr: true,
 });
 
