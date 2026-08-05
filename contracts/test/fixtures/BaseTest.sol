@@ -55,8 +55,20 @@ abstract contract BaseTest is Fixtures {
         internal
         returns (DataCommerce)
     {
+        bytes memory initData = abi.encodeWithSignature(
+            "initialize(address,address,address,address,address,address)",
+            commerce_,
+            treasury_,
+            payoutToken_,
+            admin,
+            providerOperator,
+            evaluatorOperator
+        );
         DataCommerce implementation = new DataCommerce();
-        return DataCommerce(address(new ERC1967Proxy(address(implementation), _initData(commerce_, treasury_, payoutToken_))));
+        return
+            DataCommerce(
+                address(new ERC1967Proxy(address(implementation), _initData(commerce_, treasury_, payoutToken_)))
+            );
     }
 
     function _initData(address commerce_, address treasury_, address payoutToken_)
@@ -120,10 +132,7 @@ abstract contract BaseTest is Fixtures {
         (uint8 v, bytes32 r, bytes32 s) = vm.sign(buyerPk, digest);
 
         return ERC8183WithAuthorization.Authorization({
-            signer: buyer,
-            nonce: nonce,
-            deadline: deadline,
-            sig: abi.encodePacked(r, s, v)
+            signer: buyer, nonce: nonce, deadline: deadline, sig: abi.encodePacked(r, s, v)
         });
     }
 
@@ -135,11 +144,7 @@ abstract contract BaseTest is Fixtures {
         returns (DataCommerce.CreateDataJobParams memory)
     {
         return DataCommerce.CreateDataJobParams({
-            expiredAt: expiredAt_,
-            description: description,
-            hook: address(0),
-            providerAgentId: 0,
-            budget: budget
+            expiredAt: expiredAt_, description: description, hook: address(0), providerAgentId: 0, budget: budget
         });
     }
 
