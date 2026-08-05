@@ -29,9 +29,18 @@ dist
 
 # Contracts (Foundry)
 contracts/cache/
-!contracts/broadcast
-contracts/broadcast/*/31337/
-contracts/broadcast/**/dry-run/
+contracts/cache_hardhat/
+contracts/broadcast/
+
+# hardhat-viem writes artifacts.d.ts here on every `hardhat compile`, even
+# though nothing actually compiles (see contracts/hardhat.config.ts). The
+# directory itself is tracked via contracts/artifacts/.gitkeep so that write
+# has somewhere to land.
+contracts/artifacts/*
+!contracts/artifacts/.gitkeep
+
+# Local-chain deployment records are throwaway; real ones are worth committing.
+contracts/deployments/local.json
 
 # TypeScript
 *.tsbuildinfo
