@@ -32,7 +32,7 @@ contract Deploy is Script {
 
         // ── Escrow (ERC-8183) behind a UUPS proxy ──
         AgenticCommerce escrowImpl = new AgenticCommerce();
-        bytes memory escrowInit = abi.encodeCall(AgenticCommerce.initialize, (deployer, deployer));
+        bytes memory escrowInit = abi.encodeWithSignature("initialize(address,address)", deployer, deployer);
         ERC1967Proxy escrowProxy = new ERC1967Proxy(address(escrowImpl), escrowInit);
         AgenticCommerce escrow = AgenticCommerce(address(escrowProxy));
 
