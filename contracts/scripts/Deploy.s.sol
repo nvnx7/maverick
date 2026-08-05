@@ -5,7 +5,7 @@ import {Script} from "forge-std/Script.sol";
 import {stdJson} from "forge-std/StdJson.sol";
 import {console2} from "forge-std/console2.sol";
 import {ERC1967Proxy} from "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol";
-import {ERC8183WithAuthorization} from "erc-8183/contracts/ERC8183WithAuthorization.sol";
+import {AgenticCommerce} from "../src/AgenticCommerce.sol";
 import {DataCommerce} from "../src/DataCommerce.sol";
 import {ProviderAgent} from "../src/agents/ProviderAgent.sol";
 import {EvaluatorAgent} from "../src/agents/EvaluatorAgent.sol";
@@ -31,10 +31,10 @@ contract Deploy is Script {
         address deployer = msg.sender;
 
         // ── Escrow (ERC-8183) behind a UUPS proxy ──
-        ERC8183WithAuthorization escrowImpl = new ERC8183WithAuthorization();
-        bytes memory escrowInit = abi.encodeCall(ERC8183WithAuthorization.initialize, (deployer, deployer));
+        AgenticCommerce escrowImpl = new AgenticCommerce();
+        bytes memory escrowInit = abi.encodeCall(AgenticCommerce.initialize, (deployer, deployer));
         ERC1967Proxy escrowProxy = new ERC1967Proxy(address(escrowImpl), escrowInit);
-        ERC8183WithAuthorization escrow = ERC8183WithAuthorization(address(escrowProxy));
+        AgenticCommerce escrow = AgenticCommerce(address(escrowProxy));
 
         // ── DataCommerce entrypoint behind a UUPS proxy ──
         DataCommerce commerceImpl = new DataCommerce();
