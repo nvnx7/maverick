@@ -3,7 +3,7 @@
 import { Flex, Heading, HStack, Link, Text } from "@chakra-ui/react";
 import NextLink from "next/link";
 import { LuArrowLeft } from "react-icons/lu";
-import { useGetOpenRequest } from "@/api/getOpenRequest";
+import { useGetOpenJob } from "@/api/getOpenJob";
 import { JobStatusBadge } from "@/components/common/JobStatusBadge";
 import { Mono } from "@/components/common/Mono";
 import { Panel } from "@/components/common/Panel";
@@ -15,7 +15,7 @@ import { useRequestId } from "@/hooks/useRequestId";
 
 export function FulfillRequestSummary() {
   const id = useRequestId();
-  const { data, isPending, isError } = useGetOpenRequest(id);
+  const { data, isPending, isError } = useGetOpenJob(id);
 
   if (isPending) return <LoadingBlock label="Reading the request" />;
   if (isError) return <ErrorBlock />;

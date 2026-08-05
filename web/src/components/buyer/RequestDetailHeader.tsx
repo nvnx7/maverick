@@ -3,7 +3,7 @@
 import { Box, Flex, Heading, HStack, Link, Text } from "@chakra-ui/react";
 import NextLink from "next/link";
 import { LuArrowLeft } from "react-icons/lu";
-import { useGetRequest } from "@/api/getRequest";
+import { useGetJob } from "@/api/getJob";
 import { JobStatusBadge } from "@/components/common/JobStatusBadge";
 import { Panel } from "@/components/common/Panel";
 import { ErrorBlock, LoadingBlock } from "@/components/common/QueryState";
@@ -14,7 +14,7 @@ import { RequestSpendBar } from "./RequestSpendBar";
 
 export function RequestDetailHeader() {
   const id = useRequestId();
-  const { data, isPending, isError } = useGetRequest(id);
+  const { data, isPending, isError } = useGetJob(id);
 
   if (isPending) return <LoadingBlock label="Reading the job from chain" />;
   if (isError) return <ErrorBlock />;

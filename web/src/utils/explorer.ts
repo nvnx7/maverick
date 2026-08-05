@@ -1,9 +1,9 @@
-import { EXPLORER_URL } from "@/config/chain";
+import { networkConfig } from "@/config/network";
 
 export function addressUrl(address: string): string {
-  return `${EXPLORER_URL}/address/${address}`;
+  return `${networkConfig.explorerUrl}/address/${address}`;
 }
 
 export function txUrl(hash: string): string {
-  return `${EXPLORER_URL}/tx/${hash}`;
+  return `${networkConfig.explorerUrl}/tx/${hash}`;
 }

@@ -4,7 +4,7 @@ import { Button, Link, Table, Text } from "@chakra-ui/react";
 import NextLink from "next/link";
 import { useRouter } from "next/navigation";
 import { useAccount } from "wagmi";
-import { useGetBuyerRequests } from "@/api/getBuyerRequests";
+import { useGetBuyerJobs } from "@/api/getBuyerJobs";
 import { EmptyState } from "@/components/common/EmptyState";
 import { JobStatusBadge } from "@/components/common/JobStatusBadge";
 import { Mono } from "@/components/common/Mono";
@@ -17,7 +17,7 @@ import { formatDate } from "@/utils/format";
 export function BuyerRequestsTable() {
   const router = useRouter();
   const { address } = useAccount();
-  const { data, isPending, isError, error } = useGetBuyerRequests(address);
+  const { data, isPending, isError, error } = useGetBuyerJobs(address);
 
   if (isPending) return <LoadingBlock label="Reading your requests" />;
   if (isError) return <ErrorBlock message={error?.message} />;

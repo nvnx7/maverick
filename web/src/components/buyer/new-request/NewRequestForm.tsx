@@ -11,7 +11,7 @@ import {
   Textarea,
 } from "@chakra-ui/react";
 import { useState } from "react";
-import { useCreateRequest } from "@/api/createRequest";
+import { useCreateJob } from "@/api/createJob";
 import { Panel } from "@/components/common/Panel";
 import { UsdcAmount } from "@/components/common/UsdcAmount";
 import {
@@ -29,7 +29,7 @@ const EXPIRY_DAYS = 30;
 
 export function NewRequestForm() {
   const { markCreated } = useNewRequest();
-  const createRequest = useCreateRequest();
+  const createJob = useCreateJob();
 
   const [modality, setModality] = useState<Modality>("video");
   const [deviceRequirements, setDeviceRequirements] = useState("");
@@ -64,7 +64,7 @@ export function NewRequestForm() {
     event.preventDefault();
     if (invalid) return;
 
-    const result = await createRequest.mutateAsync({
+    const result = await createJob.mutateAsync({
       spec: { modality, deviceRequirements, minItems: items },
       budget: budgetValue,
       expiresInDays: EXPIRY_DAYS,
@@ -162,15 +162,15 @@ export function NewRequestForm() {
           colorPalette="brand"
           alignSelf="flex-start"
           disabled={invalid}
-          loading={createRequest.isPending}
+          loading={createJob.isPending}
           loadingText="Confirm in your wallet"
         >
           Create request
         </Button>
 
-        {createRequest.isError && (
+        {createJob.isError && (
           <Text fontSize="sm" color="warn.fg">
-            {createRequest.error.message}
+            {createJob.error.message}
           </Text>
         )}
       </Stack>

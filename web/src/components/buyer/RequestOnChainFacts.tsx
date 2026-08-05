@@ -1,7 +1,7 @@
 "use client";
 
 import { Heading } from "@chakra-ui/react";
-import { useGetRequest } from "@/api/getRequest";
+import { useGetJob } from "@/api/getJob";
 import { DataRow } from "@/components/common/DataRow";
 import { ExplorerLink } from "@/components/common/ExplorerLink";
 import { Mono } from "@/components/common/Mono";
@@ -11,7 +11,7 @@ import { formatDate } from "@/utils/format";
 
 export function RequestOnChainFacts() {
   const id = useRequestId();
-  const { data } = useGetRequest(id);
+  const { data } = useGetJob(id);
 
   if (!data) return null;
 

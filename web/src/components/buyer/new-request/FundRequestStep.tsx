@@ -1,7 +1,7 @@
 "use client";
 
 import { Button, HStack, Stack, Text } from "@chakra-ui/react";
-import { useFundRequest } from "@/api/fundRequest";
+import { useFundJob } from "@/api/fundJob";
 import { DataRow } from "@/components/common/DataRow";
 import { Mono } from "@/components/common/Mono";
 import { Panel } from "@/components/common/Panel";
@@ -12,13 +12,13 @@ import { StepLabel } from "./StepLabel";
 
 export function FundRequestStep() {
   const { created, markFunded } = useNewRequest();
-  const fundRequest = useFundRequest();
+  const fundJob = useFundJob();
 
   if (!created) return null;
 
   async function handleFund() {
     if (!created) return;
-    const result = await fundRequest.mutateAsync({
+    const result = await fundJob.mutateAsync({
       jobId: created.jobId,
       amount: created.budget,
     });
@@ -54,14 +54,14 @@ export function FundRequestStep() {
         <Button
           colorPalette="brand"
           onClick={handleFund}
-          loading={fundRequest.isPending}
+          loading={fundJob.isPending}
           loadingText="Confirm in your wallet"
         >
           Fund request
         </Button>
-        {fundRequest.isError && (
+        {fundJob.isError && (
           <Text fontSize="sm" color="warn.fg">
-            {fundRequest.error.message}
+            {fundJob.error.message}
           </Text>
         )}
       </HStack>

@@ -2,7 +2,7 @@
 
 import { SimpleGrid, Stack } from "@chakra-ui/react";
 import { useState } from "react";
-import { useGetOpenRequests } from "@/api/getOpenRequests";
+import { useGetOpenJobs } from "@/api/getOpenJobs";
 import { EmptyState } from "@/components/common/EmptyState";
 import { ErrorBlock, LoadingBlock } from "@/components/common/QueryState";
 import type { Modality } from "@/config/constants";
@@ -11,9 +11,7 @@ import { OpenRequestCard } from "./OpenRequestCard";
 
 export function BrowseRequests() {
   const [modality, setModality] = useState<Modality | null>(null);
-  const { data, isPending, isError } = useGetOpenRequests(
-    modality ?? undefined,
-  );
+  const { data, isPending, isError } = useGetOpenJobs(modality ?? undefined);
 
   return (
     <Stack gap={6}>

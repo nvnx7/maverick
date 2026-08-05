@@ -1,14 +1,14 @@
 "use client";
 
 import { Box, Text } from "@chakra-ui/react";
-import { useGetRequest } from "@/api/getRequest";
+import { useGetJob } from "@/api/getJob";
 import { Mono } from "@/components/common/Mono";
 import { useRequestId } from "@/hooks/useRequestId";
 import { declineCopy } from "@/utils/decline";
 
 export function RequestDeclineNotice() {
   const id = useRequestId();
-  const { data } = useGetRequest(id);
+  const { data } = useGetJob(id);
 
   if (data?.providerDecision !== "declined") return null;
 

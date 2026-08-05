@@ -1,5 +1,5 @@
 import { Box, Container, Flex, Text } from "@chakra-ui/react";
-import { chain } from "@/config/chain";
+import { networkConfig } from "@/config/network";
 
 export function Footer() {
   return (
@@ -15,7 +15,7 @@ export function Footer() {
             is not proof of a real capture device.
           </Text>
           <Text fontSize="xs" color="fg.muted" fontFamily="mono" flexShrink={0}>
-            {chain.name} · {chain.id}
+            {networkConfig.chain.name} · {networkConfig.chain.id}
           </Text>
         </Flex>
       </Container>
