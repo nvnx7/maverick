@@ -24,7 +24,10 @@ parameters (payment token, fees) live in `scripts/config.json`.
 
 ```bash
 # Local: forks Arc testnet, so USDC and friends already exist in state.
-anvil --fork-url https://rpc.testnet.arc.network --code-size-limit 60000
+# --chain-id 31337 keeps signatures/tooling on the standard local dev chain id
+# instead of the fork adopting Arc testnet's own (5042002).
+anvil --fork-url https://rpc.testnet.arc.network --chain-id 31337
+cp .env.example .env    # DEPLOYER_PRIVATE_KEY: use one of anvil's printed dev keys
 bun run deploy:local
 
 # Arc testnet: expects USDC to already exist (see config.json).
@@ -55,15 +58,3 @@ dataCommerce.grantRole(PROVIDER_ROLE, providerOperator);
 dataCommerce.grantRole(EVALUATOR_ROLE, evaluatorOperator);
 escrow.setPlatformFee(platformFeeBps, realTreasury);
 ```
-
-## Known blocker: escrow exceeds EIP-170
-
-`ERC8183WithAuthorization` compiles to **27,574 bytes**, about 3KB over the
-24,576-byte contract size limit. No compiler setting closes the gap — via-IR with
-`optimizer_runs = 1` still lands at 25,776. It therefore cannot deploy to a chain
-that enforces EIP-170, including Arc testnet.
-
-Local deployment works because `anvil --code-size-limit 60000` lifts the check.
-Deploying for real needs the contract itself made smaller (splitting the
-authorization entrypoints into a library or a separate contract), which lives in
-`erc-8183/base-contracts`, not here.
