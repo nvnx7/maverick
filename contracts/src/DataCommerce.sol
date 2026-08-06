@@ -7,6 +7,7 @@ import {AccessControlUpgradeable} from "@openzeppelin/contracts-upgradeable/acce
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {ERC8183} from "erc-8183/contracts/ERC8183.sol";
 import {AgenticCommerce} from "./AgenticCommerce.sol";
+import {FundDisburser} from "./FundDisburser.sol";
 import {BaseAgent} from "./agents/BaseAgent.sol";
 import {ProviderAgent} from "./agents/ProviderAgent.sol";
 import {EvaluatorAgent} from "./agents/EvaluatorAgent.sol";
@@ -15,7 +16,8 @@ import {EvaluatorAgent} from "./agents/EvaluatorAgent.sol";
 /// @dev The buyer is the job's client, established from their EIP-712 signature. The
 ///      provider and evaluator seats are held by two keyless agent contracts driven from
 ///      here, so every privileged action is routed through one role-gated surface and the
-///      payout receiver can only ever be treasury.
+///      payout receiver can only ever be fundDisburser, which forwards net payouts to
+///      whichever contributor the evaluator names when completing or settling a claim.
 contract DataCommerce is Initializable, AccessControlUpgradeable, UUPSUpgradeable {
     bytes32 public constant PROVIDER_ROLE = keccak256("PROVIDER_ROLE");
     bytes32 public constant EVALUATOR_ROLE = keccak256("EVALUATOR_ROLE");
@@ -23,6 +25,7 @@ contract DataCommerce is Initializable, AccessControlUpgradeable, UUPSUpgradeabl
     AgenticCommerce public commerce;
     ProviderAgent public providerAgent;
     EvaluatorAgent public evaluatorAgent;
+    FundDisburser public fundDisburser;
     address public treasury;
     address public payoutToken;
 
@@ -37,6 +40,7 @@ contract DataCommerce is Initializable, AccessControlUpgradeable, UUPSUpgradeabl
     event DataJobCreated(uint256 indexed jobId, address indexed client, uint256 budget);
     event CommerceUpdated(address indexed commerce);
     event AgentsUpdated(address indexed providerAgent, address indexed evaluatorAgent);
+    event FundDisburserUpdated(address indexed fundDisburser);
     event TreasuryUpdated(address indexed treasury);
     event PayoutTokenUpdated(address indexed payoutToken);
 
@@ -55,6 +59,7 @@ contract DataCommerce is Initializable, AccessControlUpgradeable, UUPSUpgradeabl
     /// @param evaluator_ Operator granted EVALUATOR_ROLE; drives the EvaluatorAgent
     function initialize(
         address commerce_,
+        address fundDisburser_,
         address treasury_,
         address payoutToken_,
         address admin_,
@@ -68,6 +73,7 @@ contract DataCommerce is Initializable, AccessControlUpgradeable, UUPSUpgradeabl
         __AccessControl_init();
 
         _setCommerce(commerce_);
+        _setFundDisburser(fundDisburser_);
         _setTreasury(treasury_);
         _setPayoutToken(payoutToken_);
 
@@ -84,6 +90,12 @@ contract DataCommerce is Initializable, AccessControlUpgradeable, UUPSUpgradeabl
         if (commerce_ == address(0)) revert ZeroAddress();
         commerce = AgenticCommerce(commerce_);
         emit CommerceUpdated(commerce_);
+    }
+
+    function _setFundDisburser(address fundDisburser_) internal {
+        if (fundDisburser_ == address(0)) revert ZeroAddress();
+        fundDisburser = FundDisburser(fundDisburser_);
+        emit FundDisburserUpdated(fundDisburser_);
     }
 
     function _setTreasury(address treasury_) internal {
@@ -117,6 +129,10 @@ contract DataCommerce is Initializable, AccessControlUpgradeable, UUPSUpgradeabl
         _setCommerce(commerce_);
     }
 
+    function setFundDisburser(address fundDisburser_) external onlyRole(DEFAULT_ADMIN_ROLE) {
+        _setFundDisburser(fundDisburser_);
+    }
+
     /// @dev Agent addresses are written into existing jobs. Repointing strands any job
     ///      still in flight against the previous pair.
     function setAgents(address providerAgent_, address evaluatorAgent_) external onlyRole(DEFAULT_ADMIN_ROLE) {
@@ -148,9 +164,12 @@ contract DataCommerce is Initializable, AccessControlUpgradeable, UUPSUpgradeabl
     // ──────────────────── Job creation ────────────────────
 
     /// @notice Creates a job from the buyer's authorization, then sets its budget and pins
-    ///         its payout receiver to treasury, in one transaction.
+    ///         its payout receiver to the fund disburser, in one transaction.
     /// @dev Provider and evaluator are forced to the agents and are covered by the buyer's
-    ///      signature, so a buyer who signed anything else fails verification.
+    ///      signature, so a buyer who signed anything else fails verification. Routing
+    ///      payoutReceiver through fundDisburser is what lets completeJob/approveJobClaim
+    ///      forward the provider-side net amount to a contributor instead of the escrow's
+    ///      default (paying job.provider, the keyless ProviderAgent, directly).
     function createDataJob(
         CreateDataJobParams calldata params,
         AgenticCommerce.Authorization calldata clientAuth
@@ -170,7 +189,7 @@ contract DataCommerce is Initializable, AccessControlUpgradeable, UUPSUpgradeabl
         jobId = commerce.createJobWithAuthorization(createParams, clientAuth);
 
         providerAgent.execute(abi.encodeCall(ERC8183.setBudget, (jobId, payoutToken, params.budget, "")));
-        providerAgent.execute(abi.encodeCall(ERC8183.setPayoutReceiver, (jobId, treasury)));
+        providerAgent.execute(abi.encodeCall(ERC8183.setPayoutReceiver, (jobId, address(fundDisburser))));
 
         emit DataJobCreated(jobId, clientAuth.signer, params.budget);
     }
@@ -186,18 +205,31 @@ contract DataCommerce is Initializable, AccessControlUpgradeable, UUPSUpgradeabl
     }
 
     /// @param cumulativeAmount Total released to date once settled, not a delta.
-    function submitJobClaim(uint256 jobId, uint256 cumulativeAmount, bytes32 deliverable)
+    /// @param contributor Paid this claim's net amount via fundDisburser once approved; must be
+    ///        nonzero, and approveJobClaim/rejectJobClaim/withdrawJobClaim for this claim must
+    ///        pass the same address back — it is part of the claim's hash commitment.
+    function submitJobClaim(uint256 jobId, uint256 cumulativeAmount, bytes32 deliverable, address contributor)
         external
         onlyRole(PROVIDER_ROLE)
     {
-        providerAgent.execute(abi.encodeCall(ERC8183.submitClaim, (jobId, cumulativeAmount, deliverable, "")));
+        providerAgent.execute(
+            abi.encodeCall(ERC8183.submitClaim, (jobId, cumulativeAmount, deliverable, abi.encode(contributor)))
+        );
     }
 
-    function withdrawJobClaim(uint256 jobId, uint256 cumulativeAmount, bytes32 deliverable, bytes32 reason)
-        external
-        onlyRole(PROVIDER_ROLE)
-    {
-        providerAgent.execute(abi.encodeCall(ERC8183.rejectClaim, (jobId, cumulativeAmount, deliverable, reason, "")));
+    /// @param contributor Must match the address the claim was submitted with.
+    function withdrawJobClaim(
+        uint256 jobId,
+        uint256 cumulativeAmount,
+        bytes32 deliverable,
+        bytes32 reason,
+        address contributor
+    ) external onlyRole(PROVIDER_ROLE) {
+        providerAgent.execute(
+            abi.encodeCall(
+                ERC8183.rejectClaim, (jobId, cumulativeAmount, deliverable, reason, abi.encode(contributor))
+            )
+        );
     }
 
     /// @dev The escrow only lets the provider reject while a job is Open.
@@ -207,26 +239,39 @@ contract DataCommerce is Initializable, AccessControlUpgradeable, UUPSUpgradeabl
 
     // ──────────────────── Evaluator actions ────────────────────
 
-    function completeJob(uint256 jobId, bytes32 reason) external onlyRole(EVALUATOR_ROLE) {
-        evaluatorAgent.execute(abi.encodeCall(ERC8183.complete, (jobId, reason, "")));
+    /// @param contributor Paid the job's net amount via fundDisburser; must be nonzero.
+    function completeJob(uint256 jobId, bytes32 reason, address contributor) external onlyRole(EVALUATOR_ROLE) {
+        evaluatorAgent.execute(abi.encodeCall(ERC8183.complete, (jobId, reason, abi.encode(contributor))));
     }
 
     function rejectJob(uint256 jobId, bytes32 reason) external onlyRole(EVALUATOR_ROLE) {
         evaluatorAgent.execute(abi.encodeCall(ERC8183.reject, (jobId, reason, "")));
     }
 
-    function approveJobClaim(uint256 jobId, uint256 cumulativeAmount, bytes32 deliverable)
+    /// @param contributor Paid this claim's net amount via fundDisburser; must match the
+    ///        address the claim was submitted with.
+    function approveJobClaim(uint256 jobId, uint256 cumulativeAmount, bytes32 deliverable, address contributor)
         external
         onlyRole(EVALUATOR_ROLE)
     {
-        evaluatorAgent.execute(abi.encodeCall(ERC8183.approveClaim, (jobId, cumulativeAmount, deliverable, "")));
+        evaluatorAgent.execute(
+            abi.encodeCall(ERC8183.approveClaim, (jobId, cumulativeAmount, deliverable, abi.encode(contributor)))
+        );
     }
 
-    function rejectJobClaim(uint256 jobId, uint256 cumulativeAmount, bytes32 deliverable, bytes32 reason)
-        external
-        onlyRole(EVALUATOR_ROLE)
-    {
-        evaluatorAgent.execute(abi.encodeCall(ERC8183.rejectClaim, (jobId, cumulativeAmount, deliverable, reason, "")));
+    /// @param contributor Must match the address the claim was submitted with.
+    function rejectJobClaim(
+        uint256 jobId,
+        uint256 cumulativeAmount,
+        bytes32 deliverable,
+        bytes32 reason,
+        address contributor
+    ) external onlyRole(EVALUATOR_ROLE) {
+        evaluatorAgent.execute(
+            abi.encodeCall(
+                ERC8183.rejectClaim, (jobId, cumulativeAmount, deliverable, reason, abi.encode(contributor))
+            )
+        );
     }
 
     // ──────────────────── Views ────────────────────
