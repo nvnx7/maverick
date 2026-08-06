@@ -40,7 +40,9 @@ export type RequestDetail = BuyerRequest & {
   evaluator: Address;
   contract: Address;
   expiredAt: number;
-  createdTxHash: Hash;
+  description: string;
+  /** Absent when the JobCreated log is out of the scanned range. */
+  createdTxHash?: Hash;
 };
 
 export type OpenRequest = {
