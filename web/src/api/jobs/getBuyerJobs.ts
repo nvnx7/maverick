@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
 import type { Address } from "viem";
 import { useContractEvents, usePublicClient, useReadContracts } from "wagmi";
-import { dataCommerceAbi } from "@/abi";
+import { agenticCommerceAbi, dataCommerceAbi } from "@/abi";
 import { networkConfig } from "@/config/network";
 import type { BuyerRequest, JobStatus, RequestSpec } from "@/types";
 import { decodeSpec } from "@/utils/spec";
@@ -13,18 +13,18 @@ const FALLBACK_SPEC: RequestSpec = {
   minItems: 0,
 };
 
-/** Job ids come from this buyer's DataJobCreated logs (filtered by indexed client). */
-export function useGetBuyerJobs(buyer?: Address) {
+export function useGetBuyerJobs(params: {buyer?: Address}) {
+  const { buyer } = params;
   const dataCommerce = networkConfig.contracts.dataCommerce as `0x${string}`;
   const publicClient = usePublicClient();
 
   const createdQuery = useContractEvents({
-    address: dataCommerce,
-    abi: dataCommerceAbi,
-    eventName: "DataJobCreated",
-    args: buyer ? { client: buyer } : undefined,
-    fromBlock: 0n,
-    query: { enabled: Boolean(buyer) },
+    address: networkConfig.contracts.escrow,
+    abi: agenticCommerceAbi,
+    eventName: "JobCreated",
+    args: { client: buyer, provider: networkConfig.contracts.provider },
+    fromBlock: networkConfig.deployedBlock,
+    query: { enabled: !!buyer },
   });
 
   const logs = createdQuery.data ?? [];
@@ -101,7 +101,10 @@ export function useGetBuyerJobs(buyer?: Address) {
 
   return {
     data,
-    isPending: createdQuery.isPending || jobsQuery.isPending,
+    // A disabled query reports `pending` forever, so jobsQuery must only count while it
+    // actually has ids to fetch — otherwise a buyer with no jobs never stops loading.
+    isPending:
+      createdQuery.isPending || (jobIds.length > 0 && jobsQuery.isPending),
     isError: createdQuery.isError || jobsQuery.isError,
     error: createdQuery.error ?? jobsQuery.error,
   };

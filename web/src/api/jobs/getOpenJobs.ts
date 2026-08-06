@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { useContractEvents, useReadContracts } from "wagmi";
-import { dataCommerceAbi } from "@/abi";
+import { agenticCommerceAbi, dataCommerceAbi } from "@/abi";
 import type { Modality } from "@/config/constants";
 import { PRICE_PER_ITEM } from "@/config/constants";
 import { networkConfig } from "@/config/network";
@@ -14,17 +14,19 @@ const FALLBACK_SPEC: RequestSpec = {
 };
 
 /**
- * Job ids come from DataJobCreated logs; each id is then read individually for the
- * status/description a card needs, since neither event carries them.
+ * Job ids come from the escrow's JobCreated logs, filtered to our ProviderAgent so jobs
+ * someone else posted against the open createJob entrypoint stay out. No client filter
+ * here — the browse list spans every buyer. Each id is then read individually for the
+ * status/description a card needs, since the event carries neither.
  */
 export function useGetOpenJobs(modality?: Modality) {
   const dataCommerce = networkConfig.contracts.dataCommerce as `0x${string}`;
-
   const createdQuery = useContractEvents({
-    address: dataCommerce,
-    abi: dataCommerceAbi,
-    eventName: "DataJobCreated",
-    fromBlock: 0n,
+    address: networkConfig.contracts.escrow,
+    abi: agenticCommerceAbi,
+    eventName: "JobCreated",
+    args: { provider: networkConfig.contracts.provider },
+    fromBlock: networkConfig.deployedBlock,
   });
 
   const jobIds = useMemo(
@@ -74,7 +76,10 @@ export function useGetOpenJobs(modality?: Modality) {
 
   return {
     data,
-    isPending: createdQuery.isPending || jobsQuery.isPending,
+    // A disabled query reports `pending` forever, so jobsQuery must only count while it
+    // actually has ids to fetch — otherwise an empty chain never stops loading.
+    isPending:
+      createdQuery.isPending || (jobIds.length > 0 && jobsQuery.isPending),
     isError: createdQuery.isError || jobsQuery.isError,
   };
 }

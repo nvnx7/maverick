@@ -31,10 +31,12 @@ export function NewRequestForm() {
   const { markCreated } = useNewRequest();
   const createJob = useCreateJob();
 
-  const [modality, setModality] = useState<Modality>("video");
-  const [deviceRequirements, setDeviceRequirements] = useState("");
-  const [minItems, setMinItems] = useState("1000");
-  const [budget, setBudget] = useState("");
+  const [modality, setModality] = useState<Modality>("image");
+  const [deviceRequirements, setDeviceRequirements] = useState(
+    "Head-mounted, min 720p",
+  );
+  const [minItems, setMinItems] = useState("10");
+  const [budget, setBudget] = useState("100");
 
   const items = Number(minItems);
   const quote = quoteBudget(modality, items);

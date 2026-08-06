@@ -33,14 +33,19 @@ export function RequestOnChainFacts() {
       <DataRow label="Evaluator">
         <ExplorerLink value={data.evaluator} kind="address" />
       </DataRow>
-      <DataRow label="Created">
-        <ExplorerLink value={data.createdTxHash} kind="tx" />
-      </DataRow>
+      {data.createdTxHash && (
+        <DataRow label="Created">
+          <ExplorerLink value={data.createdTxHash} kind="tx" />
+        </DataRow>
+      )}
       <DataRow label="Expires">
         <Mono color="fg.muted">{formatDate(data.expiredAt)}</Mono>
       </DataRow>
       <DataRow label="Minimum items">
         <Mono>{data.spec.minItems.toLocaleString("en-US")}</Mono>
+      </DataRow>
+      <DataRow label="Description">
+        <Mono>{data.description}</Mono>
       </DataRow>
     </Panel>
   );

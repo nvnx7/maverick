@@ -11,7 +11,6 @@ const FALLBACK_SPEC: RequestSpec = {
   minItems: 0,
 };
 
-/** Reads a job straight off DataCommerce.getJob, enriched with its creation tx hash. */
 export function useGetJob(id?: string) {
   const jobId = id ? BigInt(id) : undefined;
 
@@ -28,7 +27,7 @@ export function useGetJob(id?: string) {
     abi: agenticCommerceAbi,
     eventName: "JobCreated",
     args: jobId !== undefined ? { jobId } : undefined,
-    fromBlock: 0n,
+    fromBlock: networkConfig.deployedBlock,
     query: { enabled: jobId !== undefined },
   });
 
@@ -36,7 +35,6 @@ export function useGetJob(id?: string) {
     if (!id || !jobQuery.data) return undefined;
     const job = jobQuery.data;
     const createdTxHash = createdQuery.data?.[0]?.transactionHash;
-    if (!createdTxHash) return undefined;
 
     return {
       id,
@@ -48,6 +46,7 @@ export function useGetJob(id?: string) {
       createdAt: 0,
       // A job only exists on-chain once a provider has already accepted it.
       providerDecision: "agreed",
+      description: job.description,
       client: job.client,
       provider: job.provider,
       evaluator: job.evaluator,
@@ -57,10 +56,12 @@ export function useGetJob(id?: string) {
     };
   }, [id, jobQuery.data, createdQuery.data]);
 
+  // The log lookup is supplementary, so it gates neither loading nor error state — the
+  // page renders as soon as getJob returns.
   return {
     data,
-    isPending: jobQuery.isPending || createdQuery.isPending,
-    isError: jobQuery.isError || createdQuery.isError,
-    error: jobQuery.error ?? createdQuery.error,
+    isPending: jobQuery.isPending,
+    isError: jobQuery.isError,
+    error: jobQuery.error,
   };
 }
