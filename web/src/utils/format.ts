@@ -1,10 +1,8 @@
 import { formatUnits, parseUnits } from "viem";
-import { networkConfig } from "@/config/network";
+import { USDC_DECIMALS } from "@/config/constants";
 
 export function formatUsdc(amount: bigint): string {
-  return Number(
-    formatUnits(amount, networkConfig.contracts.usdcDecimals),
-  ).toLocaleString("en-US", {
+  return Number(formatUnits(amount, USDC_DECIMALS)).toLocaleString("en-US", {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   });
@@ -14,7 +12,7 @@ export function parseUsdc(value: string): bigint {
   const trimmed = value.trim();
   if (!trimmed) return 0n;
   try {
-    return parseUnits(trimmed, networkConfig.contracts.usdcDecimals);
+    return parseUnits(trimmed, USDC_DECIMALS);
   } catch {
     return 0n;
   }
