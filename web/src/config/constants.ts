@@ -10,6 +10,9 @@ export const MODALITY_LABELS: Record<Modality, string> = {
   image: "Image",
 };
 
+/** A property of the token itself, so it belongs here rather than in the per-network config. */
+export const USDC_DECIMALS = 6;
+
 /** USDC, 6 decimals. */
 export const PRICE_PER_ITEM: Record<Modality, bigint> = {
   "imu-sensor": 500_000n,
