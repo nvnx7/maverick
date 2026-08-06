@@ -36,11 +36,16 @@ contract Deploy is Script {
         ERC1967Proxy escrowProxy = new ERC1967Proxy(address(escrowImpl), escrowInit);
         AgenticCommerce escrow = AgenticCommerce(address(escrowProxy));
 
+        // fundDisburser only needs the escrow address, so it can be deployed ahead of
+        // DataCommerce and wired straight into initialize (unlike the agents below, which
+        // need DataCommerce's own address and so can only be set post-deploy).
+        FundDisburser fundDisburser = new FundDisburser(address(escrow));
+
         // ── DataCommerce entrypoint behind a UUPS proxy ──
         DataCommerce commerceImpl = new DataCommerce();
         bytes memory commerceInit = abi.encodeCall(
             DataCommerce.initialize,
-            (address(escrow), deployer, config.usdc, deployer, deployer, deployer)
+            (address(escrow), address(fundDisburser), deployer, config.usdc, deployer, deployer, deployer)
         );
         ERC1967Proxy commerceProxy = new ERC1967Proxy(address(commerceImpl), commerceInit);
         DataCommerce dataCommerce = DataCommerce(address(commerceProxy));
@@ -50,8 +55,6 @@ contract Deploy is Script {
         ProviderAgent providerAgent = new ProviderAgent(address(escrow), address(dataCommerce));
         EvaluatorAgent evaluatorAgent = new EvaluatorAgent(address(escrow), address(dataCommerce));
         dataCommerce.setAgents(address(providerAgent), address(evaluatorAgent));
-
-        FundDisburser fundDisburser = new FundDisburser(address(escrow));
 
         // Without an allowlisted payment token no job can be funded, so the
         // escrow is not usable until these land.
