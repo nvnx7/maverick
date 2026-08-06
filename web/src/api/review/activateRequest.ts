@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { RequestStatusReport } from "@/types";
-import { mock } from "./client";
+import { mock } from "../client";
 import { getRequestStatus } from "./getRequestStatus";
 
 /** POST /jobs/:id/activate — asks the provider to act on its review. */

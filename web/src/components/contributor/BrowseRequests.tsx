@@ -2,7 +2,7 @@
 
 import { SimpleGrid, Stack } from "@chakra-ui/react";
 import { useState } from "react";
-import { useGetOpenJobs } from "@/api/getOpenJobs";
+import { useGetOpenJobs } from "@/api/jobs";
 import { EmptyState } from "@/components/common/EmptyState";
 import { ErrorBlock, LoadingBlock } from "@/components/common/QueryState";
 import type { Modality } from "@/config/constants";

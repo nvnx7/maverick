@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { registeredDevice } from "@/mocks/data";
 import type { DeviceRecord } from "@/types";
-import { mock } from "./client";
+import { mock } from "../client";
 
 /** Read-through cache of the on-chain device registry. */
 export function getDevice(deviceId: string): Promise<DeviceRecord | null> {

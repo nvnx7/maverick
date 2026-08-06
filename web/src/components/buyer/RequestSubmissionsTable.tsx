@@ -1,7 +1,7 @@
 "use client";
 
 import { Badge, Box, Heading, Table } from "@chakra-ui/react";
-import { useGetRequestSubmissions } from "@/api/getRequestSubmissions";
+import { useGetRequestSubmissions } from "@/api/submissions";
 import { CopyableHash } from "@/components/common/CopyableHash";
 import { EmptyState } from "@/components/common/EmptyState";
 import { Mono } from "@/components/common/Mono";

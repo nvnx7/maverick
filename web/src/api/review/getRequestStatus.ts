@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { buyerRequests, simulatedReview } from "@/mocks/data";
 import { JobStatus, type RequestStatusReport } from "@/types";
-import { mock } from "./client";
+import { mock } from "../client";
 
 /** GET /jobs/:id/status — the provider's read-only review of a job. */
 export function getRequestStatus(id: string): Promise<RequestStatusReport> {

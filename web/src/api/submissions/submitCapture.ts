@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { Address, Hash } from "viem";
 import type { Submission } from "@/types";
-import { mock } from "./client";
+import { mock } from "../client";
 
 export type SubmitCaptureParams = {
   jobId: string;

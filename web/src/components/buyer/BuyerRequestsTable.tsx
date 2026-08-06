@@ -4,7 +4,7 @@ import { Button, Link, Table, Text } from "@chakra-ui/react";
 import NextLink from "next/link";
 import { useRouter } from "next/navigation";
 import { useAccount } from "wagmi";
-import { useGetBuyerJobs } from "@/api/getBuyerJobs";
+import { useGetBuyerJobs } from "@/api/jobs";
 import { EmptyState } from "@/components/common/EmptyState";
 import { JobStatusBadge } from "@/components/common/JobStatusBadge";
 import { Mono } from "@/components/common/Mono";

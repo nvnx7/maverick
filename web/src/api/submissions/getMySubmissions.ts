@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import type { Address } from "viem";
 import { submissions } from "@/mocks/data";
 import type { Submission } from "@/types";
-import { mock } from "./client";
+import { mock } from "../client";
 
 export function getMySubmissions(
   _payoutAddress: Address,

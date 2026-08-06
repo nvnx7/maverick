@@ -1,7 +1,7 @@
 "use client";
 
 import { Button, Stack, Text } from "@chakra-ui/react";
-import { useRegisterDevice } from "@/api/registerDevice";
+import { useRegisterDevice } from "@/api/devices";
 import { Panel } from "@/components/common/Panel";
 import { LoadingBlock } from "@/components/common/QueryState";
 import { useDevice } from "@/hooks/useDevice";

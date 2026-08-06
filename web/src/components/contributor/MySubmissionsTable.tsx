@@ -3,7 +3,7 @@
 import { Badge, Button, Table, Text } from "@chakra-ui/react";
 import NextLink from "next/link";
 import { useAccount } from "wagmi";
-import { useGetMySubmissions } from "@/api/getMySubmissions";
+import { useGetMySubmissions } from "@/api/submissions";
 import { CopyableHash } from "@/components/common/CopyableHash";
 import { EmptyState } from "@/components/common/EmptyState";
 import { ExplorerLink } from "@/components/common/ExplorerLink";

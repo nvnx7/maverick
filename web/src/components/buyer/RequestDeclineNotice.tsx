@@ -1,7 +1,7 @@
 "use client";
 
 import { Box, Text } from "@chakra-ui/react";
-import { useGetJob } from "@/api/getJob";
+import { useGetJob } from "@/api/jobs";
 import { Mono } from "@/components/common/Mono";
 import { useRequestId } from "@/hooks/useRequestId";
 import { declineCopy } from "@/utils/decline";

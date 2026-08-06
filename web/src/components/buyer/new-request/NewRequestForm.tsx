@@ -11,7 +11,7 @@ import {
   Textarea,
 } from "@chakra-ui/react";
 import { useState } from "react";
-import { useCreateJob } from "@/api/createJob";
+import { useCreateJob } from "@/api/jobs";
 import { Panel } from "@/components/common/Panel";
 import { UsdcAmount } from "@/components/common/UsdcAmount";
 import {

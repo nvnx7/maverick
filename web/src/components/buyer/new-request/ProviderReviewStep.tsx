@@ -3,7 +3,7 @@
 import { Box, Button, HStack, Spinner, Text } from "@chakra-ui/react";
 import NextLink from "next/link";
 import { useEffect } from "react";
-import { useGetRequestStatus } from "@/api/getRequestStatus";
+import { useGetRequestStatus } from "@/api/review";
 import { ExplorerLink } from "@/components/common/ExplorerLink";
 import { Mono } from "@/components/common/Mono";
 import { Panel } from "@/components/common/Panel";

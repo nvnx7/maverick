@@ -1,7 +1,7 @@
 "use client";
 
 import { Button, HStack, Stack, Text } from "@chakra-ui/react";
-import { useFundJob } from "@/api/fundJob";
+import { useFundJob } from "@/api/jobs";
 import { DataRow } from "@/components/common/DataRow";
 import { Mono } from "@/components/common/Mono";
 import { Panel } from "@/components/common/Panel";

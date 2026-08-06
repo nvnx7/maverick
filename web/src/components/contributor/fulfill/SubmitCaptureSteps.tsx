@@ -5,7 +5,7 @@ import NextLink from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useAccount } from "wagmi";
-import { useSubmitCapture } from "@/api/submitCapture";
+import { useSubmitCapture } from "@/api/submissions";
 import { CopyableHash } from "@/components/common/CopyableHash";
 import { Mono } from "@/components/common/Mono";
 import { Panel } from "@/components/common/Panel";

@@ -1,7 +1,7 @@
 "use client";
 
 import { Heading } from "@chakra-ui/react";
-import { useGetJob } from "@/api/getJob";
+import { useGetJob } from "@/api/jobs";
 import { DataRow } from "@/components/common/DataRow";
 import { ExplorerLink } from "@/components/common/ExplorerLink";
 import { Mono } from "@/components/common/Mono";

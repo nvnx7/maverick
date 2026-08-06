@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { Address } from "viem";
 import type { DeviceRecord } from "@/types";
-import { mock } from "./client";
+import { mock } from "../client";
 
 export type RegisterDeviceParams = {
   deviceId: string;

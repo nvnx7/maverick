@@ -3,7 +3,7 @@
 import { Box, Flex, Heading, HStack, Link, Text } from "@chakra-ui/react";
 import NextLink from "next/link";
 import { LuArrowLeft } from "react-icons/lu";
-import { useGetJob } from "@/api/getJob";
+import { useGetJob } from "@/api/jobs";
 import { JobStatusBadge } from "@/components/common/JobStatusBadge";
 import { Panel } from "@/components/common/Panel";
 import { ErrorBlock, LoadingBlock } from "@/components/common/QueryState";
