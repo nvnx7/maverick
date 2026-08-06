@@ -21,7 +21,8 @@ contract FullLifecycleTest is BaseTest {
 
         vm.prank(admin);
         dc.sweepAgentBalances(address(paymentToken));
-        assertEq(paymentToken.balanceOf(treasury), BUDGET);
+        assertEq(paymentToken.balanceOf(treasury), platformFee(BUDGET) + evaluatorFee(BUDGET));
+        assertEq(paymentToken.balanceOf(contributor), providerNet(BUDGET));
     }
 
     function test_rejectionPath_refundsBuyer() public {

@@ -29,7 +29,7 @@ contract CreationTest is BaseTest {
         ERC8183.Job memory job = dc.getJob(jobId);
         assertEq(job.paymentToken, address(paymentToken));
         assertEq(job.budget, BUDGET);
-        assertEq(job.payoutReceiver, treasury);
+        assertEq(job.payoutReceiver, address(fundDisburser));
         assertEq(uint8(job.status), uint8(ERC8183.JobStatus.Open));
     }
 

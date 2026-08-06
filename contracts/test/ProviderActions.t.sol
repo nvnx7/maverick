@@ -83,7 +83,7 @@ contract ProviderActionsTest is BaseTest {
         uint256 jobId = _createFundedJob();
 
         vm.prank(providerOperator);
-        dc.submitJobClaim(jobId, BUDGET / 2, keccak256("milestone"));
+        dc.submitJobClaim(jobId, BUDGET / 2, keccak256("milestone"), contributor);
 
         assertTrue(escrow.pendingClaimHash(jobId) != bytes32(0));
     }
@@ -93,7 +93,7 @@ contract ProviderActionsTest is BaseTest {
 
         vm.prank(providerOperator);
         vm.expectRevert(ERC8183.EmptyDeliverable.selector);
-        dc.submitJobClaim(jobId, BUDGET / 2, bytes32(0));
+        dc.submitJobClaim(jobId, BUDGET / 2, bytes32(0), contributor);
     }
 
     function test_submitJobClaim_revertsWhenExceedingBudget() public {
@@ -101,16 +101,16 @@ contract ProviderActionsTest is BaseTest {
 
         vm.prank(providerOperator);
         vm.expectRevert(ERC8183.ExceedsBudget.selector);
-        dc.submitJobClaim(jobId, BUDGET + 1, keccak256("milestone"));
+        dc.submitJobClaim(jobId, BUDGET + 1, keccak256("milestone"), contributor);
     }
 
     function test_withdrawJobClaim_clearsPendingClaim() public {
         uint256 jobId = _createFundedJob();
         vm.prank(providerOperator);
-        dc.submitJobClaim(jobId, BUDGET / 2, keccak256("milestone"));
+        dc.submitJobClaim(jobId, BUDGET / 2, keccak256("milestone"), contributor);
 
         vm.prank(providerOperator);
-        dc.withdrawJobClaim(jobId, BUDGET / 2, keccak256("milestone"), bytes32("withdrawn"));
+        dc.withdrawJobClaim(jobId, BUDGET / 2, keccak256("milestone"), bytes32("withdrawn"), contributor);
 
         assertEq(escrow.pendingClaimHash(jobId), bytes32(0));
     }

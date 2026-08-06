@@ -9,7 +9,7 @@ contract EvaluatorActionsTest is BaseTest {
         uint256 jobId = _createSubmittedJob();
 
         vm.prank(evaluatorOperator);
-        dc.completeJob(jobId, bytes32("approved"));
+        dc.completeJob(jobId, bytes32("approved"), contributor);
 
         assertEq(uint8(dc.getJob(jobId).status), uint8(ERC8183.JobStatus.Completed));
     }
@@ -19,7 +19,7 @@ contract EvaluatorActionsTest is BaseTest {
 
         vm.prank(evaluatorOperator);
         vm.expectRevert(ERC8183.WrongStatus.selector);
-        dc.completeJob(jobId, bytes32("approved"));
+        dc.completeJob(jobId, bytes32("approved"), contributor);
     }
 
     function test_completeJob_revertsForProviderRole() public {
@@ -27,13 +27,13 @@ contract EvaluatorActionsTest is BaseTest {
 
         vm.prank(providerOperator);
         vm.expectRevert();
-        dc.completeJob(jobId, bytes32("approved"));
+        dc.completeJob(jobId, bytes32("approved"), contributor);
     }
 
     function test_completeJob_revertsOnNonexistentJob() public {
         vm.prank(evaluatorOperator);
         vm.expectRevert(ERC8183.InvalidJob.selector);
-        dc.completeJob(NONEXISTENT_JOB_ID, bytes32("approved"));
+        dc.completeJob(NONEXISTENT_JOB_ID, bytes32("approved"), contributor);
     }
 
     function test_rejectJob_refundsFundedJob() public {
@@ -69,13 +69,15 @@ contract EvaluatorActionsTest is BaseTest {
         uint256 milestone = BUDGET / 2;
 
         vm.prank(providerOperator);
-        dc.submitJobClaim(jobId, milestone, keccak256("milestone"));
+        dc.submitJobClaim(jobId, milestone, keccak256("milestone"), contributor);
 
         vm.prank(evaluatorOperator);
-        dc.approveJobClaim(jobId, milestone, keccak256("milestone"));
+        dc.approveJobClaim(jobId, milestone, keccak256("milestone"), contributor);
 
         assertEq(dc.getJob(jobId).settledAmount, milestone);
-        assertEq(paymentToken.balanceOf(treasury), platformFee(milestone) + providerNet(milestone));
+        // Provider-side net now routes through fundDisburser to the contributor, not treasury.
+        assertEq(paymentToken.balanceOf(treasury), platformFee(milestone));
+        assertEq(paymentToken.balanceOf(contributor), providerNet(milestone));
         assertEq(paymentToken.balanceOf(address(evaluatorAgent)), evaluatorFee(milestone));
     }
 
@@ -84,16 +86,16 @@ contract EvaluatorActionsTest is BaseTest {
 
         vm.prank(evaluatorOperator);
         vm.expectRevert(ERC8183.NoPendingClaim.selector);
-        dc.approveJobClaim(jobId, BUDGET / 2, keccak256("milestone"));
+        dc.approveJobClaim(jobId, BUDGET / 2, keccak256("milestone"), contributor);
     }
 
     function test_rejectJobClaim_clearsPendingClaim() public {
         uint256 jobId = _createFundedJob();
         vm.prank(providerOperator);
-        dc.submitJobClaim(jobId, BUDGET / 2, keccak256("milestone"));
+        dc.submitJobClaim(jobId, BUDGET / 2, keccak256("milestone"), contributor);
 
         vm.prank(evaluatorOperator);
-        dc.rejectJobClaim(jobId, BUDGET / 2, keccak256("milestone"), bytes32("rejected"));
+        dc.rejectJobClaim(jobId, BUDGET / 2, keccak256("milestone"), bytes32("rejected"), contributor);
 
         assertEq(escrow.pendingClaimHash(jobId), bytes32(0));
         assertEq(dc.getJob(jobId).settledAmount, 0);
@@ -104,13 +106,13 @@ contract EvaluatorActionsTest is BaseTest {
         uint256 milestone = BUDGET / 2;
 
         vm.prank(providerOperator);
-        dc.submitJobClaim(jobId, milestone, keccak256("milestone"));
+        dc.submitJobClaim(jobId, milestone, keccak256("milestone"), contributor);
         vm.prank(evaluatorOperator);
-        dc.approveJobClaim(jobId, milestone, keccak256("milestone"));
+        dc.approveJobClaim(jobId, milestone, keccak256("milestone"), contributor);
 
         _submit(jobId);
         vm.prank(evaluatorOperator);
-        dc.completeJob(jobId, bytes32("approved"));
+        dc.completeJob(jobId, bytes32("approved"), contributor);
 
         // Both settlements together move the whole budget out of escrow.
         assertEq(paymentToken.balanceOf(address(escrow)), 0);

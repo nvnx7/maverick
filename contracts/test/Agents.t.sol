@@ -82,7 +82,8 @@ contract AgentsTest is BaseTest {
     }
 
     function test_createDataJob_revertsWhenAgentsUnset() public {
-        DataCommerce fresh = _deployEntrypoint(address(escrow), treasury, address(paymentToken));
+        DataCommerce fresh =
+            _deployEntrypoint(address(escrow), address(fundDisburser), treasury, address(paymentToken));
         // Build the signature first: it reads from the escrow, which would consume the cheatcodes.
         AgenticCommerce.Authorization memory auth = _clientAuth(expiredAt, "data job", 1);
 

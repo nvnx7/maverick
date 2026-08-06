@@ -12,12 +12,12 @@ contract PartialSettlementTest is BaseTest {
 
     function _submitClaim(uint256 jobId, uint256 cumulative, bytes32 deliverable) internal {
         vm.prank(providerOperator);
-        dc.submitJobClaim(jobId, cumulative, deliverable);
+        dc.submitJobClaim(jobId, cumulative, deliverable, contributor);
     }
 
     function _approveClaim(uint256 jobId, uint256 cumulative, bytes32 deliverable) internal {
         vm.prank(evaluatorOperator);
-        dc.approveJobClaim(jobId, cumulative, deliverable);
+        dc.approveJobClaim(jobId, cumulative, deliverable, contributor);
     }
 
     // ──────────────────── Settlement accounting ────────────────────
@@ -58,8 +58,13 @@ contract PartialSettlementTest is BaseTest {
 
         assertEq(
             paymentToken.balanceOf(treasury),
-            platformFee(first) + providerNet(first) + platformFee(delta) + providerNet(delta),
+            platformFee(first) + platformFee(delta),
             "treasury paid per-delta, not per-cumulative"
+        );
+        assertEq(
+            paymentToken.balanceOf(contributor),
+            providerNet(first) + providerNet(delta),
+            "contributor paid per-delta via fundDisburser"
         );
         assertEq(
             paymentToken.balanceOf(address(evaluatorAgent)),
@@ -93,7 +98,23 @@ contract PartialSettlementTest is BaseTest {
 
         vm.prank(admin);
         dc.sweepAgentBalances(address(paymentToken));
-        assertEq(paymentToken.balanceOf(treasury), BUDGET, "whole budget accounted for");
+
+        uint256 remainder = BUDGET - milestone;
+        assertEq(
+            paymentToken.balanceOf(treasury),
+            platformFee(milestone) + evaluatorFee(milestone) + platformFee(remainder) + evaluatorFee(remainder),
+            "treasury holds only fees"
+        );
+        assertEq(
+            paymentToken.balanceOf(contributor),
+            providerNet(milestone) + providerNet(remainder),
+            "contributor holds provider-side net via fundDisburser"
+        );
+        assertEq(
+            paymentToken.balanceOf(treasury) + paymentToken.balanceOf(contributor),
+            BUDGET,
+            "whole budget accounted for"
+        );
     }
 
     function test_fullySettledJobPaysNothingOnComplete() public {
@@ -148,7 +169,7 @@ contract PartialSettlementTest is BaseTest {
 
         vm.prank(providerOperator);
         vm.expectRevert(ERC8183.PendingClaimExists.selector);
-        dc.submitJobClaim(jobId, BUDGET / 2, M2);
+        dc.submitJobClaim(jobId, BUDGET / 2, M2, contributor);
     }
 
     function test_claimMustAdvanceSettledAmount() public {
@@ -160,7 +181,7 @@ contract PartialSettlementTest is BaseTest {
 
         vm.prank(providerOperator);
         vm.expectRevert(ERC8183.NoNewSettlement.selector);
-        dc.submitJobClaim(jobId, milestone, M2);
+        dc.submitJobClaim(jobId, milestone, M2, contributor);
     }
 
     function test_identicalClaimCannotBeRefiledAfterWithdrawal() public {
@@ -169,12 +190,12 @@ contract PartialSettlementTest is BaseTest {
 
         _submitClaim(jobId, milestone, M1);
         vm.prank(providerOperator);
-        dc.withdrawJobClaim(jobId, milestone, M1, bytes32("withdrawn"));
+        dc.withdrawJobClaim(jobId, milestone, M1, bytes32("withdrawn"), contributor);
 
         // The hash stays consumed; refiling requires different terms.
         vm.prank(providerOperator);
         vm.expectRevert(ERC8183.ClaimAlreadySubmitted.selector);
-        dc.submitJobClaim(jobId, milestone, M1);
+        dc.submitJobClaim(jobId, milestone, M1, contributor);
     }
 
     function test_withdrawnClaimCanBeRefiledWithDifferentTerms() public {
@@ -183,7 +204,7 @@ contract PartialSettlementTest is BaseTest {
 
         _submitClaim(jobId, milestone, M1);
         vm.prank(providerOperator);
-        dc.withdrawJobClaim(jobId, milestone, M1, bytes32("withdrawn"));
+        dc.withdrawJobClaim(jobId, milestone, M1, bytes32("withdrawn"), contributor);
 
         _submitClaim(jobId, milestone, M2);
         _approveClaim(jobId, milestone, M2);
@@ -198,7 +219,7 @@ contract PartialSettlementTest is BaseTest {
 
         vm.prank(providerOperator);
         vm.expectRevert(ERC8183.ExceedsBudget.selector);
-        dc.submitJobClaim(jobId, BUDGET + 1, M2);
+        dc.submitJobClaim(jobId, BUDGET + 1, M2, contributor);
     }
 
     function test_claimsRequireFundedStatus() public {
@@ -206,7 +227,7 @@ contract PartialSettlementTest is BaseTest {
 
         vm.prank(providerOperator);
         vm.expectRevert(ERC8183.WrongStatus.selector);
-        dc.submitJobClaim(jobId, BUDGET / 4, M1);
+        dc.submitJobClaim(jobId, BUDGET / 4, M1, contributor);
     }
 
     function test_claimsRejectedOnceSubmitted() public {
@@ -214,7 +235,7 @@ contract PartialSettlementTest is BaseTest {
 
         vm.prank(providerOperator);
         vm.expectRevert(ERC8183.WrongStatus.selector);
-        dc.submitJobClaim(jobId, BUDGET / 4, M1);
+        dc.submitJobClaim(jobId, BUDGET / 4, M1, contributor);
     }
 
     // ──────────────────── Pending claim vs. lifecycle transitions ────────────────────
@@ -254,7 +275,7 @@ contract PartialSettlementTest is BaseTest {
         _submitClaim(jobId, BUDGET / 4, M1);
 
         vm.prank(evaluatorOperator);
-        dc.rejectJobClaim(jobId, BUDGET / 4, M1, bytes32("rejected"));
+        dc.rejectJobClaim(jobId, BUDGET / 4, M1, bytes32("rejected"), contributor);
 
         vm.warp(expiredAt);
         escrow.claimRefund(jobId);
@@ -271,7 +292,7 @@ contract PartialSettlementTest is BaseTest {
 
         vm.prank(providerOperator);
         vm.expectRevert();
-        dc.approveJobClaim(jobId, BUDGET / 4, M1);
+        dc.approveJobClaim(jobId, BUDGET / 4, M1, contributor);
     }
 
     function test_submitClaimRequiresProviderRole() public {
@@ -279,7 +300,7 @@ contract PartialSettlementTest is BaseTest {
 
         vm.prank(evaluatorOperator);
         vm.expectRevert();
-        dc.submitJobClaim(jobId, BUDGET / 4, M1);
+        dc.submitJobClaim(jobId, BUDGET / 4, M1, contributor);
     }
 
     function test_approveMustMatchPendingClaimTerms() public {
@@ -288,6 +309,6 @@ contract PartialSettlementTest is BaseTest {
 
         vm.prank(evaluatorOperator);
         vm.expectRevert(ERC8183.NoPendingClaim.selector);
-        dc.approveJobClaim(jobId, BUDGET / 2, M1); // amount differs from what was filed
+        dc.approveJobClaim(jobId, BUDGET / 2, M1, contributor); // amount differs from what was filed
     }
 }

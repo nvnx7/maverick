@@ -4,7 +4,8 @@ pragma solidity ^0.8.28;
 import {BaseTest} from "./fixtures/BaseTest.sol";
 
 /// @dev The escrow pays the evaluator fee to job.evaluator, which here is a keyless agent
-///      rather than an operator key. These pin that routing and the sweep back to treasury.
+///      rather than an operator key. These pin that routing, the sweep back to treasury,
+///      and the provider-side net going to the contributor via fundDisburser.
 contract FeesTest is BaseTest {
     function test_evaluatorFeeAccruesToAgentNotOperator() public {
         _complete(_createSubmittedJob());
@@ -13,10 +14,11 @@ contract FeesTest is BaseTest {
         assertEq(paymentToken.balanceOf(evaluatorOperator), 0, "no operator key can hold the fee");
     }
 
-    function test_platformFeeAndNetGoToTreasury() public {
+    function test_platformFeeGoesToTreasuryAndNetToContributor() public {
         _complete(_createSubmittedJob());
 
-        assertEq(paymentToken.balanceOf(treasury), platformFee(BUDGET) + providerNet(BUDGET));
+        assertEq(paymentToken.balanceOf(treasury), platformFee(BUDGET));
+        assertEq(paymentToken.balanceOf(contributor), providerNet(BUDGET));
     }
 
     function test_entrypointAndProviderAgentHoldNothing() public {
@@ -33,7 +35,10 @@ contract FeesTest is BaseTest {
         dc.sweepAgentBalances(address(paymentToken));
 
         assertEq(paymentToken.balanceOf(address(evaluatorAgent)), 0);
-        assertEq(paymentToken.balanceOf(treasury), BUDGET, "whole budget ends at treasury");
+        assertEq(
+            paymentToken.balanceOf(treasury), platformFee(BUDGET) + evaluatorFee(BUDGET), "fees end at treasury"
+        );
+        assertEq(paymentToken.balanceOf(contributor), providerNet(BUDGET), "net already at the contributor");
     }
 
     function test_sweepAccumulatesAcrossJobs() public {
@@ -45,7 +50,8 @@ contract FeesTest is BaseTest {
         vm.prank(admin);
         dc.sweepAgentBalances(address(paymentToken));
 
-        assertEq(paymentToken.balanceOf(treasury), BUDGET * 2);
+        assertEq(paymentToken.balanceOf(treasury), (platformFee(BUDGET) + evaluatorFee(BUDGET)) * 2);
+        assertEq(paymentToken.balanceOf(contributor), providerNet(BUDGET) * 2);
     }
 
     function test_escrowIsDrainedAfterCompletion() public {

@@ -28,16 +28,42 @@ contract AdminTest is BaseTest {
         dc.setCommerce(address(escrow));
     }
 
-    function test_setTreasury_appliesToFutureJobsOnly() public {
-        uint256 existing = _createJob();
+    /// @dev setTreasury no longer touches payoutReceiver at all — that's fundDisburser's job now.
+    function test_setTreasury_doesNotAffectPayoutReceiver() public {
+        uint256 jobId = _createJob();
         address newTreasury = makeAddr("newTreasury");
 
         vm.prank(admin);
         dc.setTreasury(newTreasury);
 
         assertEq(dc.treasury(), newTreasury);
-        assertEq(dc.getJob(existing).payoutReceiver, treasury, "existing job keeps its pinned receiver");
-        assertEq(dc.getJob(_createJob()).payoutReceiver, newTreasury, "new job uses the new treasury");
+        assertEq(dc.getJob(jobId).payoutReceiver, address(fundDisburser));
+    }
+
+    function test_setFundDisburser_appliesToFutureJobsOnly() public {
+        uint256 existing = _createJob();
+        address newFundDisburser = makeAddr("newFundDisburser");
+
+        vm.prank(admin);
+        dc.setFundDisburser(newFundDisburser);
+
+        assertEq(address(dc.fundDisburser()), newFundDisburser);
+        assertEq(
+            dc.getJob(existing).payoutReceiver, address(fundDisburser), "existing job keeps its pinned receiver"
+        );
+        assertEq(dc.getJob(_createJob()).payoutReceiver, newFundDisburser, "new job uses the new disburser");
+    }
+
+    function test_setFundDisburser_revertsOnZeroAddress() public {
+        vm.prank(admin);
+        vm.expectRevert(DataCommerce.ZeroAddress.selector);
+        dc.setFundDisburser(address(0));
+    }
+
+    function test_setFundDisburser_revertsForNonAdmin() public {
+        vm.prank(stranger);
+        vm.expectRevert();
+        dc.setFundDisburser(makeAddr("newFundDisburser"));
     }
 
     function test_setTreasury_revertsOnZeroAddress() public {

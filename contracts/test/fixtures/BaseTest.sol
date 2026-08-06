@@ -4,6 +4,7 @@ pragma solidity ^0.8.28;
 import {ERC1967Proxy} from "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol";
 import {AgenticCommerce} from "../../src/AgenticCommerce.sol";
 import {DataCommerce} from "../../src/DataCommerce.sol";
+import {FundDisburser} from "../../src/FundDisburser.sol";
 import {ProviderAgent} from "../../src/agents/ProviderAgent.sol";
 import {EvaluatorAgent} from "../../src/agents/EvaluatorAgent.sol";
 import {Fixtures} from "./Fixtures.sol";
@@ -11,6 +12,7 @@ import {Fixtures} from "./Fixtures.sol";
 abstract contract BaseTest is Fixtures {
     AgenticCommerce internal escrow;
     DataCommerce internal dc;
+    FundDisburser internal fundDisburser;
     ProviderAgent internal providerAgent;
     EvaluatorAgent internal evaluatorAgent;
 
@@ -26,7 +28,8 @@ abstract contract BaseTest is Fixtures {
         escrow.setEvaluatorFee(EVALUATOR_FEE_BPS);
         vm.stopPrank();
 
-        dc = _deployEntrypoint(address(escrow), treasury, address(paymentToken));
+        fundDisburser = new FundDisburser(address(escrow));
+        dc = _deployEntrypoint(address(escrow), address(fundDisburser), treasury, address(paymentToken));
         (providerAgent, evaluatorAgent) = _deployAgents(dc);
 
         vm.prank(admin);
@@ -51,34 +54,29 @@ abstract contract BaseTest is Fixtures {
 
     /// @dev Kept separate from setUp so initialize-validation tests can deploy independently
     ///      and arm vm.expectRevert immediately before the failing call.
-    function _deployEntrypoint(address commerce_, address treasury_, address payoutToken_)
+    function _deployEntrypoint(address commerce_, address fundDisburser_, address treasury_, address payoutToken_)
         internal
         returns (DataCommerce)
     {
-        bytes memory initData = abi.encodeWithSignature(
-            "initialize(address,address,address,address,address,address)",
-            commerce_,
-            treasury_,
-            payoutToken_,
-            admin,
-            providerOperator,
-            evaluatorOperator
-        );
         DataCommerce implementation = new DataCommerce();
-        return
-            DataCommerce(
-                address(new ERC1967Proxy(address(implementation), _initData(commerce_, treasury_, payoutToken_)))
-            );
+        return DataCommerce(
+            address(
+                new ERC1967Proxy(
+                    address(implementation), _initData(commerce_, fundDisburser_, treasury_, payoutToken_)
+                )
+            )
+        );
     }
 
-    function _initData(address commerce_, address treasury_, address payoutToken_)
+    function _initData(address commerce_, address fundDisburser_, address treasury_, address payoutToken_)
         internal
         view
         returns (bytes memory)
     {
         return abi.encodeWithSignature(
-            "initialize(address,address,address,address,address,address)",
+            "initialize(address,address,address,address,address,address,address)",
             commerce_,
+            fundDisburser_,
             treasury_,
             payoutToken_,
             admin,
@@ -185,6 +183,6 @@ abstract contract BaseTest is Fixtures {
 
     function _complete(uint256 jobId) internal {
         vm.prank(evaluatorOperator);
-        dc.completeJob(jobId, bytes32("approved"));
+        dc.completeJob(jobId, bytes32("approved"), contributor);
     }
 }

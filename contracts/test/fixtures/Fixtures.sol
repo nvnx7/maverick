@@ -14,6 +14,9 @@ abstract contract Fixtures is Test {
     address internal providerOperator = makeAddr("providerOperator");
     address internal evaluatorOperator = makeAddr("evaluatorOperator");
 
+    /// @dev Paid via fundDisburser whenever a test completes or settles a claim.
+    address internal contributor = makeAddr("contributor");
+
     /// @dev The buyer signs job creation, so it needs a key rather than a label.
     uint256 internal buyerPk = 0xB0B;
     address internal buyer = vm.addr(0xB0B);

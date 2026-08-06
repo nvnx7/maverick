@@ -8,6 +8,7 @@ import {BaseTest} from "./fixtures/BaseTest.sol";
 contract InitializeTest is BaseTest {
     function test_storesConfiguration() public view {
         assertEq(address(dc.commerce()), address(escrow));
+        assertEq(address(dc.fundDisburser()), address(fundDisburser));
         assertEq(dc.treasury(), treasury);
         assertEq(dc.payoutToken(), address(paymentToken));
     }
@@ -23,7 +24,8 @@ contract InitializeTest is BaseTest {
     }
 
     function test_agentsStartUnset() public {
-        DataCommerce fresh = _deployEntrypoint(address(escrow), treasury, address(paymentToken));
+        DataCommerce fresh =
+            _deployEntrypoint(address(escrow), address(fundDisburser), treasury, address(paymentToken));
         assertEq(address(fresh.providerAgent()), address(0));
         assertEq(address(fresh.evaluatorAgent()), address(0));
     }
@@ -31,26 +33,43 @@ contract InitializeTest is BaseTest {
     function test_revertsOnZeroCommerce() public {
         DataCommerce implementation = new DataCommerce();
         vm.expectRevert(DataCommerce.ZeroAddress.selector);
-        new ERC1967Proxy(address(implementation), _initData(address(0), treasury, address(paymentToken)));
+        new ERC1967Proxy(
+            address(implementation),
+            _initData(address(0), address(fundDisburser), treasury, address(paymentToken))
+        );
+    }
+
+    function test_revertsOnZeroFundDisburser() public {
+        DataCommerce implementation = new DataCommerce();
+        vm.expectRevert(DataCommerce.ZeroAddress.selector);
+        new ERC1967Proxy(
+            address(implementation), _initData(address(escrow), address(0), treasury, address(paymentToken))
+        );
     }
 
     function test_revertsOnZeroTreasury() public {
         DataCommerce implementation = new DataCommerce();
         vm.expectRevert(DataCommerce.ZeroAddress.selector);
-        new ERC1967Proxy(address(implementation), _initData(address(escrow), address(0), address(paymentToken)));
+        new ERC1967Proxy(
+            address(implementation),
+            _initData(address(escrow), address(fundDisburser), address(0), address(paymentToken))
+        );
     }
 
     function test_revertsOnZeroPayoutToken() public {
         DataCommerce implementation = new DataCommerce();
         vm.expectRevert(DataCommerce.ZeroAddress.selector);
-        new ERC1967Proxy(address(implementation), _initData(address(escrow), treasury, address(0)));
+        new ERC1967Proxy(
+            address(implementation), _initData(address(escrow), address(fundDisburser), treasury, address(0))
+        );
     }
 
     function test_revertsOnZeroAdmin() public {
         DataCommerce implementation = new DataCommerce();
         bytes memory data = abi.encodeWithSignature(
-            "initialize(address,address,address,address,address,address)",
+            "initialize(address,address,address,address,address,address,address)",
             address(escrow),
+            address(fundDisburser),
             treasury,
             address(paymentToken),
             address(0),
@@ -64,8 +83,9 @@ contract InitializeTest is BaseTest {
     function test_revertsOnZeroProvider() public {
         DataCommerce implementation = new DataCommerce();
         bytes memory data = abi.encodeWithSignature(
-            "initialize(address,address,address,address,address,address)",
+            "initialize(address,address,address,address,address,address,address)",
             address(escrow),
+            address(fundDisburser),
             treasury,
             address(paymentToken),
             admin,
@@ -79,8 +99,9 @@ contract InitializeTest is BaseTest {
     function test_revertsOnZeroEvaluator() public {
         DataCommerce implementation = new DataCommerce();
         bytes memory data = abi.encodeWithSignature(
-            "initialize(address,address,address,address,address,address)",
+            "initialize(address,address,address,address,address,address,address)",
             address(escrow),
+            address(fundDisburser),
             treasury,
             address(paymentToken),
             admin,
@@ -93,14 +114,28 @@ contract InitializeTest is BaseTest {
 
     function test_cannotBeCalledTwice() public {
         vm.expectRevert();
-        dc.initialize(address(escrow), treasury, address(paymentToken), admin, providerOperator, evaluatorOperator);
+        dc.initialize(
+            address(escrow),
+            address(fundDisburser),
+            treasury,
+            address(paymentToken),
+            admin,
+            providerOperator,
+            evaluatorOperator
+        );
     }
 
     function test_implementationCannotBeInitializedDirectly() public {
         DataCommerce implementation = new DataCommerce();
         vm.expectRevert();
         implementation.initialize(
-            address(escrow), treasury, address(paymentToken), admin, providerOperator, evaluatorOperator
+            address(escrow),
+            address(fundDisburser),
+            treasury,
+            address(paymentToken),
+            admin,
+            providerOperator,
+            evaluatorOperator
         );
     }
 }
