@@ -1,11 +1,11 @@
 import { Hono } from "hono";
-import { stringToHex } from "viem";
+import { stringToHex, zeroAddress } from "viem";
 import { JOB_STATUS } from "../config/constant";
-import { getJob, type Job, rejectOpenJob, setJobBudget } from "../lib/commerce";
-import { quoteBudget, type ReviewDecision, reviewJob } from "../lib/review";
+import { getJob, type Job, rejectOpenJob, setJobBudget } from "../lib/job";
+import { quoteBudget, reviewJob } from "../lib/review";
 import { parseSpecPayload } from "../lib/spec";
 
-const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
+
 const OPEN = 0;
 
 function parseJobId(raw: string): bigint | null {
@@ -17,22 +17,9 @@ function parseJobId(raw: string): bigint | null {
   }
 }
 
-/** Provider quotes from its own rate card; an unparseable spec quotes zero and is declined. */
 function intendedBudgetFor(job: Job): bigint {
   const spec = parseSpecPayload(job.description);
   return spec ? quoteBudget(spec.modality, spec.minItems) : 0n;
-}
-
-function review(job: Job): {
-  decision: ReviewDecision;
-  intendedBudget: bigint;
-} {
-  const intendedBudget = intendedBudgetFor(job);
-  return { decision: reviewJob(job, intendedBudget), intendedBudget };
-}
-
-function declineReason(decision: ReviewDecision) {
-  return decision.outcome === "declined" ? decision.reason : undefined;
 }
 
 export const jobs = new Hono()
@@ -42,18 +29,20 @@ export const jobs = new Hono()
     if (jobId === null) return c.json({ error: "invalid job id" }, 400);
 
     const job = await getJob(jobId);
-    if (job.client === ZERO_ADDRESS)
+    if (job.client === zeroAddress)
       return c.json({ error: "job not found" }, 404);
 
-    const { decision, intendedBudget } = review(job);
+    const intendedBudget = intendedBudgetFor(job);
+    const reviewDecision = reviewJob(job, intendedBudget);
+    const declineReason = reviewDecision.outcome === "declined" ? reviewDecision.reason : undefined;
 
     return c.json({
       jobId: jobId.toString(),
       onChainStatus: JOB_STATUS[job.status],
       budget: job.budget.toString(),
       intendedBudget: intendedBudget.toString(),
-      providerDecision: decision.outcome,
-      declineReason: declineReason(decision),
+      providerDecision: reviewDecision.outcome,
+      declineReason: declineReason,
     });
   })
   // Acts on the review: sets the budget when agreed, rejects when declined.
@@ -62,10 +51,12 @@ export const jobs = new Hono()
     if (jobId === null) return c.json({ error: "invalid job id" }, 400);
 
     const job = await getJob(jobId);
-    if (job.client === ZERO_ADDRESS)
+    if (job.client === zeroAddress)
       return c.json({ error: "job not found" }, 404);
 
-    const { decision, intendedBudget } = review(job);
+    const intendedBudget = intendedBudgetFor(job);
+    const reviewDecision = reviewJob(job, intendedBudget);
+    const declineReason = reviewDecision.outcome === "declined" ? reviewDecision.reason : undefined;
 
     // Stateless idempotency: a job that has left Open, or already carries a budget, has
     // been acted on. Report current state rather than resending a transaction.
@@ -74,21 +65,21 @@ export const jobs = new Hono()
         jobId: jobId.toString(),
         onChainStatus: JOB_STATUS[job.status],
         budget: job.budget.toString(),
-        providerDecision: decision.outcome,
-        declineReason: declineReason(decision),
+        providerDecision: reviewDecision.outcome,
+        declineReason: declineReason,
         alreadyActivated: true,
       });
     }
 
-    if (decision.outcome === "declined") {
+    if (reviewDecision.outcome === "declined") {
       const txHash = await rejectOpenJob(
         jobId,
-        stringToHex(decision.reason, { size: 32 }),
+        stringToHex(reviewDecision.reason, { size: 32 }),
       );
       return c.json({
         jobId: jobId.toString(),
         providerDecision: "declined",
-        declineReason: decision.reason,
+        declineReason: reviewDecision.reason,
         txHash,
       });
     }
