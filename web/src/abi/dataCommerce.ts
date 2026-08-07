@@ -139,12 +139,7 @@ export const dataCommerceAbi = [
             name: "providerAgentId",
             type: "uint256",
             internalType: "uint256",
-          },
-          {
-            name: "budget",
-            type: "uint256",
-            internalType: "uint256",
-          },
+          }
         ],
       },
       {

@@ -115,7 +115,7 @@ export function useCreateJob() {
         address: networkConfig.contracts.dataCommerce,
         abi: dataCommerceAbi,
         functionName: "createDataJob",
-        args: [{ ...job, budget }, auth],
+        args: [{ ...job }, auth],
       });
 
       console.log("createDataJob txHash", receipt);
