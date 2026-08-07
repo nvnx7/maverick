@@ -1,7 +1,7 @@
 import { parseAbi } from "viem";
-import { dataCommerceAddress } from "../config/env";
+import { networkConfig } from "../config/network";
 import {
-  getOperatorAccount,
+  getProviderAccount,
   getPublicClient,
   getWalletClient,
 } from "./clients";
@@ -28,7 +28,7 @@ export const dataCommerceAbi = parseAbi([
 
 export async function getJob(jobId: bigint): Promise<Job> {
   const job = await getPublicClient().readContract({
-    address: dataCommerceAddress,
+    address: networkConfig.contracts.dataCommerce,
     abi: dataCommerceAbi,
     functionName: "getJob",
     args: [jobId],
@@ -55,9 +55,9 @@ export async function setJobBudget(
 ): Promise<`0x${string}`> {
   const wallet = getWalletClient();
   return wallet.writeContract({
-    account: getOperatorAccount(),
+    account: getProviderAccount(),
     chain: wallet.chain,
-    address: dataCommerceAddress,
+    address: networkConfig.contracts.dataCommerce,
     abi: dataCommerceAbi,
     functionName: "setJobBudget",
     args: [jobId, budget],
@@ -70,9 +70,9 @@ export async function rejectOpenJob(
 ): Promise<`0x${string}`> {
   const wallet = getWalletClient();
   return wallet.writeContract({
-    account: getOperatorAccount(),
+    account: getProviderAccount(),
     chain: wallet.chain,
-    address: dataCommerceAddress,
+    address: networkConfig.contracts.dataCommerce,
     abi: dataCommerceAbi,
     functionName: "rejectOpenJob",
     args: [jobId, reason],

@@ -5,8 +5,8 @@ import {
   PRICE_PER_ITEM,
   SUPPORTED_MODALITIES,
 } from "../config/constant";
-import { evaluatorAddress, providerAddress } from "../config/env";
-import type { Job } from "./commerce";
+import { networkConfig } from "../config/network";
+import type { Job } from "./job";
 import { parseSpecPayload } from "./spec";
 
 export type DeclineReason =
@@ -28,17 +28,11 @@ export function quoteBudget(modality: string, minItems: number): bigint {
   return (PRICE_PER_ITEM[modality] ?? 0n) * BigInt(minItems);
 }
 
-/**
- * Ordered eligibility review; returns on first failure.
- *
- * The evaluator check is load-bearing and comes first: `createJob` is public on the base
- * escrow, so anyone can name this provider while pointing `evaluator` somewhere untrusted.
- */
 export function reviewJob(job: Job, intendedBudget: bigint): ReviewDecision {
-  if (!eq(job.evaluator, evaluatorAddress)) {
+  if (!eq(job.evaluator, networkConfig.contracts.evaluator)) {
     return { outcome: "declined", reason: "untrusted-evaluator" };
   }
-  if (!eq(job.provider, providerAddress)) {
+  if (!eq(job.provider, networkConfig.contracts.provider)) {
     return { outcome: "declined", reason: "not-this-provider" };
   }
 

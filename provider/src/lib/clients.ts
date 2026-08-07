@@ -6,30 +6,28 @@ import {
   type WalletClient,
 } from "viem";
 import { type PrivateKeyAccount, privateKeyToAccount } from "viem/accounts";
-import { arcTestnet } from "../config/chain";
-import { operatorPrivateKey, rpcUrl } from "../config/env";
+import { providerOperatorPrivateKey } from "../config/env";
+import { networkConfig } from "../config/network";
 
-// Built on first use, not at import: chain config may be absent (or empty) in a fresh
-// checkout, and the server should still boot and serve /health.
 let account: PrivateKeyAccount | undefined;
 let reader: PublicClient | undefined;
 let writer: WalletClient | undefined;
 
-export function getOperatorAccount(): PrivateKeyAccount {
-  account ??= privateKeyToAccount(operatorPrivateKey);
+export function getProviderAccount(): PrivateKeyAccount {
+  account ??= privateKeyToAccount(providerOperatorPrivateKey);
   return account;
 }
 
 export function getPublicClient(): PublicClient {
-  reader ??= createPublicClient({ chain: arcTestnet, transport: http(rpcUrl) });
+  reader ??= createPublicClient({ chain: networkConfig.chain, transport: http(networkConfig.rpcUrl) });
   return reader;
 }
 
 export function getWalletClient(): WalletClient {
   writer ??= createWalletClient({
-    account: getOperatorAccount(),
-    chain: arcTestnet,
-    transport: http(rpcUrl),
+    account: getProviderAccount(),
+    chain: networkConfig.chain,
+    transport: http(networkConfig.rpcUrl),
   });
   return writer;
 }
