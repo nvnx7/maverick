@@ -13,7 +13,7 @@ const FALLBACK_SPEC: RequestSpec = {
   minItems: 0,
 };
 
-export function useGetBuyerJobs(params: {buyer?: Address}) {
+export function useGetBuyerJobs(params: { buyer?: Address }) {
   const { buyer } = params;
   const dataCommerce = networkConfig.contracts.dataCommerce as `0x${string}`;
   const publicClient = usePublicClient();

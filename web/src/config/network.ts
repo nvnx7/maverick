@@ -40,7 +40,7 @@ export const arcTestnet: NetworkConfig = {
     escrow: zeroAddress,
     provider: zeroAddress,
     evaluator: zeroAddress,
-    usdc: '0x3600000000000000000000000000000000000000',
+    usdc: "0x3600000000000000000000000000000000000000",
   },
 };
 

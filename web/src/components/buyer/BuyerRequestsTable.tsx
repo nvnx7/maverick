@@ -17,7 +17,9 @@ import { formatDate } from "@/utils/format";
 export function BuyerRequestsTable() {
   const router = useRouter();
   const { address } = useAccount();
-  const { data, isPending, isError, error } = useGetBuyerJobs({buyer : address});
+  const { data, isPending, isError, error } = useGetBuyerJobs({
+    buyer: address,
+  });
 
   if (isPending) return <LoadingBlock label="Reading your requests" />;
   if (isError) return <ErrorBlock message={error?.message} />;
