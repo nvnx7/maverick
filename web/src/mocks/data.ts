@@ -16,6 +16,7 @@ const CONTRACT = "0x9a3f7b12c4e5d6a8b1c0e2f3a4b5c6d7e8f90112" as const;
 const PROVIDER = "0x4e7c1a2b3d5f6081c2a3b4c5d6e7f8091a2b3c4d" as const;
 const EVALUATOR = "0xb1c2d3e4f5061728394a5b6c7d8e9f0a1b2c3d4e" as const;
 const CLIENT = "0x7f3a9b2c1d4e5f6081a2b3c4d5e6f7089a1b2c3d" as const;
+const CONTRIBUTOR = "0xd12e3f405162738495a6b7c8d9e0f11223344556" as const;
 
 export const buyerRequests: BuyerRequest[] = [
   {
@@ -166,44 +167,52 @@ export const submissions: Submission[] = [
   {
     id: "sub_8f21",
     jobId: "1041",
+    contributor: CONTRIBUTOR,
     modality: "video",
     dataHash:
       "0x7d4a1f09c3b28e5610af73d2c9b045e83f16a2d740c9be5812a3f7d06c94e185",
     submittedAt: NOW - 3 * 3600,
     status: "pending",
     amount: 1_000_000n,
+    cumulativeAmount: 1_000_000n,
   },
   {
     id: "sub_7c93",
     jobId: "1041",
+    contributor: CONTRIBUTOR,
     modality: "video",
     dataHash:
       "0x2b9e4c07d1a35f8624be09c7a4d13f5680e2ca917d4b6035f8a1c2e74d09b365",
     submittedAt: NOW - DAY,
     status: "verified",
     amount: 1_000_000n,
+    cumulativeAmount: 2_000_000n,
   },
   {
     id: "sub_6a15",
     jobId: "1038",
+    contributor: CONTRIBUTOR,
     modality: "imu-sensor",
     dataHash:
       "0x5f18d3b6027ac491e2358d7f0b6c4a2931de85f07a2c6b4931d0e85fa672c418",
     submittedAt: NOW - 3 * DAY,
     status: "paid",
     amount: 500_000n,
+    cumulativeAmount: 500_000n,
     payoutTxHash:
       "0xc41d97a2f5083be617294dc0a8f36b51e7290ac4d13f68b5027ae94c31d6f085",
   },
   {
     id: "sub_5d02",
     jobId: "1038",
+    contributor: CONTRIBUTOR,
     modality: "imu-sensor",
     dataHash:
       "0x91c3ae7205fd684b1c09e37a2d5f48620ba9c1e73df06582a4c9b30e7d16fa25",
     submittedAt: NOW - 5 * DAY,
     status: "paid",
     amount: 500_000n,
+    cumulativeAmount: 1_000_000n,
     payoutTxHash:
       "0x8b2fa47c1d90e365248fb70ac1d3e69f5027ab4c86d915f072e3ba48c50d97e1",
   },

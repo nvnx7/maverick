@@ -10,6 +10,7 @@ import {
   Text,
   Textarea,
 } from "@chakra-ui/react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useCreateJob } from "@/api/jobs";
 import { Panel } from "@/components/common/Panel";
@@ -20,15 +21,15 @@ import {
   MODALITY_LABELS,
   type Modality,
 } from "@/config/constants";
+import { routes } from "@/config/routes";
 import { parseUsdc } from "@/utils/format";
 import { quoteBudget } from "@/utils/quote";
-import { useNewRequest } from "./NewRequestContext";
 import { StepLabel } from "./StepLabel";
 
 const EXPIRY_DAYS = 30;
 
 export function NewRequestForm() {
-  const { markCreated } = useNewRequest();
+  const router = useRouter();
   const createJob = useCreateJob();
 
   const [modality, setModality] = useState<Modality>("image");
@@ -72,11 +73,7 @@ export function NewRequestForm() {
       expiresInDays: EXPIRY_DAYS,
     });
 
-    markCreated({
-      ...result,
-      spec: { modality, deviceRequirements, minItems: items },
-      budget: budgetValue,
-    });
+    router.push(routes.buyer.request(result.jobId));
   }
 
   return (

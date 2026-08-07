@@ -67,11 +67,13 @@ export type SubmissionStatus = "pending" | "verified" | "paid";
 export type Submission = {
   id: string;
   jobId: string;
+  contributor: Address;
   modality: Modality;
   dataHash: Hash;
   submittedAt: number;
   status: SubmissionStatus;
   amount: bigint;
+  cumulativeAmount: bigint;
   payoutTxHash?: Hash;
 };
 
