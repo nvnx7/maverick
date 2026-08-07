@@ -14,9 +14,16 @@ export type InitUploadParams = {
   files: InitUploadFile[];
 };
 
+export type PresignedUpload = {
+  url: string;
+  fields: Record<string, string>;
+};
+
 export type InitUploadResult = {
   dataHash: Hash;
   uploadPath: string;
+  /** Presigned POST policy (url + form fields) per file, keyed by file name. */
+  uploadUrls: Record<string, PresignedUpload>;
   manifest: unknown;
 };
 

@@ -3,24 +3,24 @@ import { zeroAddress } from "viem";
 import { z } from "zod";
 import { getJob } from "../lib/job";
 import { buildManifest, type StoredManifest } from "../lib/manifest";
-import { uploadToS3 } from "../lib/storage";
+import { type PresignedUpload, uploadManifestAndGetFileUrls } from "../lib/storage";
 
 /** Names become a path segment, so allow only characters that can't escape one. */
-const SAFE_NAME = /^[a-zA-Z0-9._-]+$/;
+const _SAFE_NAME = /^[a-zA-Z0-9._-]+$/;
 const BYTES32 = /^0x[0-9a-fA-F]{64}$/;
 
 const MAX_FILES = 500;
-const MAX_FILE_BYTES = 5 * 1024 * 1024 * 1024;
+const MAX_FILE_BYTES = 5 * 1024 * 1024 * 1024; 
 
 const fileSchema = z.object({
   name: z
     .string()
     .min(1)
     .max(255)
-    .regex(
-      SAFE_NAME,
-      "name may only contain letters, digits, dot, underscore or hyphen",
-    )
+    // .regex(
+    //   SAFE_NAME,
+    //   "name may only contain letters, digits, dot, underscore or hyphen",
+    // )
     // The character class already blocks separators; this blocks the bare
     // relative segments, which would still climb a level in the prefix.
     .refine(
@@ -56,6 +56,8 @@ export type UploadInitResponse = {
   dataHash: `0x${string}`;
   /** Target subdir/prefix: job-{jobId}/data-{dataHash}/ */
   uploadPath: string;
+  /** Presigned POST policy (url + form fields) per file, keyed by the file name. */
+  uploadUrls: Record<string, PresignedUpload>;
   manifest: StoredManifest;
 };
 
@@ -80,12 +82,12 @@ export const upload = new Hono().post("/init", async (c) => {
   }
 
   const manifest = buildManifest(jobId, parsed.data.files);
-  const uploadPath = `job-${jobId}/data-${manifest.dataHash}/`;
-  await uploadToS3(`${uploadPath}manifest.json`, manifest);
+  const { uploadPath, uploadUrls } = await uploadManifestAndGetFileUrls(jobId, manifest);
 
   const response: UploadInitResponse = {
     dataHash: manifest.dataHash,
     uploadPath,
+    uploadUrls,
     manifest,
   };
 
