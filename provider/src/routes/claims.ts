@@ -90,6 +90,13 @@ export const claims = new Hono().post("/:id/claims", async (c) => {
     return c.json({ error: "unsupported modality" }, 422);
   }
 
+  console.log({
+    job,
+    claimAmount,
+    cumulativeAmount: job.settledAmount + claimAmount,
+    budget: job.budget,
+  })
+
   const cumulativeAmount = job.settledAmount + claimAmount;
   if (cumulativeAmount > job.budget) {
     return c.json({ error: "claim exceeds job budget" }, 409);

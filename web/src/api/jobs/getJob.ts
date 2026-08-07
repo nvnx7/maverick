@@ -63,5 +63,6 @@ export function useGetJob(id?: string) {
     isPending: jobQuery.isPending,
     isError: jobQuery.isError,
     error: jobQuery.error,
+    refetch: jobQuery.refetch,
   };
 }

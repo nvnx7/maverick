@@ -1,8 +1,8 @@
 "use client";
 
-import { Box, Button, Heading, HStack, Text } from "@chakra-ui/react";
+import { Box, Button, Heading, HStack, Stack, Text } from "@chakra-ui/react";
 import { useState } from "react";
-import { useGetJob } from "@/api/jobs";
+import { useFundJob, useGetJob } from "@/api/jobs";
 import { useActivateRequest, useGetRequestStatus } from "@/api/review";
 import { DataRow } from "@/components/common/DataRow";
 import { ExplorerLink } from "@/components/common/ExplorerLink";
@@ -19,16 +19,30 @@ export function RequestProviderReview() {
   const job = useGetJob(id);
   const status = useGetRequestStatus({ id, enabled: checked });
   const activate = useActivateRequest();
+  const fund = useFundJob();
 
   if (!job.data) return null;
+  if (job.data.status !== JobStatus.Open) return null;
 
   const report = status.data;
   const agreed = report?.providerDecision === "agreed";
   const declined = report?.providerDecision === "declined";
-  // The provider only writes a budget while the job is still Open.
-  const activatable = agreed && job.data.status === JobStatus.Open;
+  const quotedBudget = report?.intendedBudget ?? activate.data?.budget;
+  const budgetSet = job.data.budget > 0n || Boolean(activate.data?.budget);
+  const fundAmount =
+    job.data.budget > 0n ? job.data.budget : activate.data?.budget;
 
-  console.log({ job });
+  async function handleActivate() {
+    await activate.mutateAsync(id);
+    await job.refetch?.();
+    await status.refetch();
+  }
+
+  async function handleFund() {
+    if (!fundAmount) return;
+    await fund.mutateAsync({ jobId: id, amount: fundAmount });
+    await job.refetch?.();
+  }
 
   return (
     <Panel mb={6}>
@@ -37,18 +51,13 @@ export function RequestProviderReview() {
       </Heading>
 
       <Text fontSize="sm" color="fg.muted" mb={4}>
-        Ask the provider what it would charge for this spec. Checking is
-        read-only; activating asks it to write that budget on-chain so you can
-        fund the job.
+        Check the provider's quote before writing a budget on-chain.
       </Text>
 
       {report && (
         <Box mb={4}>
           <DataRow label="On-chain status">
             <Mono>{report.onChainStatus}</Mono>
-          </DataRow>
-          <DataRow label="Quoted budget">
-            <UsdcAmount value={report.intendedBudget} color="brand.fg" />
           </DataRow>
           <DataRow label="Budget set on-chain">
             <UsdcAmount value={report.budget} />
@@ -58,6 +67,21 @@ export function RequestProviderReview() {
               {report.providerDecision}
             </Mono>
           </DataRow>
+        </Box>
+      )}
+
+      {agreed && quotedBudget !== undefined && (
+        <Box
+          borderWidth="1px"
+          borderColor="brand.muted"
+          bg="brand.subtle"
+          p={4}
+          mb={4}
+        >
+          <Text fontSize="sm" color="fg.muted" mb={1}>
+            Provider quoted
+          </Text>
+          <UsdcAmount value={quotedBudget} color="brand.fg" fontSize="xl" />
         </Box>
       )}
 
@@ -93,30 +117,53 @@ export function RequestProviderReview() {
         </Text>
       )}
 
-      <HStack gap={3} wrap="wrap">
-        <Button
-          variant="outline"
-          borderColor="border"
-          onClick={() => {
-            setChecked(true);
-            if (checked) status.refetch();
-          }}
-          loading={status.isFetching}
-          loadingText="Asking the provider"
-        >
-          Check status
-        </Button>
+      <Stack gap={3}>
+        {!agreed && !declined && (
+          <HStack gap={3} wrap="wrap">
+            <Button
+              variant="outline"
+              borderColor="border"
+              onClick={() => {
+                setChecked(true);
+                if (checked) status.refetch();
+              }}
+              loading={status.isFetching}
+              loadingText="Checking"
+            >
+              Check Status
+            </Button>
+          </HStack>
+        )}
 
-        <Button
-          colorPalette="brand"
-          disabled={!activatable}
-          onClick={() => activate.mutate(id)}
-          loading={activate.isPending}
-          loadingText="Confirm with the provider"
-        >
-          Activate
-        </Button>
-      </HStack>
+        {agreed && !budgetSet && (
+          <HStack gap={3} wrap="wrap">
+            <Button
+              colorPalette="brand"
+              onClick={handleActivate}
+              loading={activate.isPending}
+              loadingText="Agreeing"
+            >
+              Agree
+            </Button>
+            <Button variant="outline" borderColor="border">
+              Decline
+            </Button>
+          </HStack>
+        )}
+
+        {budgetSet && fundAmount !== undefined && (
+          <HStack gap={3} wrap="wrap">
+            <Button
+              colorPalette="brand"
+              onClick={handleFund}
+              loading={fund.isPending}
+              loadingText="Funding"
+            >
+              Fund
+            </Button>
+          </HStack>
+        )}
+      </Stack>
 
       {status.isError && (
         <Text fontSize="sm" color="warn.fg" mt={3}>
@@ -126,6 +173,11 @@ export function RequestProviderReview() {
       {activate.isError && (
         <Text fontSize="sm" color="warn.fg" mt={3}>
           {activate.error.message}
+        </Text>
+      )}
+      {fund.isError && (
+        <Text fontSize="sm" color="warn.fg" mt={3}>
+          {fund.error.message}
         </Text>
       )}
     </Panel>
