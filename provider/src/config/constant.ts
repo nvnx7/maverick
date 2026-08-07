@@ -1,5 +1,3 @@
-export const USDC_ADDRESS =
-  "0x3600000000000000000000000000000000000000" as const;
 
 export const SUPPORTED_MODALITIES = new Set([
   "imu-sensor",
