@@ -27,18 +27,30 @@ export function FulfillRequestSummary() {
 
   return (
     <>
-      <Link
-        asChild
-        fontSize="sm"
-        color="fg.muted"
-        gap={2}
-        mb={6}
-        _hover={{ color: "fg", textDecoration: "none" }}
-      >
-        <NextLink href={routes.contributor.browse}>
-          <LuArrowLeft size={14} /> Open requests
-        </NextLink>
-      </Link>
+      <Flex justify="space-between" align="center" mb={6}>
+        <Link
+          asChild
+          fontSize="sm"
+          color="fg.muted"
+          gap={2}
+          _hover={{ color: "fg", textDecoration: "none" }}
+        >
+          <NextLink href={routes.contributor.browse}>
+            <LuArrowLeft size={14} /> Open requests
+          </NextLink>
+        </Link>
+
+        <Link
+          asChild
+          fontSize="sm"
+          color="fg.muted"
+          _hover={{ color: "fg", textDecoration: "none" }}
+        >
+          <NextLink href={routes.contributor.submissions(id)}>
+            Your submissions
+          </NextLink>
+        </Link>
+      </Flex>
 
       <Panel mb={6}>
         <Flex justify="space-between" align="start" gap={6} wrap="wrap">

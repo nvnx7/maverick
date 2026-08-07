@@ -120,7 +120,7 @@ export function SubmitCaptureSteps() {
         payoutAddress: address,
         dataRef: uploadTarget.uploadPath,
       });
-      router.push(routes.contributor.submissions);
+      router.push(routes.contributor.submissions(requestId));
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : "Upload failed.");
     } finally {
