@@ -1,7 +1,7 @@
 import { Hono } from "hono";
-import { stringToHex, zeroAddress } from "viem";
+import { zeroAddress } from "viem";
 import { JOB_STATUS } from "../config/constant";
-import { getJob, type Job, rejectOpenJob, setJobBudget } from "../lib/job";
+import { getJob, type Job, setJobBudget } from "../lib/job";
 import { quoteBudget, reviewJob } from "../lib/review";
 import { parseSpecPayload } from "../lib/spec";
 
@@ -72,15 +72,15 @@ export const jobs = new Hono()
     }
 
     if (reviewDecision.outcome === "declined") {
-      const txHash = await rejectOpenJob(
-        jobId,
-        stringToHex(reviewDecision.reason, { size: 32 }),
-      );
+      // const txHash = await rejectOpenJob(
+      //   jobId,
+      //   stringToHex(reviewDecision.reason, { size: 32 }),
+      // );
       return c.json({
         jobId: jobId.toString(),
         providerDecision: "declined",
         declineReason: reviewDecision.reason,
-        txHash,
+        // txHash,
       });
     }
 
