@@ -13,7 +13,7 @@ import { routes } from "@/config/routes";
 import { useDevice } from "@/hooks/useDevice";
 import { useRequestId } from "@/hooks/useRequestId";
 import { signSubmission } from "@/utils/device";
-import { hashFile, hashFiles } from "@/utils/hash";
+import { hashFile } from "@/utils/hash";
 import { uploadFileToS3 } from "@/utils/upload";
 import { useFulfill } from "./FulfillContext";
 
@@ -36,7 +36,9 @@ export function SubmitCaptureSteps() {
   const submitCapture = useSubmitCapture();
 
   const [requestingReview, setRequestingReview] = useState(false);
-  const [uploading, setUploading] = useState(false);
+  const [submitPhase, setSubmitPhase] = useState<
+    "idle" | "uploading" | "claiming"
+  >("idle");
   const [uploadedCount, setUploadedCount] = useState(0);
   const [error, setError] = useState<string | null>(null);
 
@@ -64,12 +66,6 @@ export function SubmitCaptureSteps() {
     setError(null);
     setRequestingReview(true);
     try {
-      const hash = await hashFiles(files);
-      const sig = await signSubmission(device, {
-        dataHash: hash,
-        timestamp: Math.floor(Date.now() / 1000),
-        payoutAddress: address,
-      });
       const fileMetas = await Promise.all(
         files.map(async (file) => ({
           name: file.name,
@@ -82,7 +78,12 @@ export function SubmitCaptureSteps() {
         jobId: requestId,
         files: fileMetas,
       });
-      setDataHash(hash);
+      const sig = await signSubmission(device, {
+        dataHash: result.dataHash,
+        timestamp: Math.floor(Date.now() / 1000),
+        payoutAddress: address,
+      });
+      setDataHash(result.dataHash);
       setSignature(sig);
       setUploadTarget({
         uploadPath: result.uploadPath,
@@ -102,7 +103,7 @@ export function SubmitCaptureSteps() {
       return;
     }
     setError(null);
-    setUploading(true);
+    setSubmitPhase("uploading");
     setUploadedCount(0);
     try {
       for (const file of files) {
@@ -112,6 +113,7 @@ export function SubmitCaptureSteps() {
         setUploadedCount((count) => count + 1);
       }
       setUploaded(true);
+      setSubmitPhase("claiming");
       await submitCapture.mutateAsync({
         jobId: requestId,
         deviceId: device.deviceId,
@@ -124,9 +126,15 @@ export function SubmitCaptureSteps() {
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : "Upload failed.");
     } finally {
-      setUploading(false);
+      setSubmitPhase("idle");
     }
   }
+
+  const isSubmitting = submitPhase !== "idle" || submitCapture.isPending;
+  const submitLoadingText =
+    submitPhase === "claiming" || submitCapture.isPending
+      ? "Submitting claim"
+      : "Uploading";
 
   return (
     <Panel>
@@ -147,12 +155,12 @@ export function SubmitCaptureSteps() {
               <Button
                 colorPalette="brand"
                 onClick={handleUploadFiles}
-                loading={uploading || submitCapture.isPending}
-                loadingText="Uploading"
+                loading={isSubmitting}
+                loadingText={submitLoadingText}
               >
                 Upload files
               </Button>
-              {uploading && (
+              {submitPhase === "uploading" && (
                 <Mono fontSize="sm" color="fg.muted">
                   {uploadedCount}/{files.length} uploaded
                 </Mono>
