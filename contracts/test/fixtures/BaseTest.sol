@@ -154,8 +154,12 @@ abstract contract BaseTest is Fixtures {
         // Sign before pranking: the helper reads from the escrow, which would consume the prank.
         AgenticCommerce.Authorization memory auth = _clientAuth(expiredAt, "data job", ++clientNonce);
 
-        vm.prank(providerOperator);
+        vm.startPrank(providerOperator);
         jobId = dc.createDataJob(_params(expiredAt, "data job", budget), auth);
+        // createDataJob no longer sets a budget itself — the provider quotes and writes it
+        // separately, so funding would otherwise fail with PaymentTokenMismatch.
+        dc.setJobBudget(jobId, budget);
+        vm.stopPrank();
     }
 
     function _fund(uint256 jobId, uint256 budget) internal {

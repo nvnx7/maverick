@@ -94,16 +94,20 @@ contract AdminTest is BaseTest {
         dc.setPayoutToken(address(0));
     }
 
-    function test_createDataJob_revertsWhenTokenNotAllowlistedOnEscrow() public {
+    function test_setJobBudget_revertsWhenTokenNotAllowlistedOnEscrow() public {
+        // createDataJob no longer touches budget/payoutToken at all — that only happens
+        // once the provider quotes and calls setJobBudget, so that is where an
+        // unallowlisted payoutToken now surfaces.
         vm.prank(admin);
         dc.setPayoutToken(address(notAllowedToken));
 
-        // Build the signature first: it reads from the escrow, which would consume the cheatcodes.
         AgenticCommerce.Authorization memory auth = _clientAuth(expiredAt, "data job", 1);
+        vm.prank(providerOperator);
+        uint256 jobId = dc.createDataJob(_params(expiredAt, "data job", BUDGET), auth);
 
         vm.prank(providerOperator);
         vm.expectRevert(ERC8183.PaymentTokenNotAllowed.selector);
-        dc.createDataJob(_params(expiredAt, "data job", BUDGET), auth);
+        dc.setJobBudget(jobId, BUDGET);
     }
 
     function test_sweepAgentBalances_revertsForNonAdmin() public {
