@@ -1,7 +1,7 @@
 import type {
   BuyerRequest,
   DeviceRecord,
-  OpenRequest,
+  FundedRequest,
   RequestDetail,
   Submission,
 } from "@/types";
@@ -116,7 +116,7 @@ export function buildRequestDetail(request: BuyerRequest): RequestDetail {
   };
 }
 
-export const openRequests: OpenRequest[] = [
+export const fundedRequests: FundedRequest[] = [
   {
     id: "1041",
     status: JobStatus.Funded,

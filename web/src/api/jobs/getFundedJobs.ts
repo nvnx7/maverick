@@ -4,7 +4,7 @@ import { agenticCommerceAbi, dataCommerceAbi } from "@/abi";
 import type { Modality } from "@/config/constants";
 import { PRICE_PER_ITEM } from "@/config/constants";
 import { networkConfig } from "@/config/network";
-import { JobStatus, type OpenRequest, type RequestSpec } from "@/types";
+import { type FundedRequest, JobStatus, type RequestSpec } from "@/types";
 import { decodeSpec } from "@/utils/spec";
 
 const FALLBACK_SPEC: RequestSpec = {
@@ -14,12 +14,11 @@ const FALLBACK_SPEC: RequestSpec = {
 };
 
 /**
- * Job ids come from the escrow's JobCreated logs, filtered to our ProviderAgent so jobs
- * someone else posted against the open createJob entrypoint stay out. No client filter
- * here — the browse list spans every buyer. Each id is then read individually for the
- * status/description a card needs, since the event carries neither.
+ * Job ids come from the escrow's JobCreated logs, filtered to our ProviderAgent.
+ * No client filter here — the browse list spans every buyer. Each id is then read
+ * individually for the status/description a card needs, since the event carries neither.
  */
-export function useGetOpenJobs(modality?: Modality) {
+export function useGetFundedJobs(modality?: Modality) {
   const dataCommerce = networkConfig.contracts.dataCommerce as `0x${string}`;
   const createdQuery = useContractEvents({
     address: networkConfig.contracts.escrow,
@@ -50,15 +49,15 @@ export function useGetOpenJobs(modality?: Modality) {
     query: { enabled: jobIds.length > 0 },
   });
 
-  const data = useMemo<OpenRequest[]>(() => {
+  const data = useMemo<FundedRequest[]>(() => {
     if (!jobsQuery.data) return [];
 
     return jobIds
-      .map((jobId, index): OpenRequest | null => {
+      .map((jobId, index): FundedRequest | null => {
         const result = jobsQuery.data[index];
         if (result?.status !== "success") return null;
         const job = result.result;
-        if (job.status !== JobStatus.Open) return null;
+        if (job.status !== JobStatus.Funded) return null;
 
         const spec = decodeSpec(job.description) ?? FALLBACK_SPEC;
         if (modality && spec.modality !== modality) return null;
@@ -71,7 +70,7 @@ export function useGetOpenJobs(modality?: Modality) {
           budgetRemaining: job.budget - job.settledAmount,
         };
       })
-      .filter((request): request is OpenRequest => request !== null);
+      .filter((request): request is FundedRequest => request !== null);
   }, [jobIds, jobsQuery.data, modality]);
 
   return {

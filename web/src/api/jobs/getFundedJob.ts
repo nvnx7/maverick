@@ -3,7 +3,7 @@ import { useReadContract } from "wagmi";
 import { dataCommerceAbi } from "@/abi";
 import { PRICE_PER_ITEM } from "@/config/constants";
 import { networkConfig } from "@/config/network";
-import type { JobStatus, OpenRequest, RequestSpec } from "@/types";
+import { type FundedRequest, JobStatus, type RequestSpec } from "@/types";
 import { decodeSpec } from "@/utils/spec";
 
 const FALLBACK_SPEC: RequestSpec = {
@@ -13,7 +13,7 @@ const FALLBACK_SPEC: RequestSpec = {
 };
 
 /** Same underlying read as useGetJob, shaped for the contributor's browse card. */
-export function useGetOpenJob(id?: string) {
+export function useGetFundedJob(id?: string) {
   const jobId = id ? BigInt(id) : undefined;
 
   const query = useReadContract({
@@ -24,9 +24,10 @@ export function useGetOpenJob(id?: string) {
     query: { enabled: jobId !== undefined },
   });
 
-  const data = useMemo<OpenRequest | undefined>(() => {
+  const data = useMemo<FundedRequest | undefined>(() => {
     if (!id || !query.data) return undefined;
     const job = query.data;
+    if (job.status !== JobStatus.Funded) return undefined;
     const spec = decodeSpec(job.description) ?? FALLBACK_SPEC;
 
     return {

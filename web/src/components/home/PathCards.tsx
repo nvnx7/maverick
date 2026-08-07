@@ -21,7 +21,7 @@ const paths = [
     href: routes.contributor.browse,
     title: "Fulfill requests",
     body: "Capture on a device that signs what it records. Submit, get verified, get paid straight to your wallet.",
-    cta: "Browse open requests",
+    cta: "Browse funded requests",
   },
 ];
 

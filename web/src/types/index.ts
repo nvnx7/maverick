@@ -45,7 +45,7 @@ export type RequestDetail = BuyerRequest & {
   createdTxHash?: Hash;
 };
 
-export type OpenRequest = {
+export type FundedRequest = {
   id: string;
   status: JobStatus;
   spec: RequestSpec;

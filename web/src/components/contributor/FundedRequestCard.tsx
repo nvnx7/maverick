@@ -12,9 +12,9 @@ import { Mono } from "@/components/common/Mono";
 import { UsdcAmount } from "@/components/common/UsdcAmount";
 import { MODALITY_LABELS } from "@/config/constants";
 import { routes } from "@/config/routes";
-import type { OpenRequest } from "@/types";
+import type { FundedRequest } from "@/types";
 
-export function OpenRequestCard({ request }: { request: OpenRequest }) {
+export function FundedRequestCard({ request }: { request: FundedRequest }) {
   return (
     <LinkBox
       as="article"
