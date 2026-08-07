@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import { zeroAddress } from "viem";
 import { z } from "zod";
-import { getJob } from "../lib/commerce";
+import { getJob } from "../lib/job";
 import { buildManifest, type StoredManifest } from "../lib/manifest";
 
 /** Names become a path segment, so allow only characters that can't escape one. */
