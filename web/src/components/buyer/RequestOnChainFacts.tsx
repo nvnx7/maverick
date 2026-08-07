@@ -45,7 +45,14 @@ export function RequestOnChainFacts() {
         <Mono>{data.spec.minItems.toLocaleString("en-US")}</Mono>
       </DataRow>
       <DataRow label="Description">
-        <Mono>{data.description}</Mono>
+        <Mono
+          fontSize="xs"
+          color="fg.muted"
+          wordBreak="break-all"
+          textAlign="end"
+        >
+          {data.description}
+        </Mono>
       </DataRow>
     </Panel>
   );
