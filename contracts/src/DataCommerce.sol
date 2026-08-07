@@ -34,7 +34,6 @@ contract DataCommerce is Initializable, AccessControlUpgradeable, UUPSUpgradeabl
         string description;
         address hook;
         uint256 providerAgentId;
-        uint256 budget;
     }
 
     event DataJobCreated(uint256 indexed jobId, address indexed client, uint256 budget);
@@ -187,11 +186,9 @@ contract DataCommerce is Initializable, AccessControlUpgradeable, UUPSUpgradeabl
             });
 
         jobId = commerce.createJobWithAuthorization(createParams, clientAuth);
-
-        providerAgent.execute(abi.encodeCall(ERC8183.setBudget, (jobId, payoutToken, params.budget, "")));
         providerAgent.execute(abi.encodeCall(ERC8183.setPayoutReceiver, (jobId, address(fundDisburser))));
 
-        emit DataJobCreated(jobId, clientAuth.signer, params.budget);
+        emit DataJobCreated(jobId, clientAuth.signer, 0);
     }
 
     // ──────────────────── Provider actions ────────────────────

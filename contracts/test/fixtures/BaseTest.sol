@@ -142,7 +142,7 @@ abstract contract BaseTest is Fixtures {
         returns (DataCommerce.CreateDataJobParams memory)
     {
         return DataCommerce.CreateDataJobParams({
-            expiredAt: expiredAt_, description: description, hook: address(0), providerAgentId: 0, budget: budget
+            expiredAt: expiredAt_, description: description, hook: address(0), providerAgentId: 0
         });
     }
 
