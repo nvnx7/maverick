@@ -9,7 +9,7 @@ import { useFulfill } from "./FulfillContext";
 
 /** Selection only — hashing and submission are handled after this, deliberately. */
 export function CaptureUploader() {
-  const { setFiles, setUploadPath, setUploaded, setDataHash, setSignature } =
+  const { setFiles, setUploadTarget, setUploaded, setDataHash, setSignature } =
     useFulfill();
   const [uppy] = useState(
     () =>
@@ -23,7 +23,7 @@ export function CaptureUploader() {
     // Changing the selection invalidates any upload, hash, and signature already produced.
     const sync = () => {
       setFiles(uppy.getFiles().map((file) => file.data as File));
-      setUploadPath(null);
+      setUploadTarget(null);
       setUploaded(false);
       setDataHash(null);
       setSignature(null);
@@ -35,7 +35,7 @@ export function CaptureUploader() {
       uppy.off("file-added", sync);
       uppy.off("file-removed", sync);
     };
-  }, [uppy, setFiles, setUploadPath, setUploaded, setDataHash, setSignature]);
+  }, [uppy, setFiles, setUploadTarget, setUploaded, setDataHash, setSignature]);
 
   return (
     <Dashboard

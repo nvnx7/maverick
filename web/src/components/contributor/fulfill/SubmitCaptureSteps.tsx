@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, Button, Text } from "@chakra-ui/react";
+import { Box, Button, HStack, Text } from "@chakra-ui/react";
 import NextLink from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -14,7 +14,7 @@ import { useDevice } from "@/hooks/useDevice";
 import { useRequestId } from "@/hooks/useRequestId";
 import { signSubmission } from "@/utils/device";
 import { hashFile, hashFiles } from "@/utils/hash";
-import { uploadToS3 } from "@/utils/upload";
+import { uploadFileToS3 } from "@/utils/upload";
 import { useFulfill } from "./FulfillContext";
 
 export function SubmitCaptureSteps() {
@@ -24,10 +24,10 @@ export function SubmitCaptureSteps() {
   const { device, ready } = useDevice();
   const {
     files,
-    uploadPath,
+    uploadTarget,
     dataHash,
     signature,
-    setUploadPath,
+    setUploadTarget,
     setUploaded,
     setDataHash,
     setSignature,
@@ -37,6 +37,7 @@ export function SubmitCaptureSteps() {
 
   const [requestingReview, setRequestingReview] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [uploadedCount, setUploadedCount] = useState(0);
   const [error, setError] = useState<string | null>(null);
 
   if (ready && !device) {
@@ -83,7 +84,10 @@ export function SubmitCaptureSteps() {
       });
       setDataHash(hash);
       setSignature(sig);
-      setUploadPath(result.uploadPath);
+      setUploadTarget({
+        uploadPath: result.uploadPath,
+        uploadUrls: result.uploadUrls,
+      });
     } catch (cause) {
       setError(
         cause instanceof Error ? cause.message : "Review request failed.",
@@ -94,11 +98,19 @@ export function SubmitCaptureSteps() {
   }
 
   async function handleUploadFiles() {
-    if (!uploadPath || !device || !dataHash || !signature || !address) return;
+    if (!uploadTarget || !device || !dataHash || !signature || !address) {
+      return;
+    }
     setError(null);
     setUploading(true);
+    setUploadedCount(0);
     try {
-      await uploadToS3(files, uploadPath);
+      for (const file of files) {
+        const presigned = uploadTarget.uploadUrls[file.name];
+        if (!presigned) throw new Error(`No upload URL for ${file.name}`);
+        await uploadFileToS3(file, presigned);
+        setUploadedCount((count) => count + 1);
+      }
       setUploaded(true);
       await submitCapture.mutateAsync({
         jobId: requestId,
@@ -106,7 +118,7 @@ export function SubmitCaptureSteps() {
         dataHash,
         signature,
         payoutAddress: address,
-        dataRef: uploadPath,
+        dataRef: uploadTarget.uploadPath,
       });
       router.push(routes.contributor.submissions);
     } catch (cause) {
@@ -130,15 +142,22 @@ export function SubmitCaptureSteps() {
             </Box>
           )}
 
-          {uploadPath ? (
-            <Button
-              colorPalette="brand"
-              onClick={handleUploadFiles}
-              loading={uploading || submitCapture.isPending}
-              loadingText="Uploading"
-            >
-              Upload files
-            </Button>
+          {uploadTarget ? (
+            <HStack gap={4}>
+              <Button
+                colorPalette="brand"
+                onClick={handleUploadFiles}
+                loading={uploading || submitCapture.isPending}
+                loadingText="Uploading"
+              >
+                Upload files
+              </Button>
+              {uploading && (
+                <Mono fontSize="sm" color="fg.muted">
+                  {uploadedCount}/{files.length} uploaded
+                </Mono>
+              )}
+            </HStack>
           ) : (
             <Button
               colorPalette="brand"
@@ -150,9 +169,9 @@ export function SubmitCaptureSteps() {
             </Button>
           )}
 
-          {uploadPath && (
+          {uploadTarget && (
             <Mono fontSize="xs" color="fg.muted" mt={3} wordBreak="break-all">
-              {uploadPath}
+              {uploadTarget.uploadPath}
             </Mono>
           )}
         </Box>
