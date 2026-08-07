@@ -1,19 +1,48 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import type { RequestStatusReport } from "@/types";
-import { mock } from "../client";
-import { getRequestStatus } from "./getRequestStatus";
+import type { Hash } from "viem";
+import type { DeclineReason, JobStatus, ProviderDecision } from "@/types";
+import { http } from "../client";
 
-/** POST /jobs/:id/activate — asks the provider to act on its review. */
-export function activateRequest(id: string): Promise<RequestStatusReport> {
-  return mock(null, 800).then(() => getRequestStatus(id));
+type ActivateResponse = {
+  jobId: string;
+  providerDecision: ProviderDecision;
+  onChainStatus?: keyof typeof JobStatus;
+  budget?: string;
+  declineReason?: DeclineReason;
+  txHash?: Hash;
+  alreadyActivated?: boolean;
+};
+
+export type ActivateResult = {
+  jobId: string;
+  providerDecision: ProviderDecision;
+  budget?: bigint;
+  declineReason?: DeclineReason;
+  txHash?: Hash;
+  alreadyActivated: boolean;
+};
+
+/** POST /jobs/:id/activate — sets the budget when agreed, rejects when declined. */
+export async function activateRequest(id: string): Promise<ActivateResult> {
+  const { data } = await http.post<ActivateResponse>(`/jobs/${id}/activate`);
+  return {
+    jobId: data.jobId,
+    providerDecision: data.providerDecision,
+    budget: data.budget === undefined ? undefined : BigInt(data.budget),
+    declineReason: data.declineReason,
+    txHash: data.txHash,
+    alreadyActivated: data.alreadyActivated ?? false,
+  };
 }
 
 export function useActivateRequest() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: activateRequest,
-    onSuccess: (report) => {
-      queryClient.setQueryData(["request-status", report.jobId], report);
+    onSuccess: (result) => {
+      queryClient.invalidateQueries({
+        queryKey: ["request-status", result.jobId],
+      });
     },
   });
 }
