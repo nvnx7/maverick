@@ -14,7 +14,7 @@ import { StepLabel } from "./StepLabel";
 
 export function ProviderReviewStep() {
   const { created, markAgreed } = useNewRequest();
-  const { data } = useGetRequestStatus(created?.jobId, true);
+  const { data } = useGetRequestStatus({ id: created?.jobId, poll: true });
 
   const decision = data?.providerDecision ?? "pending";
 

@@ -1,2 +1,2 @@
-export * from "./activateRequest";
-export * from "./getRequestStatus";
+export * from "./activateJob";
+export * from "./getProviderJobStatus";
