@@ -3,6 +3,7 @@ import { zeroAddress } from "viem";
 import { z } from "zod";
 import { getJob } from "../lib/job";
 import { buildManifest, type StoredManifest } from "../lib/manifest";
+import { uploadToS3 } from "../lib/storage";
 
 /** Names become a path segment, so allow only characters that can't escape one. */
 const SAFE_NAME = /^[a-zA-Z0-9._-]+$/;
@@ -79,11 +80,12 @@ export const upload = new Hono().post("/init", async (c) => {
   }
 
   const manifest = buildManifest(jobId, parsed.data.files);
+  const uploadPath = `job-${jobId}/data-${manifest.dataHash}/`;
+  await uploadToS3(`${uploadPath}manifest.json`, manifest);
 
-  // TODO: persist the manifest and provision the upload target before returning.
   const response: UploadInitResponse = {
     dataHash: manifest.dataHash,
-    uploadPath: `job-${jobId}/data-${manifest.dataHash}/`,
+    uploadPath,
     manifest,
   };
 

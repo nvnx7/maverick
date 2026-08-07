@@ -1,11 +1,11 @@
 "use client";
 
-import { Button, HStack, Spinner, Stack, Text } from "@chakra-ui/react";
+import { Box, Button, Text } from "@chakra-ui/react";
 import NextLink from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useAccount } from "wagmi";
-import { useSubmitCapture } from "@/api/submissions";
+import { useInitUpload, useSubmitCapture } from "@/api/submissions";
 import { CopyableHash } from "@/components/common/CopyableHash";
 import { Mono } from "@/components/common/Mono";
 import { Panel } from "@/components/common/Panel";
@@ -13,22 +13,30 @@ import { routes } from "@/config/routes";
 import { useDevice } from "@/hooks/useDevice";
 import { useRequestId } from "@/hooks/useRequestId";
 import { signSubmission } from "@/utils/device";
-import { formatBytes } from "@/utils/format";
-import { hashFiles } from "@/utils/hash";
+import { hashFile, hashFiles } from "@/utils/hash";
+import { uploadToS3 } from "@/utils/upload";
 import { useFulfill } from "./FulfillContext";
-import { FulfillStep } from "./FulfillStep";
 
 export function SubmitCaptureSteps() {
   const requestId = useRequestId();
   const router = useRouter();
   const { address } = useAccount();
   const { device, ready } = useDevice();
-  const { files, dataHash, signature, setDataHash, setSignature } =
-    useFulfill();
+  const {
+    files,
+    uploadPath,
+    dataHash,
+    signature,
+    setUploadPath,
+    setUploaded,
+    setDataHash,
+    setSignature,
+  } = useFulfill();
+  const initUpload = useInitUpload();
   const submitCapture = useSubmitCapture();
 
-  const [hashing, setHashing] = useState(false);
-  const [signing, setSigning] = useState(false);
+  const [requestingReview, setRequestingReview] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   if (ready && !device) {
@@ -50,136 +58,105 @@ export function SubmitCaptureSteps() {
     );
   }
 
-  const totalBytes = files.reduce((sum, file) => sum + file.size, 0);
-
-  async function handleHash() {
+  async function handleRequestReview() {
+    if (!device || !address) return;
     setError(null);
-    setHashing(true);
+    setRequestingReview(true);
     try {
-      setDataHash(await hashFiles(files));
-    } catch (cause) {
-      setError(cause instanceof Error ? cause.message : "Hashing failed.");
-    } finally {
-      setHashing(false);
-    }
-  }
-
-  async function handleSign() {
-    if (!device || !dataHash || !address) return;
-    setError(null);
-    setSigning(true);
-    try {
-      setSignature(
-        await signSubmission(device, {
-          dataHash,
-          timestamp: Math.floor(Date.now() / 1000),
-          payoutAddress: address,
-        }),
+      const hash = await hashFiles(files);
+      const sig = await signSubmission(device, {
+        dataHash: hash,
+        timestamp: Math.floor(Date.now() / 1000),
+        payoutAddress: address,
+      });
+      const fileMetas = await Promise.all(
+        files.map(async (file) => ({
+          name: file.name,
+          hash: await hashFile(file),
+          mimeType: file.type,
+          size: file.size,
+        })),
       );
+      const result = await initUpload.mutateAsync({
+        jobId: requestId,
+        files: fileMetas,
+      });
+      setDataHash(hash);
+      setSignature(sig);
+      setUploadPath(result.uploadPath);
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message : "Signing failed.");
+      setError(
+        cause instanceof Error ? cause.message : "Review request failed.",
+      );
     } finally {
-      setSigning(false);
+      setRequestingReview(false);
     }
   }
 
-  async function handleSubmit() {
-    if (!device || !dataHash || !signature || !address) return;
+  async function handleUploadFiles() {
+    if (!uploadPath || !device || !dataHash || !signature || !address) return;
     setError(null);
-    await submitCapture.mutateAsync({
-      jobId: requestId,
-      deviceId: device.deviceId,
-      dataHash,
-      signature,
-      payoutAddress: address,
-      dataRef: `local:${files.length}-files`,
-    });
-    router.push(routes.contributor.submissions);
+    setUploading(true);
+    try {
+      await uploadToS3(files, uploadPath);
+      setUploaded(true);
+      await submitCapture.mutateAsync({
+        jobId: requestId,
+        deviceId: device.deviceId,
+        dataHash,
+        signature,
+        payoutAddress: address,
+        dataRef: uploadPath,
+      });
+      router.push(routes.contributor.submissions);
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : "Upload failed.");
+    } finally {
+      setUploading(false);
+    }
   }
 
   return (
     <Panel>
-      <Stack gap={0}>
-        <FulfillStep
-          index={1}
-          title="Hash your files locally"
-          description="The hash is what your device signs. It's produced here, in this browser — the files aren't uploaded to compute it."
-          done={Boolean(dataHash)}
-        >
-          {files.length === 0 ? (
-            <Text fontSize="sm" color="fg.subtle">
-              Select files above to continue.
-            </Text>
-          ) : dataHash ? (
-            <CopyableHash value={dataHash} lead={18} tail={12} />
-          ) : (
-            <HStack gap={4}>
-              <Button
-                size="sm"
-                colorPalette="brand"
-                onClick={handleHash}
-                loading={hashing}
-                loadingText="Hashing files locally"
-              >
-                Hash {files.length} file{files.length === 1 ? "" : "s"}
-              </Button>
-              <Mono fontSize="xs" color="fg.muted">
-                {formatBytes(totalBytes)}
-              </Mono>
-            </HStack>
+      {files.length === 0 ? (
+        <Text fontSize="sm" color="fg.subtle">
+          Select files above to continue.
+        </Text>
+      ) : (
+        <Box>
+          {dataHash && (
+            <Box mb={4}>
+              <CopyableHash value={dataHash} lead={18} tail={12} />
+            </Box>
           )}
-        </FulfillStep>
 
-        <FulfillStep
-          index={2}
-          title="Sign this submission with your device key"
-          description="Your payout address is signed into the payload, so a valid submission can't be replayed against another wallet."
-          done={Boolean(signature)}
-        >
-          {!dataHash ? (
-            <Text fontSize="sm" color="fg.subtle">
-              Hash your files first.
-            </Text>
-          ) : signature ? (
-            <CopyableHash value={signature} lead={18} tail={12} />
+          {uploadPath ? (
+            <Button
+              colorPalette="brand"
+              onClick={handleUploadFiles}
+              loading={uploading || submitCapture.isPending}
+              loadingText="Uploading"
+            >
+              Upload files
+            </Button>
           ) : (
             <Button
-              size="sm"
               colorPalette="brand"
-              onClick={handleSign}
-              loading={signing}
-              loadingText="Signing"
+              onClick={handleRequestReview}
+              loading={requestingReview}
+              loadingText="Requesting review"
             >
-              Sign submission
+              Request review before upload
             </Button>
           )}
-        </FulfillStep>
 
-        <FulfillStep
-          index={3}
-          title="Submit"
-          description="The evaluator checks your signature against the on-chain device registry before anything is paid."
-        >
-          {!signature ? (
-            <Text fontSize="sm" color="fg.subtle">
-              Sign the submission first.
-            </Text>
-          ) : (
-            <HStack gap={4}>
-              <Button
-                size="sm"
-                colorPalette="brand"
-                onClick={handleSubmit}
-                loading={submitCapture.isPending}
-                loadingText="Submitting"
-              >
-                Submit capture
-              </Button>
-              {submitCapture.isPending && <Spinner size="xs" />}
-            </HStack>
+          {uploadPath && (
+            <Mono fontSize="xs" color="fg.muted" mt={3} wordBreak="break-all">
+              {uploadPath}
+            </Mono>
           )}
-        </FulfillStep>
-      </Stack>
+        </Box>
+      )}
 
       {(error || submitCapture.isError) && (
         <Text fontSize="sm" color="warn.fg" mt={5}>

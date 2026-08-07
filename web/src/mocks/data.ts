@@ -110,6 +110,7 @@ export function buildRequestDetail(request: BuyerRequest): RequestDetail {
     provider: PROVIDER,
     evaluator: EVALUATOR,
     expiredAt: request.createdAt + 30 * DAY,
+    description: JSON.stringify(request.spec),
     createdTxHash: CREATED_TX[request.id] ?? FALLBACK_TX,
   };
 }

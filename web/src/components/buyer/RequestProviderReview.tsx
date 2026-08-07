@@ -28,7 +28,7 @@ export function RequestProviderReview() {
   // The provider only writes a budget while the job is still Open.
   const activatable = agreed && job.data.status === JobStatus.Open;
 
-  console.log({ job })
+  console.log({ job });
 
   return (
     <Panel mb={6}>
