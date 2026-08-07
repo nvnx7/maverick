@@ -9,7 +9,7 @@ export const routes = {
     device: "/contributor/device",
     browse: "/contributor/requests",
     fulfill: (id: string) => `/contributor/requests/${id}/fulfill`,
-    submissions: "/contributor/submissions",
+    submissions: (jobId: string) => `/contributor/submissions/${jobId}`,
   },
 } as const;
 
@@ -20,6 +20,5 @@ export const buyerNav = [
 
 export const contributorNav = [
   { href: routes.contributor.browse, label: "Browse" },
-  { href: routes.contributor.submissions, label: "Submissions" },
   { href: routes.contributor.device, label: "Device" },
 ];
