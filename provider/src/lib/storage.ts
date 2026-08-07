@@ -1,6 +1,15 @@
-import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import {
+  GetObjectCommand,
+  PutObjectCommand,
+  S3Client,
+} from "@aws-sdk/client-s3";
 import { createPresignedPost } from "@aws-sdk/s3-presigned-post";
-import { s3AccessKeyId, s3BucketName, s3EndpointUrl, s3SecretAccessKey } from "../config/env";
+import {
+  s3AccessKeyId,
+  s3BucketName,
+  s3EndpointUrl,
+  s3SecretAccessKey,
+} from "../config/env";
 import type { StoredManifest } from "./manifest";
 
 // Bun's built-in S3Client only presigns single-URL requests (query-string SigV4) — it
@@ -33,10 +42,41 @@ async function uploadJsonToS3(key: string, data: unknown): Promise<void> {
   );
 }
 
+export async function getStoredManifest(
+  jobId: string,
+  dataHash: `0x${string}`,
+): Promise<StoredManifest | null> {
+  const key = `job-${jobId}/data-${dataHash}/manifest.json`;
+
+  try {
+    const result = await s3Client.send(
+      new GetObjectCommand({
+        Bucket: s3BucketName,
+        Key: key,
+      }),
+    );
+    const raw = await result.Body?.transformToString();
+    return raw ? (JSON.parse(raw) as StoredManifest) : null;
+  } catch (cause) {
+    if (
+      cause &&
+      typeof cause === "object" &&
+      "name" in cause &&
+      (cause.name === "NoSuchKey" || cause.name === "NotFound")
+    ) {
+      return null;
+    }
+    throw cause;
+  }
+}
+
 export async function uploadManifestAndGetFileUrls(
   jobId: string,
   manifest: StoredManifest,
-): Promise<{ uploadPath: string; uploadUrls: Record<string, PresignedUpload> }> {
+): Promise<{
+  uploadPath: string;
+  uploadUrls: Record<string, PresignedUpload>;
+}> {
   const path = `job-${jobId}/data-${manifest.dataHash}`;
 
   const uploadUrls: Record<string, PresignedUpload> = {};

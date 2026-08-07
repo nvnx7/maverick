@@ -24,6 +24,7 @@ export const dataCommerceAbi = parseAbi([
   "function getJob(uint256 jobId) view returns (Job)",
   "function setJobBudget(uint256 jobId, uint256 budget)",
   "function rejectOpenJob(uint256 jobId, bytes32 reason)",
+  "function submitJobClaim(uint256 jobId, uint256 cumulativeAmount, bytes32 deliverable, address contributor)",
 ]);
 
 export async function getJob(jobId: bigint): Promise<Job> {
@@ -76,5 +77,22 @@ export async function rejectOpenJob(
     abi: dataCommerceAbi,
     functionName: "rejectOpenJob",
     args: [jobId, reason],
+  });
+}
+
+export async function submitJobClaim(
+  jobId: bigint,
+  cumulativeAmount: bigint,
+  deliverable: `0x${string}`,
+  contributor: `0x${string}`,
+): Promise<`0x${string}`> {
+  const wallet = getWalletClient();
+  return wallet.writeContract({
+    account: getProviderAccount(),
+    chain: wallet.chain,
+    address: networkConfig.contracts.dataCommerce,
+    abi: dataCommerceAbi,
+    functionName: "submitJobClaim",
+    args: [jobId, cumulativeAmount, deliverable, contributor],
   });
 }
