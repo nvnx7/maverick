@@ -76,6 +76,11 @@ export const dataCommerceAbi = [
         type: "bytes32",
         internalType: "bytes32",
       },
+      {
+        name: "contributor",
+        type: "address",
+        internalType: "address",
+      },
     ],
     outputs: [],
     stateMutability: "nonpayable",
@@ -106,6 +111,11 @@ export const dataCommerceAbi = [
         name: "reason",
         type: "bytes32",
         internalType: "bytes32",
+      },
+      {
+        name: "contributor",
+        type: "address",
+        internalType: "address",
       },
     ],
     outputs: [],
@@ -188,6 +198,19 @@ export const dataCommerceAbi = [
         name: "",
         type: "address",
         internalType: "contract EvaluatorAgent",
+      },
+    ],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "fundDisburser",
+    inputs: [],
+    outputs: [
+      {
+        name: "",
+        type: "address",
+        internalType: "contract FundDisburser",
       },
     ],
     stateMutability: "view",
@@ -349,6 +372,11 @@ export const dataCommerceAbi = [
         internalType: "address",
       },
       {
+        name: "fundDisburser_",
+        type: "address",
+        internalType: "address",
+      },
+      {
         name: "treasury_",
         type: "address",
         internalType: "address",
@@ -471,6 +499,11 @@ export const dataCommerceAbi = [
         type: "bytes32",
         internalType: "bytes32",
       },
+      {
+        name: "contributor",
+        type: "address",
+        internalType: "address",
+      },
     ],
     outputs: [],
     stateMutability: "nonpayable",
@@ -562,6 +595,19 @@ export const dataCommerceAbi = [
   },
   {
     type: "function",
+    name: "setFundDisburser",
+    inputs: [
+      {
+        name: "fundDisburser_",
+        type: "address",
+        internalType: "address",
+      },
+    ],
+    outputs: [],
+    stateMutability: "nonpayable",
+  },
+  {
+    type: "function",
     name: "setJobBudget",
     inputs: [
       {
@@ -640,6 +686,11 @@ export const dataCommerceAbi = [
         name: "deliverable",
         type: "bytes32",
         internalType: "bytes32",
+      },
+      {
+        name: "contributor",
+        type: "address",
+        internalType: "address",
       },
     ],
     outputs: [],
@@ -732,6 +783,11 @@ export const dataCommerceAbi = [
         type: "bytes32",
         internalType: "bytes32",
       },
+      {
+        name: "contributor",
+        type: "address",
+        internalType: "address",
+      },
     ],
     outputs: [],
     stateMutability: "nonpayable",
@@ -789,6 +845,19 @@ export const dataCommerceAbi = [
         type: "uint256",
         indexed: false,
         internalType: "uint256",
+      },
+    ],
+    anonymous: false,
+  },
+  {
+    type: "event",
+    name: "FundDisburserUpdated",
+    inputs: [
+      {
+        name: "fundDisburser",
+        type: "address",
+        indexed: true,
+        internalType: "address",
       },
     ],
     anonymous: false,
