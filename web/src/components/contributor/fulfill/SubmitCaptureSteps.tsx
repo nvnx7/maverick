@@ -17,29 +17,27 @@ import { hashFile } from "@/utils/hash";
 import { uploadFileToS3 } from "@/utils/upload";
 import { useFulfill } from "./FulfillContext";
 
+type Phase = "idle" | "provisioning" | "uploading" | "claiming";
+
+const PHASE_LABEL: Record<Exclude<Phase, "idle">, string> = {
+  provisioning: "Provisioning upload",
+  uploading: "Uploading",
+  claiming: "Submitting claim",
+};
+
 export function SubmitCaptureSteps() {
   const requestId = useRequestId();
   const router = useRouter();
   const { address } = useAccount();
   const { device, ready } = useDevice();
-  const {
-    files,
-    uploadTarget,
-    dataHash,
-    signature,
-    setUploadTarget,
-    setUploaded,
-    setDataHash,
-    setSignature,
-  } = useFulfill();
+  const { files, setUploadTarget, setUploaded, setDataHash, setSignature } =
+    useFulfill();
   const initUpload = useInitUpload();
   const submitCapture = useSubmitCapture();
 
-  const [requestingReview, setRequestingReview] = useState(false);
-  const [submitPhase, setSubmitPhase] = useState<
-    "idle" | "uploading" | "claiming"
-  >("idle");
+  const [phase, setPhase] = useState<Phase>("idle");
   const [uploadedCount, setUploadedCount] = useState(0);
+  const [resultHash, setResultHash] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   if (ready && !device) {
@@ -61,11 +59,13 @@ export function SubmitCaptureSteps() {
     );
   }
 
-  async function handleRequestReview() {
+  async function handleStartUpload() {
     if (!device || !address) return;
     setError(null);
-    setRequestingReview(true);
+    setUploadedCount(0);
+
     try {
+      setPhase("provisioning");
       const fileMetas = await Promise.all(
         files.map(async (file) => ({
           name: file.name,
@@ -83,58 +83,43 @@ export function SubmitCaptureSteps() {
         timestamp: Math.floor(Date.now() / 1000),
         payoutAddress: address,
       });
+
       setDataHash(result.dataHash);
+      setResultHash(result.dataHash);
       setSignature(sig);
       setUploadTarget({
         uploadPath: result.uploadPath,
         uploadUrls: result.uploadUrls,
       });
-    } catch (cause) {
-      setError(
-        cause instanceof Error ? cause.message : "Review request failed.",
-      );
-    } finally {
-      setRequestingReview(false);
-    }
-  }
 
-  async function handleUploadFiles() {
-    if (!uploadTarget || !device || !dataHash || !signature || !address) {
-      return;
-    }
-    setError(null);
-    setSubmitPhase("uploading");
-    setUploadedCount(0);
-    try {
+      setPhase("uploading");
       for (const file of files) {
-        const presigned = uploadTarget.uploadUrls[file.name];
+        const presigned = result.uploadUrls[file.name];
         if (!presigned) throw new Error(`No upload URL for ${file.name}`);
         await uploadFileToS3(file, presigned);
         setUploadedCount((count) => count + 1);
       }
       setUploaded(true);
-      setSubmitPhase("claiming");
+
+      setPhase("claiming");
       await submitCapture.mutateAsync({
         jobId: requestId,
         deviceId: device.deviceId,
-        dataHash,
-        signature,
+        dataHash: result.dataHash,
+        signature: sig,
         payoutAddress: address,
-        dataRef: uploadTarget.uploadPath,
+        dataRef: result.uploadPath,
       });
+
       router.push(routes.contributor.submissions(requestId));
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : "Upload failed.");
     } finally {
-      setSubmitPhase("idle");
+      setPhase("idle");
     }
   }
 
-  const isSubmitting = submitPhase !== "idle" || submitCapture.isPending;
-  const submitLoadingText =
-    submitPhase === "claiming" || submitCapture.isPending
-      ? "Submitting claim"
-      : "Uploading";
+  const busy = phase !== "idle";
 
   return (
     <Panel>
@@ -153,12 +138,7 @@ export function SubmitCaptureSteps() {
         </Box>
       ) : (
         <Box>
-          <HStack gap={4} mb={4}>
-            <StepIndicator step={1} label="Review" active={!uploadTarget} done={!!uploadTarget} />
-            <StepIndicator step={2} label="Upload & claim" active={!!uploadTarget} done={false} />
-          </HStack>
-
-          {dataHash && (
+          {resultHash && (
             <Box
               borderWidth="1px"
               borderColor="border.DEFAULT"
@@ -166,45 +146,34 @@ export function SubmitCaptureSteps() {
               p={4}
               mb={4}
             >
-              <Text fontSize="xs" color="fg.muted" textTransform="uppercase" letterSpacing="wider" mb={2}>
+              <Text
+                fontSize="xs"
+                color="fg.muted"
+                textTransform="uppercase"
+                letterSpacing="wider"
+                mb={2}
+              >
                 Data hash
               </Text>
-              <CopyableHash value={dataHash} lead={18} tail={12} />
+              <CopyableHash value={resultHash} lead={18} tail={12} />
             </Box>
           )}
 
-          {uploadTarget ? (
-            <HStack gap={4}>
-              <Button
-                colorPalette="brand"
-                onClick={handleUploadFiles}
-                loading={isSubmitting}
-                loadingText={submitLoadingText}
-              >
-                Upload files
-              </Button>
-              {submitPhase === "uploading" && (
-                <Mono fontSize="sm" color="fg.muted">
-                  {uploadedCount}/{files.length} uploaded
-                </Mono>
-              )}
-            </HStack>
-          ) : (
+          <HStack gap={4}>
             <Button
               colorPalette="brand"
-              onClick={handleRequestReview}
-              loading={requestingReview}
-              loadingText="Requesting review"
+              onClick={handleStartUpload}
+              loading={busy}
+              loadingText={busy ? PHASE_LABEL[phase] : undefined}
             >
-              Request review before upload
+              Start Uploading
             </Button>
-          )}
-
-          {uploadTarget && (
-            <Mono fontSize="xs" color="fg.muted" mt={3} wordBreak="break-all">
-              {uploadTarget.uploadPath}
-            </Mono>
-          )}
+            {phase === "uploading" && (
+              <Mono fontSize="sm" color="fg.muted">
+                {uploadedCount}/{files.length} uploaded
+              </Mono>
+            )}
+          </HStack>
         </Box>
       )}
 
@@ -216,36 +185,3 @@ export function SubmitCaptureSteps() {
     </Panel>
   );
 }
-
-function StepIndicator({
-  step,
-  label,
-  active,
-  done,
-}: {
-  step: number;
-  label: string;
-  active: boolean;
-  done: boolean;
-}) {
-  const color = done ? "brand.fg" : active ? "primary" : "fg.subtle";
-  const bg = done ? "brand.subtle" : active ? "surfaceNeutral" : "transparent";
-  return (
-    <HStack
-      gap={2}
-      borderWidth="1px"
-      borderColor={done ? "brand.muted" : active ? "border.DEFAULT" : "border.muted"}
-      bg={bg}
-      px={3}
-      py={1.5}
-    >
-      <Text fontSize="xs" fontWeight="700" color={color}>
-        {step}
-      </Text>
-      <Text fontSize="xs" fontWeight="500" color={color}>
-        {label}
-      </Text>
-    </HStack>
-  );
-}
-
