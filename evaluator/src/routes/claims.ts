@@ -7,6 +7,7 @@ import { computeDataHash, sortFilesByName } from "../lib/manifest";
 import { getStoredManifest } from "../lib/storage";
 
 const BYTES32 = /^0x[0-9a-fA-F]{64}$/;
+const FUNDED = 1;
 const SUBMITTED = 2;
 
 const approveSchema = z
@@ -74,10 +75,10 @@ export const claims = new Hono()
     if (job.client === zeroAddress) {
       return c.json({ error: "job not found" }, 404);
     }
-    if (job.status !== SUBMITTED) {
+    if (job.status !== FUNDED && job.status !== SUBMITTED) {
       return c.json(
         {
-          error: "job is not in Submitted state",
+          error: "job is not in a claimable state (Funded or Submitted)",
           onChainStatus: JOB_STATUS[job.status],
         },
         409,
