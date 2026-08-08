@@ -28,19 +28,13 @@ export function RequestProviderReview() {
   const agreed = report?.providerDecision === "agreed";
   const declined = report?.providerDecision === "declined";
   const quotedBudget = report?.intendedBudget ?? activate.data?.budget;
-  const budgetSet = job.data.budget > 0n || Boolean(activate.data?.budget);
-  const fundAmount =
-    job.data.budget > 0n ? job.data.budget : activate.data?.budget;
+  const busy = activate.isPending || fund.isPending;
 
-  async function handleActivate() {
-    await activate.mutateAsync(id);
-    await job.refetch?.();
-    await status.refetch();
-  }
-
-  async function handleFund() {
-    if (!fundAmount) return;
-    await fund.mutateAsync({ jobId: id, amount: fundAmount });
+  async function handleAgreeAndFund() {
+    const result = await activate.mutateAsync(id);
+    const amount = result.budget;
+    if (!amount) return;
+    await fund.mutateAsync({ jobId: id, amount });
     await job.refetch?.();
   }
 
@@ -135,31 +129,18 @@ export function RequestProviderReview() {
           </HStack>
         )}
 
-        {agreed && !budgetSet && (
+        {agreed && (
           <HStack gap={3} wrap="wrap">
             <Button
               colorPalette="brand"
-              onClick={handleActivate}
-              loading={activate.isPending}
-              loadingText="Agreeing"
+              onClick={handleAgreeAndFund}
+              loading={busy}
+              loadingText={activate.isPending ? "Activating" : "Funding"}
             >
-              Agree
+              Agree And Fund
             </Button>
             <Button variant="outline" borderColor="border">
               Decline
-            </Button>
-          </HStack>
-        )}
-
-        {budgetSet && fundAmount !== undefined && (
-          <HStack gap={3} wrap="wrap">
-            <Button
-              colorPalette="brand"
-              onClick={handleFund}
-              loading={fund.isPending}
-              loadingText="Funding"
-            >
-              Fund
             </Button>
           </HStack>
         )}
