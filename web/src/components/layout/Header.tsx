@@ -19,7 +19,7 @@ export function Header() {
       : [
           { href: routes.home, label: "Home" },
           { href: routes.contributor.browse, label: "Marketplace" },
-          { href: "#", label: "Docs" },
+          { href: "https://github.com/nvnx7/maverick#readme", label: "Docs" },
         ];
 
   return (

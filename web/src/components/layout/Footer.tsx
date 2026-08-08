@@ -1,5 +1,6 @@
 import { Box, Container, Flex, Text, HStack, Link } from "@chakra-ui/react";
 import NextLink from "next/link";
+import { routes } from "@/config/routes";
 
 export function Footer() {
   return (
@@ -16,16 +17,10 @@ export function Footer() {
           </Text>
           <HStack gap={6} textStyle="label-mono" color="fg.subtle">
             <Link asChild _hover={{ color: "primary" }}>
-              <NextLink href="#">Terms</NextLink>
+              <NextLink href={routes.contributor.browse}>Marketplace</NextLink>
             </Link>
             <Link asChild _hover={{ color: "primary" }}>
-              <NextLink href="#">Privacy</NextLink>
-            </Link>
-            <Link asChild _hover={{ color: "primary" }}>
-              <NextLink href="#">Twitter</NextLink>
-            </Link>
-            <Link asChild _hover={{ color: "primary" }}>
-              <NextLink href="#">Discord</NextLink>
+              <NextLink href="https://github.com/nvnx7/maverick#readme">Docs</NextLink>
             </Link>
           </HStack>
         </Flex>
