@@ -12,12 +12,12 @@ export function RequestSpendBar({ budget, spent }: Props) {
 
   return (
     <Box>
-      <Flex justify="space-between" align="baseline" mb={2} gap={4}>
-        <Text fontSize="sm" color="fg.muted">
-          Spent
+      <Flex justify="space-between" align="baseline" mb={3} gap={4}>
+        <Text textStyle="body-sm" fontWeight="600" color="primary">
+          Spend Progress
         </Text>
-        <Text fontSize="sm" color="fg.muted">
-          <UsdcAmount value={spent} unit={false} color="brand.fg" /> of{" "}
+        <Text textStyle="label-mono" color="fg.subtle">
+          <UsdcAmount value={spent} unit={false} color="primary" /> of{" "}
           <UsdcAmount value={budget} />
         </Text>
       </Flex>

@@ -21,7 +21,7 @@ export function RequestSubmissionsTable() {
 
   return (
     <Box>
-      <Heading size="sm" fontWeight="500" color="fg.muted" mb={4}>
+      <Heading textStyle="body-md" fontWeight="600" color="primary" mb={4}>
         Submissions
       </Heading>
 
@@ -40,22 +40,22 @@ export function RequestSubmissionsTable() {
               size="md"
               interactive
               borderWidth="1px"
-              borderColor="border"
+              borderColor="border.DEFAULT"
             >
               <Table.Header>
-                <Table.Row bg="bg.subtle">
-                  <Table.ColumnHeader color="fg.muted" fontWeight="400">
+                <Table.Row bg="surfaceNeutral">
+                  <Table.ColumnHeader color="fg.subtle" textStyle="label-mono">
                     Data hash
                   </Table.ColumnHeader>
-                  <Table.ColumnHeader color="fg.muted" fontWeight="400">
+                  <Table.ColumnHeader color="fg.subtle" textStyle="label-mono">
                     Submitted
                   </Table.ColumnHeader>
-                  <Table.ColumnHeader color="fg.muted" fontWeight="400">
+                  <Table.ColumnHeader color="fg.subtle" textStyle="label-mono">
                     Claim
                   </Table.ColumnHeader>
                   <Table.ColumnHeader
-                    color="fg.muted"
-                    fontWeight="400"
+                    color="fg.subtle"
+                    textStyle="label-mono"
                     textAlign="end"
                   >
                     Amount
@@ -71,6 +71,7 @@ export function RequestSubmissionsTable() {
                       key={submission.id}
                       bg="bg.panel"
                       cursor="pointer"
+                      _hover={{ bg: "surfaceNeutral" }}
                       onClick={(e) => {
                         e.stopPropagation();
                         setSelected(submission);
@@ -80,20 +81,21 @@ export function RequestSubmissionsTable() {
                         <CopyableHash value={submission.dataHash} />
                       </Table.Cell>
                       <Table.Cell>
-                        <Mono color="fg.muted">
+                        <Mono color="primary">
                           {formatDateTime(submission.submittedAt)}
                         </Mono>
                       </Table.Cell>
                       <Table.Cell>
                         <Badge
                           colorPalette={status.tone}
-                          variant="surface"
+                          variant="outline"
                           fontSize="xs"
+                          borderRadius="0"
                         >
                           {status.label}
                         </Badge>
                       </Table.Cell>
-                      <Table.Cell textAlign="end">
+                      <Table.Cell textAlign="end" color="primary">
                         <UsdcAmount
                           value={submission.amount}
                           unit={false}

@@ -39,18 +39,14 @@ export function RequestDetailHeader() {
         </NextLink>
       </Link>
 
-      <Flex justify="space-between" align="start" gap={4} wrap="wrap" mb={2}>
-        <HStack gap={3}>
-          <Heading size="2xl" fontWeight="500" fontFamily="mono">
-            #{data.id}
+      <Flex justify="space-between" align="start" gap={4} wrap="wrap" mb={6}>
+        <HStack gap={4}>
+          <Heading textStyle="headline-lg" color="primary">
+            Request #{data.id}
           </Heading>
           <JobStatusBadge status={data.status} />
         </HStack>
       </Flex>
-
-      <Text color="fg.muted" mb={6}>
-        {MODALITY_LABELS[data.spec.modality]} · {data.spec.deviceRequirements}
-      </Text>
 
       <Panel>
         <RequestSpendBar budget={data.budget} spent={data.spent} />

@@ -5,7 +5,8 @@ export function Panel(props: BoxProps) {
     <Box
       bg="bg.panel"
       borderWidth="1px"
-      borderColor="border"
+      borderColor="border.DEFAULT"
+      borderRadius="0"
       p={6}
       {...props}
     />
