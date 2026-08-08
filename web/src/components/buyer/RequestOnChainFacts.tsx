@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, Button, Heading, Stack, Text, Flex } from "@chakra-ui/react";
+import { Box, Button, Heading, Stack, Text, Flex, SimpleGrid } from "@chakra-ui/react";
 import { useState } from "react";
 import { LuChevronDown, LuChevronUp } from "react-icons/lu";
 import { useGetJob } from "@/api/jobs";
@@ -11,7 +11,22 @@ import { Panel } from "@/components/common/Panel";
 import { MODALITY_LABELS } from "@/config/constants";
 import { useRequestId } from "@/hooks/useRequestId";
 import { formatDate } from "@/utils/format";
-import { formatUsdc } from "@/utils/format";
+
+function InfoCard({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <Box
+      borderWidth="1px"
+      borderColor="border.DEFAULT"
+      bg="surfaceNeutral"
+      p={4}
+    >
+      <Text fontSize="xs" color="fg.muted" textTransform="uppercase" letterSpacing="wider" mb={1}>
+        {label}
+      </Text>
+      {children}
+    </Box>
+  );
+}
 
 export function RequestOnChainFacts() {
   const id = useRequestId();
@@ -26,39 +41,41 @@ export function RequestOnChainFacts() {
         Request Details
       </Heading>
 
-      <Stack gap={0}>
-        <DataRow label="Modality">
-          <Text textStyle="body-md" color="primary">{MODALITY_LABELS[data.spec.modality]}</Text>
-        </DataRow>
-        
-        <DataRow label="Minimum items">
-          <Mono color="primary">{data.spec.minItems.toLocaleString("en-US")}</Mono>
-        </DataRow>
-        
-        <DataRow label="Device requirements">
-          <Text textStyle="body-md" color="primary" maxW="300px" textAlign="end">
+      <SimpleGrid columns={{ base: 1, sm: 2, md: 4 }} gap={3} mb={4}>
+        <InfoCard label="Modality">
+          <Text textStyle="body-md" fontWeight="500" color="primary">
+            {MODALITY_LABELS[data.spec.modality]}
+          </Text>
+        </InfoCard>
+        <InfoCard label="Minimum items">
+          <Mono color="primary" fontSize="md" fontWeight="500">
+            {data.spec.minItems.toLocaleString("en-US")}
+          </Mono>
+        </InfoCard>
+        <InfoCard label="Expiration">
+          <Mono color="primary" fontSize="md" fontWeight="500">
+            {formatDate(data.expiredAt)}
+          </Mono>
+        </InfoCard>
+        <InfoCard label="Device requirements">
+          <Text textStyle="body-md" color="primary" fontWeight="500">
             {data.spec.deviceRequirements}
           </Text>
-        </DataRow>
+        </InfoCard>
+      </SimpleGrid>
 
-        <DataRow label="Total budget">
-          <Mono color="primary">{formatUsdc(data.budget)} USDC</Mono>
-        </DataRow>
-        
-        <DataRow label="Expiration">
-          <Mono color="primary">{formatDate(data.expiredAt)}</Mono>
-        </DataRow>
+      {data.description && (
+        <Box borderWidth="1px" borderColor="border.DEFAULT" bg="surfaceNeutral" p={4} mb={4}>
+          <Text fontSize="xs" color="fg.muted" textTransform="uppercase" letterSpacing="wider" mb={2}>
+            Description
+          </Text>
+          <Text textStyle="body-md" color="fg.subtle">
+            {data.description}
+          </Text>
+        </Box>
+      )}
 
-        {data.description && (
-          <DataRow label="Description">
-            <Text textStyle="body-md" color="fg.subtle" maxW="300px" textAlign="end">
-              {data.description}
-            </Text>
-          </DataRow>
-        )}
-      </Stack>
-
-      <Box mt={6} pt={6} borderTopWidth="1px" borderColor="border.DEFAULT">
+      <Box mt={4} pt={4} borderTopWidth="1px" borderColor="border.DEFAULT">
         <Button
           variant="ghost"
           size="sm"
@@ -98,3 +115,4 @@ export function RequestOnChainFacts() {
     </Panel>
   );
 }
+

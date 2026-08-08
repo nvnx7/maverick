@@ -1,6 +1,6 @@
 "use client";
 
-import { Badge, Box, Heading, Table } from "@chakra-ui/react";
+import { Badge, Box, Heading, Table, Text } from "@chakra-ui/react";
 import { useState } from "react";
 import { useGetRequestSubmissions } from "@/api/submissions";
 import { CopyableHash } from "@/components/common/CopyableHash";
@@ -37,6 +37,23 @@ export function RequestSubmissionsTable() {
 
       {isPending && <LoadingBlock label="Reading the submission ledger" />}
       {isError && <ErrorBlock />}
+
+      {data && data.length === 0 && (
+        <Box
+          borderWidth="1px"
+          borderColor="border.DEFAULT"
+          bg="surfaceNeutral"
+          py={12}
+          textAlign="center"
+        >
+          <Text fontWeight="500" color="fg.muted" mb={1}>
+            No submissions yet
+          </Text>
+          <Text fontSize="sm" color="fg.subtle">
+            Submissions from contributors will appear here once received.
+          </Text>
+        </Box>
+      )}
 
       {data && data.length > 0 && (
           <>
