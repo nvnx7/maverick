@@ -1,8 +1,8 @@
 "use client";
 
-import { Box, Container, Flex, HStack, Link, Text, Button } from "@chakra-ui/react";
-import NextLink from "next/link";
+import { Box, Container, Flex, HStack, Link, Text } from "@chakra-ui/react";
 import Image from "next/image";
+import NextLink from "next/link";
 import { usePathname } from "next/navigation";
 import { ConnectWalletButton } from "@/components/wallet/ConnectWalletButton";
 import { buyerNav, contributorNav, routes } from "@/config/routes";
@@ -12,7 +12,6 @@ export function Header() {
   const pathname = usePathname();
 
   // Keep contextual nav for internal routes, but use the global layout for the home page.
-  const isHome = pathname === routes.home;
   const nav = pathname.startsWith("/buyer")
     ? buyerNav
     : pathname.startsWith("/contributor")
@@ -42,15 +41,31 @@ export function Header() {
           >
             <NextLink href={routes.home}>
               <HStack gap={3}>
-                <Image src="/logo.svg" alt="Maverick logo" width={24} height={24} />
-                <Text textStyle="headline-md" fontWeight="700" letterSpacing="-0.02em" color="primary">
+                <Image
+                  src="/logo.svg"
+                  alt="Maverick logo"
+                  width={24}
+                  height={24}
+                />
+                <Text
+                  textStyle="headline-md"
+                  fontWeight="700"
+                  letterSpacing="-0.02em"
+                  color="primary"
+                >
                   Maverick
                 </Text>
               </HStack>
             </NextLink>
           </Link>
 
-          <HStack gap={8} display={{ base: "none", md: "flex" }} position="absolute" left="50%" transform="translateX(-50%)">
+          <HStack
+            gap={8}
+            display={{ base: "none", md: "flex" }}
+            position="absolute"
+            left="50%"
+            transform="translateX(-50%)"
+          >
             {nav.map((item) => (
               <NavLink key={item.href} href={item.href} label={item.label} />
             ))}
@@ -58,11 +73,6 @@ export function Header() {
 
           <HStack gap={6}>
             <ConnectWalletButton />
-            {isHome && (
-              <Button asChild variant="ghost" color="primary" textStyle="label-mono" px={0} _hover={{ bg: "transparent", color: "secondary" }}>
-                <NextLink href={routes.buyer.newRequest}>Post a Job</NextLink>
-              </Button>
-            )}
           </HStack>
         </Flex>
       </Container>
