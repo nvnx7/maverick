@@ -22,7 +22,7 @@ import {
   type Modality,
 } from "@/config/constants";
 import { routes } from "@/config/routes";
-import { parseUsdc, formatUsdc } from "@/utils/format";
+import { formatUsdc, parseUsdc } from "@/utils/format";
 import { quoteBudget } from "@/utils/quote";
 
 const EXPIRY_DAYS = 30;
@@ -85,7 +85,7 @@ export function NewRequestForm() {
               <NativeSelect.Field
                 value={modality}
                 bg="bg.panel"
-                borderColor="border.DEFAULT"
+                borderColor="border.input"
                 borderRadius="0"
                 fontFamily="body"
                 onChange={(event) =>
@@ -108,7 +108,7 @@ export function NewRequestForm() {
               type="number"
               value={minItems}
               bg="bg.panel"
-              borderColor="border.DEFAULT"
+              borderColor="border.input"
               borderRadius="0"
               fontFamily="mono"
               onChange={(event) => setMinItems(event.currentTarget.value)}
@@ -123,7 +123,7 @@ export function NewRequestForm() {
             rows={4}
             value={deviceRequirements}
             bg="bg.panel"
-            borderColor="border.DEFAULT"
+            borderColor="border.input"
             borderRadius="0"
             fontFamily="body"
             placeholder="Head-mounted camera, 1080p minimum, 30fps"
@@ -141,7 +141,7 @@ export function NewRequestForm() {
             step="0.01"
             value={budget}
             bg="bg.panel"
-            borderColor="border.DEFAULT"
+            borderColor="border.input"
             borderRadius="0"
             fontFamily="mono"
             placeholder="0.00"

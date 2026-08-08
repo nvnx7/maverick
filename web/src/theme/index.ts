@@ -15,6 +15,7 @@ const config = defineConfig({
         background: { value: "#FDF8F8" },
         surfaceNeutral: { value: "#F9F9F9" },
         borderSubtle: { value: "#E5E5E5" },
+        borderInput: { value: "#B0B0B0" },
         secondary: { value: "#0066FF" },
         successGreen: { value: "#10B981" },
         dataMono: { value: "#666666" },
@@ -43,6 +44,7 @@ const config = defineConfig({
         border: {
           DEFAULT: { value: "{colors.borderSubtle}" },
           muted: { value: "{colors.borderSubtle}" },
+          input: { value: "{colors.borderInput}" },
         },
         brand: {
           solid: { value: "{colors.primary}" },
