@@ -118,3 +118,29 @@ export const claims = new Hono().post("/:id/claims", async (c) => {
     txHash,
   });
 });
+
+export const claimFiles = new Hono().get("/:id/claims/:dataHash/files", async (c) => {
+  const jobId = parseJobId(c.req.param("id"));
+  if (jobId === null) return c.json({ error: "invalid job id" }, 400);
+
+  const dataHash = c.req.param("dataHash");
+  if (!BYTES32.test(dataHash)) {
+    return c.json({ error: "invalid dataHash format" }, 400);
+  }
+
+  // Ensure the job exists and is accessible
+  const job = await getJob(jobId);
+  if (job.client === zeroAddress) {
+    return c.json({ error: "job not found" }, 404);
+  }
+
+  const manifest = await getStoredManifest(jobId.toString(), dataHash as `0x${string}`);
+  if (!manifest) return c.json({ error: "upload manifest not found" }, 404);
+
+  const { getFileDownloadUrls } = await import("../lib/storage");
+  const files = await getFileDownloadUrls(jobId.toString(), manifest);
+
+  return c.json({ files });
+});
+
+claims.route("/", claimFiles);

@@ -91,4 +91,16 @@ export const jobs = new Hono()
       budget: intendedBudget.toString(),
       txHash,
     });
+  })
+  .get("/:id/files", async (c) => {
+    const jobId = parseJobId(c.req.param("id"));
+    if (jobId === null) return c.json({ error: "invalid job id" }, 400);
+
+    const job = await getJob(jobId);
+    if (job.client === zeroAddress) return c.json({ error: "job not found" }, 404);
+
+    const { getJobFiles } = await import("../lib/storage");
+    const files = await getJobFiles(jobId.toString());
+
+    return c.json({ files });
   });
