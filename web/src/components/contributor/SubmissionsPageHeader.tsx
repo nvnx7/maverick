@@ -24,10 +24,10 @@ export function SubmissionsPageHeader() {
         </NextLink>
       </Link>
 
-      <Heading size="xl" fontWeight="500" letterSpacing="-0.02em" mb={2}>
+      <Heading textStyle="headline-lg" color="primary" mb={2}>
         Your submissions
       </Heading>
-      <Text color="fg.muted" mb={8}>
+      <Text textStyle="body-md" color="fg.subtle" mb={8}>
         Claims you&apos;ve submitted for request #{id}. Payout timing is the
         provider&apos;s discretion, not enforced by the protocol.
       </Text>

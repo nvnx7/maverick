@@ -36,28 +36,28 @@ export function ContributorClaimsTable() {
 
   return (
     <>
-      <Table.Root size="md" interactive borderWidth="1px" borderColor="border">
+      <Table.Root size="md" interactive borderWidth="1px" borderColor="border.DEFAULT">
         <Table.Header>
-          <Table.Row bg="bg.subtle">
-            <Table.ColumnHeader color="fg.muted" fontWeight="400">
+          <Table.Row bg="surfaceNeutral">
+            <Table.ColumnHeader color="fg.subtle" textStyle="label-mono">
               Deliverable
             </Table.ColumnHeader>
-            <Table.ColumnHeader color="fg.muted" fontWeight="400">
+            <Table.ColumnHeader color="fg.subtle" textStyle="label-mono">
               Block
             </Table.ColumnHeader>
-            <Table.ColumnHeader color="fg.muted" fontWeight="400">
+            <Table.ColumnHeader color="fg.subtle" textStyle="label-mono">
               Transaction
             </Table.ColumnHeader>
             <Table.ColumnHeader
-              color="fg.muted"
-              fontWeight="400"
+              color="fg.subtle"
+              textStyle="label-mono"
               textAlign="end"
             >
               Cumulative
             </Table.ColumnHeader>
             <Table.ColumnHeader
-              color="fg.muted"
-              fontWeight="400"
+              color="fg.subtle"
+              textStyle="label-mono"
               textAlign="end"
             >
               Claimed
@@ -71,6 +71,7 @@ export function ContributorClaimsTable() {
               key={claim.transactionHash}
               bg="bg.panel"
               cursor="pointer"
+              _hover={{ bg: "surfaceNeutral" }}
               onClick={(e) => {
                 e.stopPropagation();
                 setSelected(claim);
@@ -80,28 +81,27 @@ export function ContributorClaimsTable() {
                 <CopyableHash value={claim.deliverable} />
               </Table.Cell>
               <Table.Cell>
-                <Mono color="fg.muted">{claim.blockNumber.toString()}</Mono>
+                <Mono color="primary">{claim.blockNumber.toString()}</Mono>
               </Table.Cell>
               <Table.Cell>
                 <ExplorerLink value={claim.transactionHash} kind="tx" />
               </Table.Cell>
-              <Table.Cell textAlign="end">
+              <Table.Cell textAlign="end" color="primary">
                 <UsdcAmount
                   value={claim.cumulativeAmount}
                   unit={false}
                   fontSize="sm"
                 />
               </Table.Cell>
-              <Table.Cell textAlign="end">
+              <Table.Cell textAlign="end" color="primary">
                 {claim.settled || claim.approved ? (
                   <UsdcAmount
                     value={claim.delta}
                     unit={false}
                     fontSize="sm"
-                    color="brand.fg"
                   />
                 ) : (
-                  <Text color="fg.muted" fontSize="sm">
+                  <Text color="fg.subtle" fontSize="sm">
                     --
                   </Text>
                 )}
