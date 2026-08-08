@@ -13,6 +13,8 @@ export type ContributorClaim = {
   deliverable: Hash;
   blockNumber: bigint;
   transactionHash: Hash;
+  /** True when a ClaimApproved event exists for this deliverable. */
+  approved: boolean;
   /** True when a ClaimSettled event exists for this deliverable — payout has landed. */
   settled: boolean;
 };
@@ -51,6 +53,15 @@ export function useGetContributorClaims(params: {
     query: { enabled: jobIdBigInt !== undefined && Boolean(contributor) },
   });
 
+  const approvedQuery = useContractEvents({
+    address: networkConfig.contracts.escrow,
+    abi: agenticCommerceAbi,
+    eventName: "ClaimApproved",
+    args: { jobId: jobIdBigInt },
+    fromBlock: networkConfig.deployedBlock,
+    query: { enabled: jobIdBigInt !== undefined && Boolean(contributor) },
+  });
+
   /** ClaimSettled carries the deliverable so we can match it to a submitted claim. */
   const settledQuery = useContractEvents({
     address: networkConfig.contracts.escrow,
@@ -63,6 +74,12 @@ export function useGetContributorClaims(params: {
 
   const data = useMemo<ContributorClaim[]>(() => {
     if (!claimsQuery.data || !contributor) return [];
+
+    const approvedDeliverables = new Set(
+      (approvedQuery.data ?? [])
+        .map((log) => log.args.deliverable)
+        .filter((d): d is Hash => d !== undefined),
+    );
 
     // Build a set of deliverables that have been settled for O(1) lookup.
     const settledDeliverables = new Set(
@@ -101,6 +118,7 @@ export function useGetContributorClaims(params: {
           deliverable,
           blockNumber: log.blockNumber,
           transactionHash: log.transactionHash,
+          approved: approvedDeliverables.has(deliverable),
           settled: settledDeliverables.has(deliverable),
         };
       })
@@ -109,7 +127,7 @@ export function useGetContributorClaims(params: {
         (claim) =>
           claim.contributor.toLowerCase() === contributor.toLowerCase(),
       );
-  }, [claimsQuery.data, settledQuery.data, contributor]);
+  }, [claimsQuery.data, approvedQuery.data, settledQuery.data, contributor]);
 
   return {
     data,

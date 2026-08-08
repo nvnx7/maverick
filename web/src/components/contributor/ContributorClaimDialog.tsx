@@ -26,7 +26,6 @@ type Props = {
 
 export function ContributorClaimDialog({ claim, open, onOpenChange }: Props) {
   const requestReview = useRequestEvaluatorReview();
-  const settleClaim = useSettleClaim();
   const [approved, setApproved] = useState(false);
 
   if (!claim) return null;
@@ -42,15 +41,7 @@ export function ContributorClaimDialog({ claim, open, onOpenChange }: Props) {
     setApproved(true);
   }
 
-  async function handleClaim() {
-    if (!claim) return;
-    await settleClaim.mutateAsync({
-      jobId: claim.jobId,
-      cumulativeAmount: claim.cumulativeAmount,
-      deliverable: claim.deliverable,
-      contributor: claim.contributor,
-    });
-  }
+  const isPaid = claim.settled || claim.approved || approved;
 
   return (
     <Dialog.Root
@@ -91,7 +82,7 @@ export function ContributorClaimDialog({ claim, open, onOpenChange }: Props) {
                   <ExplorerLink value={claim.transactionHash} kind="tx" />
                 </DataRow>
                 <DataRow label="Claimed">
-                  {claim.settled ? (
+                  {isPaid ? (
                     <UsdcAmount value={claim.delta} unit={false} />
                   ) : (
                     <Text color="fg.muted">--</Text>
@@ -102,19 +93,10 @@ export function ContributorClaimDialog({ claim, open, onOpenChange }: Props) {
                 </DataRow>
               </Stack>
 
-              {claim.settled ? (
+              {isPaid ? (
                 <Text fontSize="sm" color="fg.muted">
-                  This claim has already been settled.
+                  This claim has been approved and payout was sent to your wallet.
                 </Text>
-              ) : approved ? (
-                <Button
-                  colorPalette="brand"
-                  onClick={handleClaim}
-                  loading={settleClaim.isPending}
-                  loadingText="Claiming"
-                >
-                  Claim
-                </Button>
               ) : (
                 <Button
                   variant="outline"
@@ -127,9 +109,9 @@ export function ContributorClaimDialog({ claim, open, onOpenChange }: Props) {
                 </Button>
               )}
 
-              {(requestReview.isError || settleClaim.isError) && (
+              {requestReview.isError && (
                 <Text fontSize="sm" color="warn.fg" mt={4}>
-                  {requestReview.error?.message ?? settleClaim.error?.message}
+                  {requestReview.error?.message}
                 </Text>
               )}
             </Dialog.Body>

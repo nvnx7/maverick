@@ -93,7 +93,7 @@ export function ContributorClaimsTable() {
                 />
               </Table.Cell>
               <Table.Cell textAlign="end">
-                {claim.settled ? (
+                {claim.settled || claim.approved ? (
                   <UsdcAmount
                     value={claim.delta}
                     unit={false}
