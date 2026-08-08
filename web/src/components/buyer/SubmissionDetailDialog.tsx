@@ -46,6 +46,8 @@ export function SubmissionDetailDialog({
     await requestReview.mutateAsync({
       jobId: submission.jobId,
       dataHash: submission.dataHash,
+      cumulativeAmount: submission.cumulativeAmount,
+      contributor: submission.contributor,
     });
     setReviewRequested(true);
   }

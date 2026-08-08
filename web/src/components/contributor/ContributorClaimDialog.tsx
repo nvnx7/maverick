@@ -39,6 +39,8 @@ export function ContributorClaimDialog({ claim, open, onOpenChange }: Props) {
     await requestReview.mutateAsync({
       jobId: claim.jobId,
       dataHash: claim.deliverable,
+      cumulativeAmount: claim.cumulativeAmount,
+      contributor: claim.contributor,
     });
     setApproved(true);
   }

@@ -1,8 +1,13 @@
 import axios from "axios";
-import { apiProvider } from "@/config/env";
+import { apiEvaluator, apiProvider } from "@/config/env";
 
 export const http = axios.create({
   baseURL: apiProvider,
+  timeout: 15_000,
+});
+
+export const httpEvaluator = axios.create({
+  baseURL: apiEvaluator,
   timeout: 15_000,
 });
 
@@ -12,3 +17,4 @@ export function mock<T>(data: T, ms = 350): Promise<T> {
     setTimeout(() => resolve(data), ms);
   });
 }
+

@@ -1,19 +1,46 @@
-import { useMutation } from "@tanstack/react-query";
-import type { Hash } from "viem";
-import { mock } from "../client";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import type { Address, Hash } from "viem";
+import { httpEvaluator } from "../client";
 
 export type RequestEvaluatorReviewParams = {
   jobId: string;
   dataHash: Hash;
+  cumulativeAmount: bigint;
+  contributor: Address;
 };
 
-export function requestEvaluatorReview(params: RequestEvaluatorReviewParams) {
-  return mock(
-    { requested: true, jobId: params.jobId, dataHash: params.dataHash },
-    500,
-  );
+export type RequestEvaluatorReviewResult = {
+  jobId: string;
+  contributor: Address;
+  dataHash: Hash;
+  cumulativeAmount: string;
+  txHash: Hash;
+};
+
+export function requestEvaluatorReview(
+  params: RequestEvaluatorReviewParams,
+): Promise<RequestEvaluatorReviewResult> {
+  return httpEvaluator
+    .post<RequestEvaluatorReviewResult>(
+      `/jobs/${params.jobId}/claims/approve`,
+      {
+        dataHash: params.dataHash,
+        cumulativeAmount: params.cumulativeAmount.toString(),
+        contributor: params.contributor,
+      },
+    )
+    .then(({ data }) => data);
 }
 
 export function useRequestEvaluatorReview() {
-  return useMutation({ mutationFn: requestEvaluatorReview });
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: requestEvaluatorReview,
+    onSuccess: (result) => {
+      queryClient.invalidateQueries({
+        queryKey: ["request-submissions", result.jobId],
+      });
+    },
+  });
 }
+
