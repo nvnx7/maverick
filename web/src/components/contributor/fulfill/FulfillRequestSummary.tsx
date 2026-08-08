@@ -1,6 +1,14 @@
 "use client";
 
-import { Flex, Heading, HStack, Link, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Flex,
+  Heading,
+  HStack,
+  Link,
+  SimpleGrid,
+  Text,
+} from "@chakra-ui/react";
 import NextLink from "next/link";
 import { LuArrowLeft } from "react-icons/lu";
 import { useGetFundedJob } from "@/api/jobs";
@@ -12,6 +20,34 @@ import { UsdcAmount } from "@/components/common/UsdcAmount";
 import { MODALITY_LABELS } from "@/config/constants";
 import { routes } from "@/config/routes";
 import { useRequestId } from "@/hooks/useRequestId";
+
+function InfoCard({
+  label,
+  children,
+}: {
+  label: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <Box
+      borderWidth="1px"
+      borderColor="border.DEFAULT"
+      bg="surfaceNeutral"
+      p={4}
+    >
+      <Text
+        fontSize="xs"
+        color="fg.muted"
+        textTransform="uppercase"
+        letterSpacing="wider"
+        mb={1}
+      >
+        {label}
+      </Text>
+      {children}
+    </Box>
+  );
+}
 
 export function FulfillRequestSummary() {
   const id = useRequestId();
@@ -53,35 +89,64 @@ export function FulfillRequestSummary() {
       </Flex>
 
       <Panel mb={6}>
-        <Flex justify="space-between" align="start" gap={6} wrap="wrap">
-          <div>
-            <HStack gap={3} mb={2}>
-              <Heading size="lg" fontWeight="500">
-                {MODALITY_LABELS[data.spec.modality]}
-              </Heading>
-              <JobStatusBadge status={data.status} />
-            </HStack>
-            <Mono color="fg.muted" fontSize="xs">
-              #{data.id}
+        <Flex justify="space-between" align="start" gap={6} wrap="wrap" mb={6}>
+          <Box>
+            <Heading size="lg" fontWeight="500" mb={1}>
+              Job #{data.id}
+            </Heading>
+          </Box>
+          <JobStatusBadge status={data.status} fontSize="sm" px={4} py={1.5} />
+        </Flex>
+
+        <Box
+          borderWidth="1px"
+          borderColor="brand.muted"
+          bg="brand.subtle"
+          p={5}
+          mb={5}
+        >
+          <Text
+            fontSize="xs"
+            color="fg.muted"
+            textTransform="uppercase"
+            letterSpacing="wider"
+            mb={1}
+          >
+            Per accepted item
+          </Text>
+          <UsdcAmount
+            value={data.pricePerItem}
+            fontSize="2xl"
+            fontWeight="600"
+            color="brand.fg"
+          />
+        </Box>
+
+        <SimpleGrid columns={{ base: 1, sm: 2 }} gap={3}>
+          <InfoCard label="Modality">
+            <Text textStyle="body-md" fontWeight="500" color="primary">
+              {MODALITY_LABELS[data.spec.modality]}
+            </Text>
+          </InfoCard>
+          <InfoCard label="Budget remaining">
+            <UsdcAmount
+              value={data.budgetRemaining}
+              fontSize="md"
+              fontWeight="500"
+              color="primary"
+            />
+          </InfoCard>
+          <InfoCard label="Minimum items">
+            <Mono color="primary" fontSize="md" fontWeight="500">
+              {data.spec.minItems?.toLocaleString("en-US") ?? "—"}
             </Mono>
-            <Text color="fg.muted" fontSize="sm" mt={3} maxW="xl">
+          </InfoCard>
+          <InfoCard label="Device requirements">
+            <Text textStyle="body-md" color="primary" fontWeight="500">
               {data.spec.deviceRequirements}
             </Text>
-          </div>
-
-          <div>
-            <Text fontSize="xs" color="fg.muted" mb={1} textAlign="end">
-              Per accepted item
-            </Text>
-            <UsdcAmount
-              value={data.pricePerItem}
-              fontSize="2xl"
-              color="brand.fg"
-              display="block"
-              textAlign="end"
-            />
-          </div>
-        </Flex>
+          </InfoCard>
+        </SimpleGrid>
       </Panel>
     </>
   );

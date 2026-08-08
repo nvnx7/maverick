@@ -16,29 +16,43 @@ body {
 }
 
 /*
- * Uppy's own dark theme does the heavy lifting (theme="dark" on the Dashboard).
- * These only pull its surfaces onto our palette and square off its corners.
- * !important is required to beat Uppy's stylesheet, which loads after this one.
+ * Uppy overrides — pull its surfaces onto our light palette and
+ * square off corners to match the app's design language.
+ * !important is required to beat Uppy's stylesheet specificity.
  */
-[data-uppy-theme="dark"] .uppy-Dashboard-inner,
-[data-uppy-theme="dark"] .uppy-Dashboard-AddFiles {
-  background-color: #121417 !important;
-  border-color: #2a2d31 !important;
+.uppy-Dashboard-inner,
+.uppy-Dashboard-AddFiles {
+  background-color: #FFFFFF !important;
+  border-color: #E5E5E5 !important;
   border-radius: 0 !important;
 }
 
-[data-uppy-theme="dark"] .uppy-StatusBar,
-[data-uppy-theme="dark"] .uppy-DashboardContent-bar {
-  background-color: #16181c !important;
-  border-color: #2a2d31 !important;
-}
-
-[data-uppy-theme="dark"] .uppy-StatusBar-progress {
-  background-color: #3eae76 !important;
-}
-
-[data-uppy-theme="dark"] .uppy-c-btn-primary {
-  background-color: #3eae76 !important;
+.uppy-Dashboard-dropFilesHereHint {
+  border-color: #B0B0B0 !important;
   border-radius: 0 !important;
-  color: #06120c !important;
 }
+
+.uppy-StatusBar,
+.uppy-DashboardContent-bar {
+  background-color: #F9F9F9 !important;
+  border-color: #E5E5E5 !important;
+}
+
+.uppy-StatusBar-progress {
+  background-color: #000000 !important;
+}
+
+.uppy-c-btn-primary {
+  background-color: #000000 !important;
+  border-radius: 0 !important;
+  color: #FFFFFF !important;
+}
+
+.uppy-Dashboard-AddFiles-title {
+  color: #1C1B1B !important;
+}
+
+.uppy-Dashboard-note {
+  color: #666666 !important;
+}
+

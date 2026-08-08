@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, Button, HStack, Text } from "@chakra-ui/react";
+import { Box, Button, Heading, HStack, Text } from "@chakra-ui/react";
 import NextLink from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -138,14 +138,37 @@ export function SubmitCaptureSteps() {
 
   return (
     <Panel>
+      <Heading textStyle="body-md" fontWeight="600" color="primary" mb={4}>
+        Submit
+      </Heading>
+
       {files.length === 0 ? (
-        <Text fontSize="sm" color="fg.subtle">
-          Select files above to continue.
-        </Text>
+        <Box py={8} textAlign="center">
+          <Text fontWeight="500" color="fg.muted" mb={1}>
+            No files selected
+          </Text>
+          <Text fontSize="sm" color="fg.subtle">
+            Select files above to continue.
+          </Text>
+        </Box>
       ) : (
         <Box>
+          <HStack gap={4} mb={4}>
+            <StepIndicator step={1} label="Review" active={!uploadTarget} done={!!uploadTarget} />
+            <StepIndicator step={2} label="Upload & claim" active={!!uploadTarget} done={false} />
+          </HStack>
+
           {dataHash && (
-            <Box mb={4}>
+            <Box
+              borderWidth="1px"
+              borderColor="border.DEFAULT"
+              bg="surfaceNeutral"
+              p={4}
+              mb={4}
+            >
+              <Text fontSize="xs" color="fg.muted" textTransform="uppercase" letterSpacing="wider" mb={2}>
+                Data hash
+              </Text>
               <CopyableHash value={dataHash} lead={18} tail={12} />
             </Box>
           )}
@@ -193,3 +216,36 @@ export function SubmitCaptureSteps() {
     </Panel>
   );
 }
+
+function StepIndicator({
+  step,
+  label,
+  active,
+  done,
+}: {
+  step: number;
+  label: string;
+  active: boolean;
+  done: boolean;
+}) {
+  const color = done ? "brand.fg" : active ? "primary" : "fg.subtle";
+  const bg = done ? "brand.subtle" : active ? "surfaceNeutral" : "transparent";
+  return (
+    <HStack
+      gap={2}
+      borderWidth="1px"
+      borderColor={done ? "brand.muted" : active ? "border.DEFAULT" : "border.muted"}
+      bg={bg}
+      px={3}
+      py={1.5}
+    >
+      <Text fontSize="xs" fontWeight="700" color={color}>
+        {step}
+      </Text>
+      <Text fontSize="xs" fontWeight="500" color={color}>
+        {label}
+      </Text>
+    </HStack>
+  );
+}
+

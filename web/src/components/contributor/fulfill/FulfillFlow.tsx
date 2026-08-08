@@ -1,9 +1,10 @@
 "use client";
 
-import { Box, Heading, Stack } from "@chakra-ui/react";
+import { Heading, Stack } from "@chakra-ui/react";
 import { CaptureUploader } from "./CaptureUploader";
 import { FulfillProvider } from "./FulfillContext";
 import { FulfillRequestSummary } from "./FulfillRequestSummary";
+import { Panel } from "@/components/common/Panel";
 import { SubmitCaptureSteps } from "./SubmitCaptureSteps";
 
 export function FulfillFlow() {
@@ -12,15 +13,16 @@ export function FulfillFlow() {
       <FulfillRequestSummary />
 
       <Stack gap={6}>
-        <Box>
-          <Heading size="sm" fontWeight="500" color="fg.muted" mb={4}>
+        <Panel>
+          <Heading textStyle="body-md" fontWeight="600" color="primary" mb={4}>
             Your capture
           </Heading>
           <CaptureUploader />
-        </Box>
+        </Panel>
 
         <SubmitCaptureSteps />
       </Stack>
     </FulfillProvider>
   );
 }
+

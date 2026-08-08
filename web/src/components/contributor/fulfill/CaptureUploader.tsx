@@ -42,7 +42,7 @@ export function CaptureUploader() {
       uppy={uppy}
       height={300}
       width="100%"
-      theme="dark"
+      theme="light"
       hideUploadButton
       proudlyDisplayPoweredByUppy={false}
       note="Files are hashed on this device before anything is uploaded."
