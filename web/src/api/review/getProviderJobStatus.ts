@@ -5,7 +5,7 @@ import type {
   ProviderDecision,
   RequestStatusReport,
 } from "@/types";
-import { http } from "../client";
+import { httpProvider } from "../client";
 
 type StatusResponse = {
   jobId: string;
@@ -20,7 +20,7 @@ type StatusResponse = {
 export async function getProviderJobStatus(
   id: string,
 ): Promise<RequestStatusReport> {
-  const { data } = await http.get<StatusResponse>(`/jobs/${id}/status`);
+  const { data } = await httpProvider.get<StatusResponse>(`/jobs/${id}/status`);
   return {
     jobId: data.jobId,
     onChainStatus: data.onChainStatus,

@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { Hash } from "viem";
 import type { DeclineReason, JobStatus, ProviderDecision } from "@/types";
-import { http } from "../client";
+import { httpProvider } from "../client";
 
 type ActivateResponse = {
   jobId: string;
@@ -24,7 +24,9 @@ export type ActivateResult = {
 
 /** POST /jobs/:id/activate — sets the budget when agreed, rejects when declined. */
 export async function activateRequest(id: string): Promise<ActivateResult> {
-  const { data } = await http.post<ActivateResponse>(`/jobs/${id}/activate`);
+  const { data } = await httpProvider.post<ActivateResponse>(
+    `/jobs/${id}/activate`,
+  );
   return {
     jobId: data.jobId,
     providerDecision: data.providerDecision,

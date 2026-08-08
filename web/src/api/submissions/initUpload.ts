@@ -1,6 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import type { Hash } from "viem";
-import { http } from "../client";
+import { httpProvider } from "../client";
 
 type InitUploadFile = {
   name: string;
@@ -30,7 +30,10 @@ export type InitUploadResult = {
 export async function initUpload(
   params: InitUploadParams,
 ): Promise<InitUploadResult> {
-  const { data } = await http.post<InitUploadResult>("/upload/init", params);
+  const { data } = await httpProvider.post<InitUploadResult>(
+    "/upload/init",
+    params,
+  );
   return data;
 }
 

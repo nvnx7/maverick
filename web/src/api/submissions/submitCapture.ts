@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { Address, Hash } from "viem";
-import { http } from "../client";
+import { httpProvider } from "../client";
 
 export type SubmitCaptureParams = {
   jobId: string;
@@ -27,7 +27,7 @@ type SubmitCaptureResponse = Omit<SubmitCaptureResult, "cumulativeAmount"> & {
 export function submitCapture(
   params: SubmitCaptureParams,
 ): Promise<SubmitCaptureResult> {
-  return http
+  return httpProvider
     .post<SubmitCaptureResponse>(`/jobs/${params.jobId}/claims`, {
       address: params.payoutAddress,
       dataHash: params.dataHash,
