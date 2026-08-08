@@ -1,7 +1,8 @@
 "use client";
 
-import { Box, Container, Flex, HStack, Link, Text } from "@chakra-ui/react";
+import { Box, Container, Flex, HStack, Link, Text, Button } from "@chakra-ui/react";
 import NextLink from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { ConnectWalletButton } from "@/components/wallet/ConnectWalletButton";
 import { buyerNav, contributorNav, routes } from "@/config/routes";
@@ -10,48 +11,59 @@ import { NavLink } from "./NavLink";
 export function Header() {
   const pathname = usePathname();
 
+  // Keep contextual nav for internal routes, but use the global layout for the home page.
+  const isHome = pathname === routes.home;
   const nav = pathname.startsWith("/buyer")
     ? buyerNav
     : pathname.startsWith("/contributor")
       ? contributorNav
-      : [];
+      : [
+          { href: routes.home, label: "Home" },
+          { href: routes.contributor.browse, label: "Marketplace" },
+          { href: "#", label: "Docs" },
+        ];
 
   return (
     <Box
       as="header"
       borderBottomWidth="1px"
-      borderColor="border"
+      borderColor="border.DEFAULT"
       bg="bg"
       position="sticky"
       top={0}
       zIndex="docked"
     >
-      <Container maxW="6xl" px={{ base: 5, md: 8 }}>
-        <Flex h="60px" align="center" justify="space-between" gap={6}>
-          <HStack gap={8}>
-            <Link
-              asChild
-              _hover={{ textDecoration: "none" }}
-              _focusVisible={{ outline: "none" }}
-            >
-              <NextLink href={routes.home}>
-                <HStack gap={2.5}>
-                  <Box boxSize="10px" bg="brand.500" />
-                  <Text fontWeight="600" letterSpacing="-0.01em">
-                    Maverick
-                  </Text>
-                </HStack>
-              </NextLink>
-            </Link>
+      <Container maxW="1280px" px={{ base: "16px", md: "40px" }}>
+        <Flex h="80px" align="center" justify="space-between">
+          <Link
+            asChild
+            _hover={{ textDecoration: "none" }}
+            _focusVisible={{ outline: "none" }}
+          >
+            <NextLink href={routes.home}>
+              <HStack gap={3}>
+                <Image src="/logo.svg" alt="Maverick logo" width={24} height={24} />
+                <Text textStyle="headline-md" fontWeight="700" letterSpacing="-0.02em" color="primary">
+                  Maverick
+                </Text>
+              </HStack>
+            </NextLink>
+          </Link>
 
-            <HStack gap={6} display={{ base: "none", md: "flex" }}>
-              {nav.map((item) => (
-                <NavLink key={item.href} href={item.href} label={item.label} />
-              ))}
-            </HStack>
+          <HStack gap={8} display={{ base: "none", md: "flex" }} position="absolute" left="50%" transform="translateX(-50%)">
+            {nav.map((item) => (
+              <NavLink key={item.href} href={item.href} label={item.label} />
+            ))}
           </HStack>
 
-          <ConnectWalletButton />
+          <HStack gap={6}>
+            <ConnectWalletButton />
+            {isHome && (
+              <Button asChild variant="ghost" color="primary" textStyle="label-mono" px={0} _hover={{ bg: "transparent", color: "secondary" }}>
+                <NextLink href={routes.buyer.newRequest}>Post a Job</NextLink>
+              </Button>
+            )}
+          </HStack>
         </Flex>
       </Container>
     </Box>

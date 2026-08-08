@@ -10,10 +10,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         <Header />
         <Container
           as="main"
-          maxW="6xl"
+          maxW="1280px"
           flex="1"
-          px={{ base: 5, md: 8 }}
-          py={{ base: 8, md: 12 }}
+          px={{ base: "16px", md: "40px" }}
+          py={{ base: 4, md: 0 }}
         >
           {children}
         </Container>

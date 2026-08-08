@@ -6,7 +6,7 @@ import { useState } from "react";
 import { WagmiProvider } from "wagmi";
 import { wagmiConfig } from "@/config/wagmi";
 import { system } from "@/theme";
-import { ColorModeProvider } from "./color-mode";
+
 
 export function Provider({ children }: { children: React.ReactNode }) {
   const [queryClient] = useState(
@@ -20,8 +20,7 @@ export function Provider({ children }: { children: React.ReactNode }) {
     <WagmiProvider config={wagmiConfig}>
       <QueryClientProvider client={queryClient}>
         <ChakraProvider value={system}>
-          {/* Dark-only by design — the palette has no light variant. */}
-          <ColorModeProvider forcedTheme="dark">{children}</ColorModeProvider>
+          {children}
         </ChakraProvider>
       </QueryClientProvider>
     </WagmiProvider>
