@@ -13,6 +13,8 @@ export type ContributorClaim = {
   deliverable: Hash;
   blockNumber: bigint;
   transactionHash: Hash;
+  /** True when a ClaimSettled event exists for this deliverable — payout has landed. */
+  settled: boolean;
 };
 
 /** optParams is abi.encode(contributor) — see DataCommerce.submitJobClaim. */
@@ -49,8 +51,25 @@ export function useGetContributorClaims(params: {
     query: { enabled: jobIdBigInt !== undefined && Boolean(contributor) },
   });
 
+  /** ClaimSettled carries the deliverable so we can match it to a submitted claim. */
+  const settledQuery = useContractEvents({
+    address: networkConfig.contracts.escrow,
+    abi: agenticCommerceAbi,
+    eventName: "ClaimSettled",
+    args: { jobId: jobIdBigInt },
+    fromBlock: networkConfig.deployedBlock,
+    query: { enabled: jobIdBigInt !== undefined && Boolean(contributor) },
+  });
+
   const data = useMemo<ContributorClaim[]>(() => {
     if (!claimsQuery.data || !contributor) return [];
+
+    // Build a set of deliverables that have been settled for O(1) lookup.
+    const settledDeliverables = new Set(
+      (settledQuery.data ?? [])
+        .map((log) => log.args.deliverable)
+        .filter((d): d is Hash => d !== undefined),
+    );
 
     return claimsQuery.data
       .map((log): ContributorClaim | null => {
@@ -82,6 +101,7 @@ export function useGetContributorClaims(params: {
           deliverable,
           blockNumber: log.blockNumber,
           transactionHash: log.transactionHash,
+          settled: settledDeliverables.has(deliverable),
         };
       })
       .filter((claim): claim is ContributorClaim => claim !== null)
@@ -89,7 +109,7 @@ export function useGetContributorClaims(params: {
         (claim) =>
           claim.contributor.toLowerCase() === contributor.toLowerCase(),
       );
-  }, [claimsQuery.data, contributor]);
+  }, [claimsQuery.data, settledQuery.data, contributor]);
 
   return {
     data,
@@ -98,3 +118,4 @@ export function useGetContributorClaims(params: {
     error: claimsQuery.error,
   };
 }
+

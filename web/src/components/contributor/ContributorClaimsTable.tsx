@@ -1,6 +1,6 @@
 "use client";
 
-import { Table } from "@chakra-ui/react";
+import { Table, Text } from "@chakra-ui/react";
 import { useState } from "react";
 import { useAccount } from "wagmi";
 import { type ContributorClaim, useGetContributorClaims } from "@/api/jobs";
@@ -71,7 +71,10 @@ export function ContributorClaimsTable() {
               key={claim.transactionHash}
               bg="bg.panel"
               cursor="pointer"
-              onClick={() => setSelected(claim)}
+              onClick={(e) => {
+                e.stopPropagation();
+                setSelected(claim);
+              }}
             >
               <Table.Cell onClick={(event) => event.stopPropagation()}>
                 <CopyableHash value={claim.deliverable} />
@@ -90,12 +93,18 @@ export function ContributorClaimsTable() {
                 />
               </Table.Cell>
               <Table.Cell textAlign="end">
-                <UsdcAmount
-                  value={claim.delta}
-                  unit={false}
-                  fontSize="sm"
-                  color="brand.fg"
-                />
+                {claim.settled ? (
+                  <UsdcAmount
+                    value={claim.delta}
+                    unit={false}
+                    fontSize="sm"
+                    color="brand.fg"
+                  />
+                ) : (
+                  <Text color="fg.muted" fontSize="sm">
+                    --
+                  </Text>
+                )}
               </Table.Cell>
             </Table.Row>
           ))}

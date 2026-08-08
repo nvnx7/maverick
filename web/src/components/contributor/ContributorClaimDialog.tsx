@@ -25,14 +25,11 @@ type Props = {
 };
 
 export function ContributorClaimDialog({ claim, open, onOpenChange }: Props) {
-  const { data: job, refetch: refetchJob } = useGetJob(claim?.jobId);
   const requestReview = useRequestEvaluatorReview();
   const settleClaim = useSettleClaim();
   const [approved, setApproved] = useState(false);
 
   if (!claim) return null;
-
-  const settled = job ? claim.cumulativeAmount <= job.spent : false;
 
   async function handleCheckApproval() {
     if (!claim) return;
@@ -53,7 +50,6 @@ export function ContributorClaimDialog({ claim, open, onOpenChange }: Props) {
       deliverable: claim.deliverable,
       contributor: claim.contributor,
     });
-    await refetchJob();
   }
 
   return (
@@ -95,14 +91,18 @@ export function ContributorClaimDialog({ claim, open, onOpenChange }: Props) {
                   <ExplorerLink value={claim.transactionHash} kind="tx" />
                 </DataRow>
                 <DataRow label="Claimed">
-                  <UsdcAmount value={claim.delta} unit={false} />
+                  {claim.settled ? (
+                    <UsdcAmount value={claim.delta} unit={false} />
+                  ) : (
+                    <Text color="fg.muted">--</Text>
+                  )}
                 </DataRow>
                 <DataRow label="Cumulative claim">
                   <UsdcAmount value={claim.cumulativeAmount} unit={false} />
                 </DataRow>
               </Stack>
 
-              {settled ? (
+              {claim.settled ? (
                 <Text fontSize="sm" color="fg.muted">
                   This claim has already been settled.
                 </Text>

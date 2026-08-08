@@ -71,7 +71,10 @@ export function RequestSubmissionsTable() {
                       key={submission.id}
                       bg="bg.panel"
                       cursor="pointer"
-                      onClick={() => setSelected(submission)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSelected(submission);
+                      }}
                     >
                       <Table.Cell onClick={(event) => event.stopPropagation()}>
                         <CopyableHash value={submission.dataHash} />
