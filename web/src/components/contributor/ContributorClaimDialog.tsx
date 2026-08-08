@@ -10,8 +10,7 @@ import {
 } from "@chakra-ui/react";
 import { useState } from "react";
 import type { ContributorClaim } from "@/api/jobs";
-import { useGetJob } from "@/api/jobs";
-import { useRequestEvaluatorReview, useSettleClaim } from "@/api/submissions";
+import { useRequestEvaluatorReview } from "@/api/submissions";
 import { CopyableHash } from "@/components/common/CopyableHash";
 import { DataRow } from "@/components/common/DataRow";
 import { ExplorerLink } from "@/components/common/ExplorerLink";
@@ -25,30 +24,30 @@ type Props = {
 };
 
 export function ContributorClaimDialog({ claim, open, onOpenChange }: Props) {
-  const requestReview = useRequestEvaluatorReview();
-  const [approved, setApproved] = useState(false);
+  const settle = useRequestEvaluatorReview();
+  const [settled, setSettled] = useState(false);
 
   if (!claim) return null;
 
-  async function handleCheckApproval() {
+  async function handleSettle() {
     if (!claim) return;
-    await requestReview.mutateAsync({
+    await settle.mutateAsync({
       jobId: claim.jobId,
       dataHash: claim.deliverable,
       cumulativeAmount: claim.cumulativeAmount,
       contributor: claim.contributor,
     });
-    setApproved(true);
+    setSettled(true);
   }
 
-  const isPaid = claim.settled || claim.approved || approved;
+  const isPaid = claim.settled || claim.approved || settled;
 
   return (
     <Dialog.Root
       open={open}
       onOpenChange={(event) => {
         onOpenChange(event.open);
-        if (!event.open) setApproved(false);
+        if (!event.open) setSettled(false);
       }}
       placement="center"
     >
@@ -95,8 +94,8 @@ export function ContributorClaimDialog({ claim, open, onOpenChange }: Props) {
               </Stack>
 
               {isPaid ? (
-                <Text textStyle="body-sm" color="fg.subtle">
-                  This claim has been approved and payout was sent to your wallet.
+                <Text textStyle="body-sm" color="successGreen" fontWeight="500">
+                  Settled — payout has been sent to your wallet.
                 </Text>
               ) : (
                 <Button
@@ -105,17 +104,17 @@ export function ContributorClaimDialog({ claim, open, onOpenChange }: Props) {
                   color="onPrimary"
                   borderRadius="0"
                   _hover={{ bg: "onSurfaceVariant", color: "onPrimary" }}
-                  onClick={handleCheckApproval}
-                  loading={requestReview.isPending}
-                  loadingText="Checking"
+                  onClick={handleSettle}
+                  loading={settle.isPending}
+                  loadingText="Settling claim"
                 >
-                  Check Approval
+                  Settle & Collect Payout
                 </Button>
               )}
 
-              {requestReview.isError && (
+              {settle.isError && (
                 <Text fontSize="sm" color="warn.fg" mt={4}>
-                  {requestReview.error?.message}
+                  {settle.error?.message}
                 </Text>
               )}
             </Dialog.Body>
