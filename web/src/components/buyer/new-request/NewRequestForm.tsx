@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  Box,
   Button,
   Field,
   Input,
@@ -14,7 +15,6 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useCreateJob } from "@/api/jobs";
 import { Panel } from "@/components/common/Panel";
-import { UsdcAmount } from "@/components/common/UsdcAmount";
 import {
   MAX_JOB_BUDGET,
   MODALITIES,
@@ -22,9 +22,8 @@ import {
   type Modality,
 } from "@/config/constants";
 import { routes } from "@/config/routes";
-import { parseUsdc } from "@/utils/format";
+import { parseUsdc, formatUsdc } from "@/utils/format";
 import { quoteBudget } from "@/utils/quote";
-import { StepLabel } from "./StepLabel";
 
 const EXPIRY_DAYS = 30;
 
@@ -77,18 +76,18 @@ export function NewRequestForm() {
   }
 
   return (
-    <Panel as="form" onSubmit={handleSubmit}>
-      <StepLabel step={1} label="Create your request on-chain" />
-
-      <Stack gap={6}>
+    <Panel as="form" onSubmit={handleSubmit} p={{ base: 8, md: 12 }} borderRadius="0" bg="bg.panel" borderColor="border.DEFAULT" borderWidth="1px">
+      <Stack gap={8}>
         <SimpleGrid columns={{ base: 1, md: 2 }} gap={6}>
           <Field.Root>
-            <Field.Label>Modality</Field.Label>
+            <Field.Label textStyle="body-md" fontWeight="600" color="primary">Modality</Field.Label>
             <NativeSelect.Root>
               <NativeSelect.Field
                 value={modality}
-                bg="bg.subtle"
-                borderColor="border"
+                bg="bg.panel"
+                borderColor="border.DEFAULT"
+                borderRadius="0"
+                fontFamily="body"
                 onChange={(event) =>
                   setModality(event.currentTarget.value as Modality)
                 }
@@ -104,12 +103,13 @@ export function NewRequestForm() {
           </Field.Root>
 
           <Field.Root invalid={Boolean(errors.minItems)}>
-            <Field.Label>Minimum items</Field.Label>
+            <Field.Label textStyle="body-md" fontWeight="600" color="primary">Minimum items</Field.Label>
             <Input
               type="number"
               value={minItems}
-              bg="bg.subtle"
-              borderColor="border"
+              bg="bg.panel"
+              borderColor="border.DEFAULT"
+              borderRadius="0"
               fontFamily="mono"
               onChange={(event) => setMinItems(event.currentTarget.value)}
             />
@@ -118,12 +118,14 @@ export function NewRequestForm() {
         </SimpleGrid>
 
         <Field.Root invalid={Boolean(errors.deviceRequirements)}>
-          <Field.Label>Device requirements</Field.Label>
+          <Field.Label textStyle="body-md" fontWeight="600" color="primary">Device requirements</Field.Label>
           <Textarea
-            rows={3}
+            rows={4}
             value={deviceRequirements}
-            bg="bg.subtle"
-            borderColor="border"
+            bg="bg.panel"
+            borderColor="border.DEFAULT"
+            borderRadius="0"
+            fontFamily="body"
             placeholder="Head-mounted camera, 1080p minimum, 30fps"
             onChange={(event) =>
               setDeviceRequirements(event.currentTarget.value)
@@ -133,36 +135,40 @@ export function NewRequestForm() {
         </Field.Root>
 
         <Field.Root invalid={Boolean(errors.budget)}>
-          <Field.Label>Budget (USDC)</Field.Label>
+          <Field.Label textStyle="body-md" fontWeight="600" color="primary">Budget (USDC)</Field.Label>
           <Input
             type="number"
             step="0.01"
             value={budget}
-            bg="bg.subtle"
-            borderColor="border"
+            bg="bg.panel"
+            borderColor="border.DEFAULT"
+            borderRadius="0"
             fontFamily="mono"
             placeholder="0.00"
             onChange={(event) => setBudget(event.currentTarget.value)}
           />
-          <Field.HelperText>
-            Provider quotes <UsdcAmount value={quote} /> for {items || 0}{" "}
-            {MODALITY_LABELS[modality].toLowerCase()} items.
+          <Field.HelperText textStyle="body-sm" color="fg.subtle" mt={3}>
+            Provider quotes {formatUsdc(quote)} USDC for {items || 0} {MODALITY_LABELS[modality].toLowerCase()} items.
           </Field.HelperText>
           <Field.ErrorText>{errors.budget}</Field.ErrorText>
         </Field.Root>
 
-        <Text fontSize="sm" color="fg.muted">
-          Creating the request costs one transaction. Funding it is a second,
-          separate transaction you approve only after the provider agrees.
-        </Text>
+        <Box borderTopWidth="1px" borderColor="border.DEFAULT" />
 
         <Button
           type="submit"
-          colorPalette="brand"
+          bg="primary"
+          color="onPrimary"
+          borderRadius="0"
+          px={8}
+          py={6}
+          textStyle="body-md"
+          fontWeight="500"
           alignSelf="flex-start"
           disabled={invalid}
           loading={createJob.isPending}
           loadingText="Confirm in your wallet"
+          _hover={{ bg: "onSurfaceVariant" }}
         >
           Create request
         </Button>
