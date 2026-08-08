@@ -4,7 +4,7 @@ import { Badge, Box, Heading, Table } from "@chakra-ui/react";
 import { useState } from "react";
 import { useGetRequestSubmissions } from "@/api/submissions";
 import { CopyableHash } from "@/components/common/CopyableHash";
-import { EmptyState } from "@/components/common/EmptyState";
+
 import { Mono } from "@/components/common/Mono";
 import { ErrorBlock, LoadingBlock } from "@/components/common/QueryState";
 import { UsdcAmount } from "@/components/common/UsdcAmount";
@@ -13,28 +13,32 @@ import type { Submission } from "@/types";
 import { formatDateTime } from "@/utils/format";
 import { SUBMISSION_STATUS_COPY } from "@/utils/submission";
 import { SubmissionDetailDialog } from "./SubmissionDetailDialog";
+import { SubmissionPreview } from "./SubmissionPreview";
+import { SubmissionDownloadButton } from "./SubmissionDownloadButton";
+import { Flex } from "@chakra-ui/react";
 
 export function RequestSubmissionsTable() {
   const id = useRequestId();
   const { data, isPending, isError } = useGetRequestSubmissions(id);
   const [selected, setSelected] = useState<Submission | null>(null);
 
+  const firstSubmission = data?.[0];
+
   return (
     <Box>
-      <Heading textStyle="body-md" fontWeight="600" color="primary" mb={4}>
-        Submissions
-      </Heading>
+      <Flex justify="space-between" align="center" mb={4}>
+        <Heading textStyle="body-md" fontWeight="600" color="primary">
+          Submissions
+        </Heading>
+        <SubmissionDownloadButton jobId={id} />
+      </Flex>
+      
+      <SubmissionPreview jobId={id} />
 
       {isPending && <LoadingBlock label="Reading the submission ledger" />}
       {isError && <ErrorBlock />}
 
-      {data &&
-        (data.length === 0 ? (
-          <EmptyState
-            title="No submissions yet"
-            description="Contributors can submit as soon as the request is funded."
-          />
-        ) : (
+      {data && data.length > 0 && (
           <>
             <Table.Root
               size="md"
@@ -115,7 +119,7 @@ export function RequestSubmissionsTable() {
               }}
             />
           </>
-        ))}
+        )}
     </Box>
   );
 }
