@@ -1,4 +1,4 @@
-import { type Address, type Chain, zeroAddress } from "viem";
+import type { Address, Chain, } from "viem";
 import { anvil, arcTestnet as arcTestnetChain } from "viem/chains";
 import { env, rpcArcTestnet, rpcLocal } from "./env";
 
@@ -34,12 +34,12 @@ export const arcTestnet: NetworkConfig = {
   chain: arcTestnetChain,
   rpcUrl: rpcArcTestnet,
   explorerUrl: "https://testnet.arcscan.app",
-  deployedBlock: 0n,
+  deployedBlock: 56154833n,
   contracts: {
-    dataCommerce: zeroAddress,
-    escrow: zeroAddress,
-    provider: zeroAddress,
-    evaluator: zeroAddress,
+    dataCommerce: '0xB77DD0A3D80a85e0469308E496379069cF886b5e',
+    escrow: '0x5FA9Abe7D1E328ce68900568F167dA2e7e875199',
+    provider: '0x00E779d185e815620B18021566bC2A9D0AE85aBA',
+    evaluator: '0x62EC882C49D066150EA867448280c38CcFE1Bb6D',
     usdc: "0x3600000000000000000000000000000000000000",
   },
 };
