@@ -7,8 +7,8 @@
     "build": "forge build",
     "test": "forge test",
     "chain:local": "anvil --chain-id 31337",
-    "deploy:local": "set -a && . ./.env && set +a && forge script scripts/DeployLocal.s.sol --rpc-url local --private-key $DEPLOYER_PRIVATE_KEY --broadcast",
-    "deploy:arc": "set -a && . ./.env && set +a && forge script scripts/Deploy.s.sol --sig \"run(string)\" \"arcTestnet\" --rpc-url arcTestnet --private-key $DEPLOYER_PRIVATE_KEY --broadcast"
+    "deploy:local": "set -a && . ./.env && set +a && forge script scripts/DeployLocal.s.sol --rpc-url local --private-key $DEPLOYER_PRIVATE_KEY_LOCAL --broadcast",
+    "deploy:arc": "set -a && . ./.env && set +a && forge script scripts/Deploy.s.sol --sig \"run(string)\" \"arcTestnet\" --rpc-url arcTestnet --private-key $DEPLOYER_PRIVATE_KEY_TESTNET --broadcast"
   },
   "dependencies": {
     "@openzeppelin/contracts": "^5.6.1",
