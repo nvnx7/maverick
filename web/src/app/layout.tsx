@@ -1,9 +1,14 @@
 import type { Metadata } from "next";
-import { GeistSans } from "geist/font/sans";
-import { Inter, JetBrains_Mono } from "next/font/google";
+import { Inter, JetBrains_Mono, Montserrat } from "next/font/google";
 import { AppShell } from "@/components/layout/AppShell";
 import { Provider } from "@/components/ui/provider";
 import "./globals.css";
+
+const montserrat = Montserrat({
+  variable: "--font-montserrat",
+  subsets: ["latin"],
+  weight: ["800"],
+});
 
 const inter = Inter({
   variable: "--font-inter",
@@ -29,7 +34,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${GeistSans.variable} ${inter.variable} ${jetbrainsMono.variable}`}
+      className={`${montserrat.variable} ${inter.variable} ${jetbrainsMono.variable}`}
       suppressHydrationWarning
     >
       <body>

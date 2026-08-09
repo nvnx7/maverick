@@ -4,7 +4,7 @@ const config = defineConfig({
   theme: {
     tokens: {
       fonts: {
-        heading: { value: "var(--font-geist), system-ui, sans-serif" },
+        heading: { value: "var(--font-montserrat), system-ui, sans-serif" },
         body: { value: "var(--font-inter), system-ui, sans-serif" },
         mono: { value: "var(--font-jetbrains-mono), ui-monospace, monospace" },
       },
