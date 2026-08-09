@@ -10,6 +10,7 @@ import {DataCommerce} from "../src/DataCommerce.sol";
 import {ProviderAgent} from "../src/agents/ProviderAgent.sol";
 import {EvaluatorAgent} from "../src/agents/EvaluatorAgent.sol";
 import {FundDisburser} from "../src/FundDisburser.sol";
+import {DeviceRegistry} from "../src/DeviceRegistry.sol";
 
 abstract contract DeployBase is Script {
     using stdJson for string;
@@ -28,6 +29,7 @@ abstract contract DeployBase is Script {
         address providerAgent;
         address evaluatorAgent;
         address fundDisburser;
+        address deviceRegistry;
     }
 
     /// @dev Deploys the full stack against `config.usdc` and leaves `deployer` holding
@@ -58,6 +60,9 @@ abstract contract DeployBase is Script {
         ProviderAgent providerAgent = new ProviderAgent(address(escrow), address(dataCommerce));
         EvaluatorAgent evaluatorAgent = new EvaluatorAgent(address(escrow), address(dataCommerce));
 
+        // DeviceRegistry
+        DeviceRegistry deviceRegistry = new DeviceRegistry();
+
         // Setup 
         dataCommerce.setAgents(address(providerAgent), address(evaluatorAgent));
         escrow.setPaymentTokenAllowed(usdc, true);
@@ -70,7 +75,8 @@ abstract contract DeployBase is Script {
             dataCommerce: address(dataCommerce),
             providerAgent: address(providerAgent),
             evaluatorAgent: address(evaluatorAgent),
-            fundDisburser: address(fundDisburser)
+            fundDisburser: address(fundDisburser),
+            deviceRegistry: address(deviceRegistry)
         });
     }
 
@@ -96,7 +102,8 @@ abstract contract DeployBase is Script {
         vm.serializeAddress(objKey, "dataCommerce", deployment.dataCommerce);
         vm.serializeAddress(objKey, "providerAgent", deployment.providerAgent);
         vm.serializeAddress(objKey, "evaluatorAgent", deployment.evaluatorAgent);
-        string memory finalJson = vm.serializeAddress(objKey, "fundDisburser", deployment.fundDisburser);
+        vm.serializeAddress(objKey, "fundDisburser", deployment.fundDisburser);
+        string memory finalJson = vm.serializeAddress(objKey, "deviceRegistry", deployment.deviceRegistry);
 
         string memory outFile = string.concat("deployments/", chainKey, ".json");
         vm.writeJson(finalJson, outFile);
@@ -109,6 +116,7 @@ abstract contract DeployBase is Script {
         console2.log("  providerAgent: ", deployment.providerAgent);
         console2.log("  evaluatorAgent:", deployment.evaluatorAgent);
         console2.log("  fundDisburser: ", deployment.fundDisburser);
+        console2.log("  deviceRegistry:", deployment.deviceRegistry);
         console2.log("Wrote", outFile);
     }
 }
