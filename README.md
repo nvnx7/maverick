@@ -2,15 +2,17 @@
 
 Maverick is a decentralized protocol for procuring on-demand AI training data with cryptographic provenance. Every capture is signed by a contributor's device the moment it's recorded. Provider and Evaluator agents independently verify the authenticity of requests and data before any payment moves. Settlement runs on Arc USDC rails through ERC-8183 — buyer funds sit in the protocol and release automatically in rolling batches to contributors as each submission is verified.
 
-## Progress Update
+## Arc Testnet Deployments
 
-| Module                    | Status      | Description                                                                                           |
-| ------------------------- | ----------- | ----------------------------------------------------------------------------------------------------- |
-| [`contracts/`](contracts) | Done        | Solidity escrow (ERC-8183) plus on-chain Provider/Evaluator agent contracts (Foundry).                |
-| [`sdk/`](sdk)             | Done        | TypeScript client wrapping contract calls, ABIs, and job types shared across apps.                    |
-| [`provider/`](provider)   | Done        | Hono service that reviews and services jobs on behalf of a data provider.                             |
-| [`evaluator/`](evaluator) | In progress | Hono service that verifies submissions before payout; being extended with AI-agent-driven evaluation. |
-| [`web/`](web)             | In progress | Next.js frontend for buyers and contributors.                                                         |
+| Contract | Address |
+| --- | --- |
+| DataCommerce | `0xB77DD0A3D80a85e0469308E496379069cF886b5e` |
+| DeviceRegistry | `0xab9DE45236183A12d5c4f68E89eC0b7C5d2f4DC4` |
+| Escrow | `0x5FA9Abe7D1E328ce68900568F167dA2e7e875199` |
+| EvaluatorAgent | `0x62EC882C49D066150EA867448280c38CcFE1Bb6D` |
+| FundDisburser | `0x7af9adC47DF93a22DE56f4C8Ce0B8b872322aBc5` |
+| ProviderAgent | `0x00E779d185e815620B18021566bC2A9D0AE85aBA` |
+| USDC | `0x3600000000000000000000000000000000000000` |
 
 ## Modules
 
