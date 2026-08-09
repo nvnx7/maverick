@@ -44,6 +44,7 @@ const config = defineConfig({
         border: {
           DEFAULT: { value: "{colors.borderSubtle}" },
           muted: { value: "{colors.borderSubtle}" },
+          chrome: { value: "#F0F0F0" },
           input: { value: "{colors.borderInput}" },
         },
         brand: {

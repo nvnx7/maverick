@@ -26,7 +26,7 @@ export function Header() {
     <Box
       as="header"
       borderBottomWidth="1px"
-      borderColor="border.DEFAULT"
+      borderColor="border.chrome"
       bg="bg"
       position="sticky"
       top={0}

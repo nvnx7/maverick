@@ -4,7 +4,7 @@ import { routes } from "@/config/routes";
 
 export function Footer() {
   return (
-    <Box as="footer" borderTopWidth="1px" borderColor="border.DEFAULT" mt={20}>
+    <Box as="footer" borderTopWidth="1px" borderColor="border.chrome" mt={20}>
       <Container maxW="1280px" px={{ base: "16px", md: "40px" }} py={6}>
         <Flex
           justify="space-between"
