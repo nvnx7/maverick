@@ -40,17 +40,18 @@ export function RequestSubmissionsTable() {
 
       {data && data.length === 0 && (
         <Box
-          borderWidth="1px"
-          borderColor="border.DEFAULT"
+          border="1px solid"
+          borderColor="primary"
+          borderRadius="0"
           bg="surfaceNeutral"
           py={12}
           textAlign="center"
         >
-          <Text fontWeight="500" color="fg.muted" mb={1}>
-            No submissions yet
+          <Text textStyle="body-lg" fontWeight="700" color="primary" mb={1}>
+            No Submissions Recorded Yet
           </Text>
-          <Text fontSize="sm" color="fg.subtle">
-            Submissions from contributors will appear here once received.
+          <Text fontSize="14px" color="fg.subtle">
+            Contributor hardware captures will appear here once submitted to the ledger.
           </Text>
         </Box>
       )}
@@ -60,26 +61,28 @@ export function RequestSubmissionsTable() {
             <Table.Root
               size="md"
               interactive
-              borderWidth="1px"
-              borderColor="border.DEFAULT"
+              border="1px solid"
+              borderColor="primary"
             >
-              <Table.Header>
-                <Table.Row bg="surfaceNeutral">
-                  <Table.ColumnHeader color="fg.subtle" textStyle="label-mono">
-                    Data hash
+              <Table.Header bg="primary">
+                <Table.Row>
+                  <Table.ColumnHeader color="onPrimary" textStyle="label-mono" fontSize="11px" fontWeight="700">
+                    DATA HASH PROVENANCE
                   </Table.ColumnHeader>
-                  <Table.ColumnHeader color="fg.subtle" textStyle="label-mono">
-                    Submitted
+                  <Table.ColumnHeader color="onPrimary" textStyle="label-mono" fontSize="11px" fontWeight="700">
+                    SUBMITTED TIMESTAMP
                   </Table.ColumnHeader>
-                  <Table.ColumnHeader color="fg.subtle" textStyle="label-mono">
-                    Claim
+                  <Table.ColumnHeader color="onPrimary" textStyle="label-mono" fontSize="11px" fontWeight="700">
+                    CLAIM STATUS
                   </Table.ColumnHeader>
                   <Table.ColumnHeader
-                    color="fg.subtle"
+                    color="onPrimary"
                     textStyle="label-mono"
+                    fontSize="11px"
+                    fontWeight="700"
                     textAlign="end"
                   >
-                    Amount
+                    USDC AMOUNT
                   </Table.ColumnHeader>
                 </Table.Row>
               </Table.Header>
@@ -90,37 +93,45 @@ export function RequestSubmissionsTable() {
                   return (
                     <Table.Row
                       key={submission.id}
-                      bg="bg.panel"
+                      bg="surfaceNeutral"
                       cursor="pointer"
-                      _hover={{ bg: "surfaceNeutral" }}
+                      transition="all 0.15s ease"
+                      _hover={{ bg: "bg.panel" }}
                       onClick={(e) => {
                         e.stopPropagation();
                         setSelected(submission);
                       }}
                     >
-                      <Table.Cell onClick={(event) => event.stopPropagation()}>
+                      <Table.Cell borderBottom="1px solid" borderColor="border.chrome" onClick={(event) => event.stopPropagation()}>
                         <CopyableHash value={submission.dataHash} />
                       </Table.Cell>
-                      <Table.Cell>
-                        <Mono color="primary">
+                      <Table.Cell borderBottom="1px solid" borderColor="border.chrome">
+                        <Mono color="primary" fontWeight="700">
                           {formatDateTime(submission.submittedAt)}
                         </Mono>
                       </Table.Cell>
-                      <Table.Cell>
+                      <Table.Cell borderBottom="1px solid" borderColor="border.chrome">
                         <Badge
                           colorPalette={status.tone}
                           variant="outline"
-                          fontSize="xs"
+                          textStyle="label-mono"
+                          fontSize="10px"
+                          fontWeight="700"
                           borderRadius="0"
+                          border="1px solid"
+                          borderColor="primary"
+                          px={2.5}
+                          py={1}
                         >
                           {status.label}
                         </Badge>
                       </Table.Cell>
-                      <Table.Cell textAlign="end" color="primary">
+                      <Table.Cell textAlign="end" color="primary" borderBottom="1px solid" borderColor="border.chrome">
                         <UsdcAmount
                           value={submission.amount}
                           unit={false}
-                          fontSize="sm"
+                          fontSize="14px"
+                          fontWeight="700"
                         />
                       </Table.Cell>
                     </Table.Row>

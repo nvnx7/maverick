@@ -1,8 +1,9 @@
 "use client";
 
-import { Badge, Box, Heading, Icon, SimpleGrid, Text, VStack, HStack, Button } from "@chakra-ui/react";
+import { Badge, Box, Heading, HStack, Icon, SimpleGrid, Text, VStack } from "@chakra-ui/react";
 import NextLink from "next/link";
 import { LuArrowRight, LuCheck } from "react-icons/lu";
+import { Button } from "@/components/common/Button";
 import { routes } from "@/config/routes";
 
 export function AudienceCards() {
@@ -83,14 +84,10 @@ export function AudienceCards() {
 
             <Button
               asChild
-              bg="primary"
-              color="onPrimary"
-              borderRadius="0"
+              variant="primary"
               px={6}
               py={6}
               fontSize="sm"
-              fontWeight="600"
-              _hover={{ bg: "secondary", color: "onPrimary" }}
             >
               <NextLink href={routes.buyer.newRequest}>
                 Post Data Job <Icon as={LuArrowRight} ml={2} />
@@ -175,15 +172,9 @@ export function AudienceCards() {
             <Button
               asChild
               variant="outline"
-              borderColor="primary"
-              borderWidth="1px"
-              color="primary"
-              borderRadius="0"
               px={6}
               py={6}
               fontSize="sm"
-              fontWeight="600"
-              _hover={{ bg: "successGreen", color: "white", borderColor: "successGreen" }}
             >
               <NextLink href={routes.contributor.browse}>
                 Explore Open Jobs <Icon as={LuArrowRight} ml={2} />

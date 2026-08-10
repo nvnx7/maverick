@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  Button,
   CloseButton,
   Dialog,
   Portal,
@@ -11,6 +10,7 @@ import {
 import { useState } from "react";
 import type { ContributorClaim } from "@/api/jobs";
 import { useRequestEvaluatorReview } from "@/api/submissions";
+import { Button } from "@/components/common/Button";
 import { CopyableHash } from "@/components/common/CopyableHash";
 import { DataRow } from "@/components/common/DataRow";
 import { ExplorerLink } from "@/components/common/ExplorerLink";
@@ -56,64 +56,63 @@ export function ContributorClaimDialog({ claim, open, onOpenChange }: Props) {
         <Dialog.Positioner>
           <Dialog.Content
             bg="bg.panel"
-            borderWidth="1px"
-            borderColor="border.DEFAULT"
+            border="1px solid"
+            borderColor="primary"
             borderRadius="0"
             maxW="xl"
           >
             <Dialog.Header pb={2}>
-              <Dialog.Title textStyle="headline-md" color="primary">Submission details</Dialog.Title>
+              <Dialog.Title textStyle="headline-md" color="primary">Submission Details</Dialog.Title>
             </Dialog.Header>
             <Dialog.Body pb={6}>
-              <Stack gap={0} mb={6}>
-                <DataRow label="Job">
-                  <Mono color="primary">#{claim.jobId}</Mono>
+              <Stack gap={1} mb={6} bg="surfaceNeutral" p={4} border="1px solid" borderColor="border.chrome">
+                <DataRow label="Request ID">
+                  <Mono color="primary" fontWeight="700">#{claim.jobId}</Mono>
                 </DataRow>
-                <DataRow label="Contributor">
+                <DataRow label="Contributor Address">
                   <ExplorerLink value={claim.contributor} kind="address" />
                 </DataRow>
-                <DataRow label="Deliverable">
+                <DataRow label="Deliverable Hash">
                   <CopyableHash value={claim.deliverable} />
                 </DataRow>
-                <DataRow label="Block">
-                  <Mono color="primary">{claim.blockNumber.toString()}</Mono>
+                <DataRow label="Block Number">
+                  <Mono color="primary" fontWeight="700">{claim.blockNumber.toString()}</Mono>
                 </DataRow>
-                <DataRow label="Transaction">
+                <DataRow label="Transaction Hash">
                   <ExplorerLink value={claim.transactionHash} kind="tx" />
                 </DataRow>
-                <DataRow label="Claimed">
+                <DataRow label="Claimed Amount">
                   {isPaid ? (
-                    <UsdcAmount value={claim.delta} unit={false} color="primary" />
+                    <UsdcAmount value={claim.delta} unit={false} color="primary" fontWeight="700" fontSize="14px" />
                   ) : (
                     <Text color="fg.subtle">--</Text>
                   )}
                 </DataRow>
-                <DataRow label="Cumulative claim">
-                  <UsdcAmount value={claim.cumulativeAmount} unit={false} color="primary" />
+                <DataRow label="Cumulative Claimed">
+                  <UsdcAmount value={claim.cumulativeAmount} unit={false} color="primary" fontWeight="700" fontSize="14px" />
                 </DataRow>
               </Stack>
 
               {isPaid ? (
-                <Text textStyle="body-sm" color="successGreen" fontWeight="500">
-                  Settled — payout has been sent to your wallet.
+                <Text textStyle="body-sm" color="successGreen" fontWeight="700">
+                  ✓ Settled — USDC payout has been released directly to your wallet.
                 </Text>
               ) : (
                 <Button
-                  variant="solid"
-                  bg="primary"
-                  color="onPrimary"
-                  borderRadius="0"
-                  _hover={{ bg: "onSurfaceVariant", color: "onPrimary" }}
+                  variant="primary"
+                  px={6}
+                  py={5}
+                  fontSize="sm"
                   onClick={handleSettle}
                   loading={settle.isPending}
-                  loadingText="Settling claim"
+                  loadingText="Settling Claim"
                 >
                   Settle & Collect Payout
                 </Button>
               )}
 
               {settle.isError && (
-                <Text fontSize="sm" color="warn.fg" mt={4}>
+                <Text fontSize="sm" color="red.600" fontWeight="600" mt={4}>
                   {settle.error?.message}
                 </Text>
               )}

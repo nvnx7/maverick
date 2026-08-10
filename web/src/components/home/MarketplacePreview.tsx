@@ -3,7 +3,6 @@
 import {
   Badge,
   Box,
-  Button,
   Flex,
   Heading,
   HStack,
@@ -14,6 +13,7 @@ import {
 } from "@chakra-ui/react";
 import NextLink from "next/link";
 import { LuArrowRight, LuCheck, LuVideo, LuMic, LuBox } from "react-icons/lu";
+import { Button } from "@/components/common/Button";
 import { routes } from "@/config/routes";
 
 const categories = [
@@ -75,15 +75,9 @@ export function MarketplacePreview() {
         <Button
           asChild
           variant="outline"
-          borderColor="primary"
-          borderWidth="1px"
-          color="primary"
-          borderRadius="0"
           px={6}
           py={5}
           fontSize="sm"
-          fontWeight="600"
-          _hover={{ bg: "surfaceNeutral", transform: "translate(-2px, -2px)", boxShadow: "4px 4px 0px 0px #000" }}
         >
           <NextLink href={routes.contributor.browse}>
             Explore Active Marketplace Jobs <Icon as={LuArrowRight} ml={1} />

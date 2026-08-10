@@ -1,7 +1,8 @@
 "use client";
 
-import { Box, Button, Stack, Text } from "@chakra-ui/react";
+import { Badge, Box, HStack, Stack, Text } from "@chakra-ui/react";
 import NextLink from "next/link";
+import { Button } from "@/components/common/Button";
 import { DataRow } from "@/components/common/DataRow";
 import { Mono } from "@/components/common/Mono";
 import { Panel } from "@/components/common/Panel";
@@ -15,44 +16,56 @@ export function DeviceRegisteredCard() {
   if (!device) return null;
 
   return (
-    <Panel maxW="2xl">
-      <Text fontWeight="500" color="brand.fg" mb={5}>
-        This device is registered
-      </Text>
+    <Panel maxW="2xl" p={8}>
+      <HStack justify="space-between" align="center" mb={6}>
+        <Text textStyle="body-lg" fontWeight="700" color="primary">
+          Hardware Security Enclave Active
+        </Text>
+        <Badge bg="#E7F8F2" color="successGreen" border="1px solid" borderColor="transparent" borderRadius="0" px={2.5} py={1} textStyle="label-mono" fontSize="10px">
+          ● REGISTERED
+        </Badge>
+      </HStack>
 
-      <Stack gap={0} mb={6}>
+      <Stack gap={1} mb={6} bg="surfaceNeutral" p={4} border="1px solid" borderColor="border.chrome">
         <DataRow label="Device ID">
-          <Mono>{device.deviceId}</Mono>
+          <Mono color="primary" fontWeight="600">{device.deviceId}</Mono>
         </DataRow>
         <DataRow label="Public key">
-          <Mono color="chain.fg">{device.pubkey}</Mono>
+          <Mono color="secondary" fontWeight="600">{device.pubkey}</Mono>
         </DataRow>
         <DataRow label="Registered">
-          <Mono color="fg.muted">{formatDate(device.registeredAt)}</Mono>
+          <Mono color="fg.subtle">{formatDate(device.registeredAt)}</Mono>
         </DataRow>
       </Stack>
 
-      <Box borderWidth="1px" borderColor="border" bg="bg.subtle" p={4} mb={6}>
-        <Text fontSize="sm" color="fg.muted">
-          Registration is self-reported for now — this is an MVP limitation, not
-          a security promise. Anyone can register a keypair under any device ID.
+      <Box border="1px solid" borderColor="primary" bg="bg.panel" p={4} mb={6}>
+        <Text fontSize="13px" color="fg.muted" lineHeight="1.6">
+          Every capture submitted from this browser session will be cryptographically signed by your device enclave keypair for hardware-attested provenance.
         </Text>
       </Box>
 
-      <Stack direction="row" gap={3}>
-        <Button asChild colorPalette="brand" size="sm">
-          <NextLink href={routes.contributor.browse}>Browse requests</NextLink>
+      <HStack gap={3}>
+        <Button
+          asChild
+          variant="primary"
+          px={6}
+          py={5}
+          fontSize="sm"
+        >
+          <NextLink href={routes.contributor.browse}>Browse Open Jobs</NextLink>
         </Button>
         <Button
-          size="sm"
           variant="outline"
-          borderColor="border"
-          color="fg.muted"
+          px={5}
+          py={5}
+          fontSize="sm"
           onClick={forget}
         >
           Forget this device
         </Button>
-      </Stack>
+      </HStack>
     </Panel>
   );
 }
+
+

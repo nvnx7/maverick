@@ -36,31 +36,35 @@ export function ContributorClaimsTable() {
 
   return (
     <>
-      <Table.Root size="md" interactive borderWidth="1px" borderColor="border.DEFAULT">
-        <Table.Header>
-          <Table.Row bg="surfaceNeutral">
-            <Table.ColumnHeader color="fg.subtle" textStyle="label-mono">
-              Deliverable
+      <Table.Root size="md" interactive border="1px solid" borderColor="primary">
+        <Table.Header bg="primary">
+          <Table.Row>
+            <Table.ColumnHeader color="onPrimary" textStyle="label-mono" fontSize="11px" fontWeight="700">
+              DELIVERABLE PROVENANCE
             </Table.ColumnHeader>
-            <Table.ColumnHeader color="fg.subtle" textStyle="label-mono">
-              Block
+            <Table.ColumnHeader color="onPrimary" textStyle="label-mono" fontSize="11px" fontWeight="700">
+              BLOCK
             </Table.ColumnHeader>
-            <Table.ColumnHeader color="fg.subtle" textStyle="label-mono">
-              Transaction
-            </Table.ColumnHeader>
-            <Table.ColumnHeader
-              color="fg.subtle"
-              textStyle="label-mono"
-              textAlign="end"
-            >
-              Cumulative
+            <Table.ColumnHeader color="onPrimary" textStyle="label-mono" fontSize="11px" fontWeight="700">
+              TRANSACTION HASH
             </Table.ColumnHeader>
             <Table.ColumnHeader
-              color="fg.subtle"
+              color="onPrimary"
               textStyle="label-mono"
+              fontSize="11px"
+              fontWeight="700"
               textAlign="end"
             >
-              Claimed
+              CUMULATIVE
+            </Table.ColumnHeader>
+            <Table.ColumnHeader
+              color="onPrimary"
+              textStyle="label-mono"
+              fontSize="11px"
+              fontWeight="700"
+              textAlign="end"
+            >
+              CLAIMED PAYOUT
             </Table.ColumnHeader>
           </Table.Row>
         </Table.Header>
@@ -69,39 +73,42 @@ export function ContributorClaimsTable() {
           {data.map((claim) => (
             <Table.Row
               key={claim.transactionHash}
-              bg="bg.panel"
+              bg="surfaceNeutral"
               cursor="pointer"
-              _hover={{ bg: "surfaceNeutral" }}
+              transition="all 0.15s ease"
+              _hover={{ bg: "bg.panel" }}
               onClick={(e) => {
                 e.stopPropagation();
                 setSelected(claim);
               }}
             >
-              <Table.Cell onClick={(event) => event.stopPropagation()}>
+              <Table.Cell borderBottom="1px solid" borderColor="border.chrome" onClick={(event) => event.stopPropagation()}>
                 <CopyableHash value={claim.deliverable} />
               </Table.Cell>
-              <Table.Cell>
-                <Mono color="primary">{claim.blockNumber.toString()}</Mono>
+              <Table.Cell borderBottom="1px solid" borderColor="border.chrome">
+                <Mono color="primary" fontWeight="700">{claim.blockNumber.toString()}</Mono>
               </Table.Cell>
-              <Table.Cell>
+              <Table.Cell borderBottom="1px solid" borderColor="border.chrome">
                 <ExplorerLink value={claim.transactionHash} kind="tx" />
               </Table.Cell>
-              <Table.Cell textAlign="end" color="primary">
+              <Table.Cell textAlign="end" color="primary" borderBottom="1px solid" borderColor="border.chrome">
                 <UsdcAmount
                   value={claim.cumulativeAmount}
                   unit={false}
-                  fontSize="sm"
+                  fontSize="14px"
+                  fontWeight="700"
                 />
               </Table.Cell>
-              <Table.Cell textAlign="end" color="primary">
+              <Table.Cell textAlign="end" color="primary" borderBottom="1px solid" borderColor="border.chrome">
                 {claim.settled || claim.approved ? (
                   <UsdcAmount
                     value={claim.delta}
                     unit={false}
-                    fontSize="sm"
+                    fontSize="14px"
+                    fontWeight="700"
                   />
                 ) : (
-                  <Text color="fg.subtle" fontSize="sm">
+                  <Text color="fg.subtle" fontSize="13px">
                     --
                   </Text>
                 )}

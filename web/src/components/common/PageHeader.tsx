@@ -1,12 +1,13 @@
-import { Box, Flex, Heading, Text } from "@chakra-ui/react";
+import { Box, Flex, Heading, Text, HStack } from "@chakra-ui/react";
 
 type Props = {
   title: string;
+  tag?: string;
   description?: string;
   children?: React.ReactNode;
 };
 
-export function PageHeader({ title, description, children }: Props) {
+export function PageHeader({ title, tag, description, children }: Props) {
   return (
     <Flex
       justify="space-between"
@@ -14,13 +15,23 @@ export function PageHeader({ title, description, children }: Props) {
       direction={{ base: "column", md: "row" }}
       gap={4}
       mb={8}
+      pb={6}
+      borderBottom="1px solid"
+      borderColor="border.chrome"
     >
       <Box>
-        <Heading size="xl" fontWeight="500" letterSpacing="-0.02em">
+        {tag && (
+          <HStack gap={2} mb={1}>
+            <Text textStyle="label-mono" color="secondary" fontWeight="700" fontSize="11px">
+              {tag.startsWith("//") ? tag : `// ${tag.toUpperCase()}`}
+            </Text>
+          </HStack>
+        )}
+        <Heading textStyle="headline-lg" color="primary" fontSize={{ base: "26px", md: "32px" }} fontWeight="800" letterSpacing="-0.02em">
           {title}
         </Heading>
         {description && (
-          <Text color="fg.muted" mt={2} maxW="2xl">
+          <Text textStyle="body-md" color="fg.muted" mt={2} maxW="2xl" fontSize="15px">
             {description}
           </Text>
         )}
@@ -29,3 +40,4 @@ export function PageHeader({ title, description, children }: Props) {
     </Flex>
   );
 }
+

@@ -42,17 +42,26 @@ export function SubmitCaptureSteps() {
 
   if (ready && !device) {
     return (
-      <Panel>
-        <Text fontWeight="500" mb={2}>
-          This device has no signing key yet
+      <Panel p={8}>
+        <Text textStyle="body-lg" fontWeight="700" color="primary" mb={2}>
+          Device Signing Key Required
         </Text>
-        <Text fontSize="sm" color="fg.muted" mb={5}>
-          Captures are signed locally before submission. Set the device up once,
-          then come back.
+        <Text fontSize="14px" color="fg.muted" mb={5}>
+          Captures are signed locally by your hardware enclave before submission. Please set up your device first to generate a keypair.
         </Text>
-        <Button asChild colorPalette="brand" size="sm">
+        <Button
+          asChild
+          bg="primary"
+          color="onPrimary"
+          borderRadius="0"
+          px={6}
+          py={5}
+          fontSize="sm"
+          fontWeight="600"
+          _hover={{ bg: "onSurfaceVariant", transform: "translate(-2px, -2px)", boxShadow: "4px 4px 0px 0px #000" }}
+        >
           <NextLink href={routes.contributor.device}>
-            Set up this device
+            Set Up Device Key
           </NextLink>
         </Button>
       </Panel>
@@ -122,38 +131,38 @@ export function SubmitCaptureSteps() {
   const busy = phase !== "idle";
 
   return (
-    <Panel>
-      <Heading textStyle="body-md" fontWeight="600" color="primary" mb={4}>
-        Submit
+    <Panel p={8}>
+      <Heading textStyle="body-lg" fontWeight="700" color="primary" mb={4}>
+        Submit Signed Dataset Captures
       </Heading>
 
       {files.length === 0 ? (
-        <Box py={8} textAlign="center">
-          <Text fontWeight="500" color="fg.muted" mb={1}>
-            No files selected
+        <Box py={8} textAlign="center" border="1px solid" borderColor="border.chrome" bg="surfaceNeutral">
+          <Text fontWeight="700" color="primary" mb={1}>
+            No Files Selected
           </Text>
-          <Text fontSize="sm" color="fg.subtle">
-            Select files above to continue.
+          <Text fontSize="14px" color="fg.subtle">
+            Drop or select files above to initiate hardware signing and submission.
           </Text>
         </Box>
       ) : (
         <Box>
           {resultHash && (
             <Box
-              borderWidth="1px"
-              borderColor="border.DEFAULT"
+              border="1px solid"
+              borderColor="primary"
               bg="surfaceNeutral"
               p={4}
               mb={4}
             >
               <Text
-                fontSize="xs"
-                color="fg.muted"
-                textTransform="uppercase"
-                letterSpacing="wider"
+                textStyle="label-mono"
+                fontSize="10px"
+                color="fg.subtle"
+                fontWeight="700"
                 mb={2}
               >
-                Data hash
+                PROVENANCE DATA HASH
               </Text>
               <CopyableHash value={resultHash} lead={18} tail={12} />
             </Box>
@@ -161,16 +170,23 @@ export function SubmitCaptureSteps() {
 
           <HStack gap={4}>
             <Button
-              colorPalette="brand"
+              bg="primary"
+              color="onPrimary"
+              borderRadius="0"
+              px={8}
+              py={6}
+              fontSize="md"
+              fontWeight="600"
               onClick={handleStartUpload}
               loading={busy}
               loadingText={busy ? PHASE_LABEL[phase] : undefined}
+              _hover={{ bg: "onSurfaceVariant", transform: "translate(-2px, -2px)", boxShadow: "4px 4px 0px 0px #000" }}
             >
               Start Uploading
             </Button>
             {phase === "uploading" && (
-              <Mono fontSize="sm" color="fg.muted">
-                {uploadedCount}/{files.length} uploaded
+              <Mono fontSize="13px" color="primary" fontWeight="700">
+                {uploadedCount}/{files.length} files uploaded
               </Mono>
             )}
           </HStack>
@@ -178,10 +194,11 @@ export function SubmitCaptureSteps() {
       )}
 
       {(error || submitCapture.isError) && (
-        <Text fontSize="sm" color="warn.fg" mt={5}>
+        <Text fontSize="14px" color="red.600" fontWeight="600" mt={5}>
           {error ?? submitCapture.error?.message}
         </Text>
       )}
     </Panel>
   );
 }
+

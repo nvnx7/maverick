@@ -2,11 +2,11 @@ import { Center, Spinner, Text, VStack } from "@chakra-ui/react";
 
 export function LoadingBlock({ label = "Loading" }: { label?: string }) {
   return (
-    <Center py={16} borderWidth="1px" borderColor="border" bg="bg.panel">
+    <Center py={16} border="1px solid" borderColor="primary" bg="surfaceNeutral" borderRadius="0">
       <VStack gap={3}>
-        <Spinner size="sm" color="fg.muted" />
-        <Text fontSize="sm" color="fg.muted">
-          {label}
+        <Spinner size="sm" color="primary" />
+        <Text textStyle="label-mono" fontSize="12px" color="fg.subtle" fontWeight="600">
+          {label.toUpperCase()}
         </Text>
       </VStack>
     </Center>
@@ -20,16 +20,18 @@ export function ErrorBlock({ message }: { message?: string }) {
       py={16}
       px={6}
       textAlign="center"
-      borderWidth="1px"
-      borderColor="warn.muted"
-      bg="bg.panel"
+      border="1px solid"
+      borderColor="primary"
+      borderRadius="0"
+      bg="surfaceNeutral"
     >
-      <Text fontWeight="500" color="warn.fg">
-        Couldn&apos;t load this
+      <Text textStyle="body-lg" fontWeight="700" color="red.600">
+        Request Execution Failed
       </Text>
-      <Text fontSize="sm" color="fg.muted" maxW="md">
+      <Text fontSize="14px" color="fg.muted" maxW="md">
         {message ?? "The request failed. Refresh to try again."}
       </Text>
     </VStack>
   );
 }
+

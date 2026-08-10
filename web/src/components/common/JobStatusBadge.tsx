@@ -9,11 +9,14 @@ export function JobStatusBadge({ status, ...rest }: Props) {
   return (
     <Badge
       colorPalette={JOB_STATUS_TONE[status]}
-      variant="surface"
-      fontFamily="mono"
-      fontSize="xs"
-      fontWeight="500"
-      px={2}
+      variant="outline"
+      borderRadius="0"
+      border="1px solid"
+      borderColor="primary"
+      textStyle="label-mono"
+      fontSize="10px"
+      fontWeight="700"
+      px={2.5}
       py={1}
       {...rest}
     >
@@ -21,3 +24,4 @@ export function JobStatusBadge({ status, ...rest }: Props) {
     </Badge>
   );
 }
+

@@ -1,7 +1,8 @@
 "use client";
 
-import { Button, HStack, Stack, Text } from "@chakra-ui/react";
+import { HStack, Stack, Text } from "@chakra-ui/react";
 import { useFundJob } from "@/api/jobs";
+import { Button } from "@/components/common/Button";
 import { DataRow } from "@/components/common/DataRow";
 import { Mono } from "@/components/common/Mono";
 import { Panel } from "@/components/common/Panel";
@@ -26,41 +27,42 @@ export function FundRequestStep() {
   }
 
   return (
-    <Panel>
-      <StepLabel step={2} label="Fund this request" />
+    <Panel p={8}>
+      <StepLabel step={2} label="Fund this request into ERC-8183 Escrow" />
 
-      <Text color="fg.muted" fontSize="sm" mb={5}>
-        The provider agreed. Approving this transaction moves USDC from your
-        wallet into the escrow contract, where it stays until submissions are
-        verified.
+      <Text color="fg.muted" fontSize="14px" mb={5} lineHeight="1.6">
+        The provider agent approved your request specs. Approving this transaction transfers USDC from your wallet into the on-chain escrow contract, unlocking contributor collection.
       </Text>
 
-      <Stack gap={0} mb={6}>
-        <DataRow label="Request">
-          <Mono>#{created.jobId}</Mono>
+      <Stack gap={1} mb={6} bg="surfaceNeutral" p={4} border="1px solid" borderColor="border.chrome">
+        <DataRow label="Request ID">
+          <Mono color="primary" fontWeight="700">#{created.jobId}</Mono>
         </DataRow>
-        <DataRow label="Modality">
-          <Text fontSize="sm">{MODALITY_LABELS[created.spec.modality]}</Text>
+        <DataRow label="Data Modality">
+          <Text fontSize="14px" fontWeight="600" color="primary">{MODALITY_LABELS[created.spec.modality]}</Text>
         </DataRow>
-        <DataRow label="Minimum items">
-          <Mono>{created.spec.minItems.toLocaleString("en-US")}</Mono>
+        <DataRow label="Minimum Quota">
+          <Mono color="primary" fontWeight="700">{created.spec.minItems.toLocaleString("en-US")} items</Mono>
         </DataRow>
-        <DataRow label="Amount to escrow">
-          <UsdcAmount value={created.budget} color="brand.fg" fontSize="md" />
+        <DataRow label="Amount to Escrow">
+          <UsdcAmount value={created.budget} color="primary" fontSize="16px" fontWeight="800" />
         </DataRow>
       </Stack>
 
       <HStack gap={4}>
         <Button
-          colorPalette="brand"
+          variant="primary"
+          px={8}
+          py={6}
+          fontSize="md"
           onClick={handleFund}
           loading={fundJob.isPending}
-          loadingText="Confirm in your wallet"
+          loadingText="Confirming Transaction"
         >
-          Fund request
+          Lock Funds in Escrow
         </Button>
         {fundJob.isError && (
-          <Text fontSize="sm" color="warn.fg">
+          <Text fontSize="sm" color="red.600" fontWeight="600">
             {fundJob.error.message}
           </Text>
         )}
@@ -68,3 +70,4 @@ export function FundRequestStep() {
     </Panel>
   );
 }
+

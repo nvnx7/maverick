@@ -1,10 +1,11 @@
 "use client";
 
-import { Button, Link, Table, Text } from "@chakra-ui/react";
+import { Link, Table, Text } from "@chakra-ui/react";
 import NextLink from "next/link";
 import { useRouter } from "next/navigation";
 import { useAccount } from "wagmi";
 import { useGetBuyerJobs } from "@/api/jobs";
+import { Button } from "@/components/common/Button";
 import { EmptyState } from "@/components/common/EmptyState";
 import { JobStatusBadge } from "@/components/common/JobStatusBadge";
 import { Mono } from "@/components/common/Mono";
@@ -27,34 +28,41 @@ export function BuyerRequestsTable() {
   if (data.length === 0) {
     return (
       <EmptyState
-        title="No requests yet"
-        description="Post one to start collecting signed captures against a funded budget."
+        title="No requests posted yet"
+        description="Post a request to start collecting hardware-signed dataset captures against a locked USDC budget."
       >
-        <Button asChild colorPalette="brand" size="sm" mt={2}>
-          <NextLink href={routes.buyer.newRequest}>New request</NextLink>
+        <Button
+          asChild
+          variant="primary"
+          px={6}
+          py={5}
+          fontSize="sm"
+          mt={3}
+        >
+          <NextLink href={routes.buyer.newRequest}>Post New Request</NextLink>
         </Button>
       </EmptyState>
     );
   }
 
   return (
-    <Table.Root size="md" interactive borderWidth="1px" borderColor="border">
-      <Table.Header>
-        <Table.Row bg="bg.subtle">
-          <Table.ColumnHeader color="fg.muted" fontWeight="400">
-            Request
+    <Table.Root size="md" interactive border="1px solid" borderColor="primary">
+      <Table.Header bg="primary">
+        <Table.Row>
+          <Table.ColumnHeader color="onPrimary" textStyle="label-mono" fontSize="11px" fontWeight="700">
+            REQUEST ID & MODALITY
           </Table.ColumnHeader>
-          <Table.ColumnHeader color="fg.muted" fontWeight="400">
-            Status
+          <Table.ColumnHeader color="onPrimary" textStyle="label-mono" fontSize="11px" fontWeight="700">
+            STATUS
           </Table.ColumnHeader>
-          <Table.ColumnHeader color="fg.muted" fontWeight="400" textAlign="end">
-            Budget
+          <Table.ColumnHeader color="onPrimary" textStyle="label-mono" fontSize="11px" fontWeight="700" textAlign="end">
+            TOTAL BUDGET
           </Table.ColumnHeader>
-          <Table.ColumnHeader color="fg.muted" fontWeight="400" textAlign="end">
-            Submissions
+          <Table.ColumnHeader color="onPrimary" textStyle="label-mono" fontSize="11px" fontWeight="700" textAlign="end">
+            SUBMISSIONS
           </Table.ColumnHeader>
-          <Table.ColumnHeader color="fg.muted" fontWeight="400" textAlign="end">
-            Created
+          <Table.ColumnHeader color="onPrimary" textStyle="label-mono" fontSize="11px" fontWeight="700" textAlign="end">
+            CREATED DATE
           </Table.ColumnHeader>
         </Table.Row>
       </Table.Header>
@@ -64,33 +72,34 @@ export function BuyerRequestsTable() {
           <Table.Row
             key={request.id}
             cursor="pointer"
-            bg="bg.panel"
+            bg="surfaceNeutral"
             onClick={() => router.push(routes.buyer.request(request.id))}
-            _hover={{ bg: "bg.emphasized" }}
+            transition="all 0.15s ease"
+            _hover={{ bg: "bg.panel" }}
           >
-            <Table.Cell>
+            <Table.Cell borderBottom="1px solid" borderColor="border.chrome">
               <Link asChild _hover={{ textDecoration: "none" }}>
                 <NextLink href={routes.buyer.request(request.id)}>
-                  <Mono color="fg">#{request.id}</Mono>
+                  <Mono color="primary" fontWeight="700" fontSize="14px">#{request.id}</Mono>
                 </NextLink>
               </Link>
-              <Text fontSize="sm" color="fg.muted" mt={0.5}>
+              <Text textStyle="body-sm" color="fg.muted" fontSize="13px" mt={0.5}>
                 {MODALITY_LABELS[request.spec.modality]}
               </Text>
             </Table.Cell>
-            <Table.Cell>
+            <Table.Cell borderBottom="1px solid" borderColor="border.chrome">
               <JobStatusBadge status={request.status} />
             </Table.Cell>
-            <Table.Cell textAlign="end">
-              <UsdcAmount value={request.budget} unit={false} fontSize="sm" />
+            <Table.Cell textAlign="end" borderBottom="1px solid" borderColor="border.chrome">
+              <UsdcAmount value={request.budget} unit={false} fontSize="14px" fontWeight="700" color="primary" />
             </Table.Cell>
-            <Table.Cell textAlign="end">
-              <Mono color={request.submissionCount > 0 ? "fg" : "fg.muted"}>
+            <Table.Cell textAlign="end" borderBottom="1px solid" borderColor="border.chrome">
+              <Mono color={request.submissionCount > 0 ? "secondary" : "fg.subtle"} fontWeight="700">
                 {request.submissionCount}
               </Mono>
             </Table.Cell>
-            <Table.Cell textAlign="end">
-              <Mono color="fg.muted">{formatDate(request.createdAt)}</Mono>
+            <Table.Cell textAlign="end" borderBottom="1px solid" borderColor="border.chrome">
+              <Mono color="fg.subtle" fontSize="12px">{formatDate(request.createdAt)}</Mono>
             </Table.Cell>
           </Table.Row>
         ))}
@@ -98,3 +107,4 @@ export function BuyerRequestsTable() {
     </Table.Root>
   );
 }
+

@@ -14,14 +14,16 @@ export function EmptyState({ title, description, children }: Props) {
       py={16}
       px={6}
       textAlign="center"
-      borderWidth="1px"
-      borderColor="border"
-      borderStyle="dashed"
-      bg="bg.panel"
+      border="1px solid"
+      borderColor="primary"
+      borderRadius="0"
+      bg="surfaceNeutral"
     >
-      <Text fontWeight="500">{title}</Text>
+      <Text textStyle="body-lg" fontWeight="700" color="primary">
+        {title}
+      </Text>
       {description && (
-        <Text color="fg.muted" fontSize="sm" maxW="md">
+        <Text color="fg.muted" fontSize="14px" maxW="md">
           {description}
         </Text>
       )}
@@ -29,3 +31,4 @@ export function EmptyState({ title, description, children }: Props) {
     </VStack>
   );
 }
+

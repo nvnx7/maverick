@@ -1,8 +1,9 @@
 "use client";
 
-import { Button, HStack, IconButton, Text } from "@chakra-ui/react";
+import { HStack, IconButton, Text } from "@chakra-ui/react";
 import { LuLogOut, LuWallet } from "react-icons/lu";
 import { useAccount, useDisconnect } from "wagmi";
+import { Button } from "@/components/common/Button";
 import { truncateMiddle } from "@/utils/format";
 import { useWalletDialog } from "./WalletDialogProvider";
 
@@ -13,8 +14,8 @@ export function ConnectWalletButton() {
 
   if (!isConnected || !address) {
     return (
-      <Button size="sm" colorPalette="brand" onClick={openConnect}>
-        <LuWallet /> Connect wallet
+      <Button size="sm" variant="primary" px={4} py={2} onClick={openConnect}>
+        <LuWallet /> Connect Wallet
       </Button>
     );
   }

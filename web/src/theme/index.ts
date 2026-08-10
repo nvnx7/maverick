@@ -42,7 +42,7 @@ const config = defineConfig({
           subtle: { value: "{colors.dataMono}" },
         },
         border: {
-          DEFAULT: { value: "{colors.borderSubtle}" },
+          DEFAULT: { value: "{colors.primary}" },
           muted: { value: "{colors.borderSubtle}" },
           chrome: { value: "#F0F0F0" },
           input: { value: "{colors.borderInput}" },
@@ -52,6 +52,9 @@ const config = defineConfig({
           contrast: { value: "{colors.onPrimary}" },
           fg: { value: "{colors.primary}" },
           muted: { value: "{colors.borderSubtle}" },
+          500: { value: "{colors.primary}" },
+          600: { value: "{colors.primary}" },
+          700: { value: "{colors.primary}" },
         },
       },
     },
@@ -135,7 +138,11 @@ const config = defineConfig({
       bg: "secondary",
       color: "white",
     },
+    "input, select, textarea, button": {
+      borderRadius: "0 !important",
+    },
   },
 });
 
 export const system = createSystem(defaultConfig, config);
+

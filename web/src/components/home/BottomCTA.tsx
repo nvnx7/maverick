@@ -1,8 +1,9 @@
 "use client";
 
-import { Box, Flex, Heading, Button, Icon, HStack, Text } from "@chakra-ui/react";
+import { Box, Flex, Heading, Icon, HStack, Text } from "@chakra-ui/react";
 import NextLink from "next/link";
 import { LuArrowRight } from "react-icons/lu";
+import { Button } from "@/components/common/Button";
 import { routes } from "@/config/routes";
 
 export function BottomCTA() {
@@ -54,19 +55,10 @@ export function BottomCTA() {
         <HStack gap={4} mb={12} flexWrap="wrap" justify="center">
           <Button 
             asChild 
-            bg="onPrimary" 
-            color="primary" 
+            variant="dark"
             px={8} 
             py={7}
             fontSize="md"
-            fontWeight="700"
-            borderRadius={0}
-            transition="all 0.2s cubic-bezier(0.4, 0, 0.2, 1)"
-            _hover={{ 
-              bg: "#FFFFFF", 
-              transform: "translate(-3px, -3px)", 
-              boxShadow: "5px 5px 0px 0px #60A5FA" 
-            }}
           >
             <NextLink href={routes.buyer.newRequest}>
               Post Data Job <Icon as={LuArrowRight} ml={2} />
@@ -76,21 +68,12 @@ export function BottomCTA() {
           <Button 
             asChild 
             variant="outline"
-            borderColor="#444444"
-            borderWidth="1px"
-            color="onPrimary" 
+            borderColor="onPrimary"
+            color="onPrimary"
             px={8} 
             py={7}
             fontSize="md"
-            fontWeight="700"
-            borderRadius={0}
-            transition="all 0.2s cubic-bezier(0.4, 0, 0.2, 1)"
-            _hover={{ 
-              bg: "#111111", 
-              borderColor: "onPrimary",
-              transform: "translate(-3px, -3px)", 
-              boxShadow: "5px 5px 0px 0px #FFFFFF" 
-            }}
+            _hover={{ bg: "#111111" }}
           >
             <NextLink href={routes.contributor.browse}>
               Browse Marketplace <Icon as={LuArrowRight} ml={2} />

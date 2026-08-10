@@ -1,8 +1,8 @@
 "use client";
 
-import { Button } from "@chakra-ui/react";
 import { LuDownload } from "react-icons/lu";
 import { useGetSubmissionFiles } from "@/api/submissions/getSubmissionFiles";
+import { Button } from "@/components/common/Button";
 
 type Props = {
   jobId: string;
@@ -19,8 +19,6 @@ export function SubmissionDownloadButton({ jobId }: Props) {
       const a = document.createElement("a");
       a.href = file.url;
       a.download = file.name;
-      // Depending on browser policies, opening multiple links may be blocked.
-      // Usually target="_blank" combined with download attribute works better for multiple files.
       a.target = "_blank";
       document.body.appendChild(a);
       a.click();
@@ -34,9 +32,8 @@ export function SubmissionDownloadButton({ jobId }: Props) {
     <Button
       variant="outline"
       size="sm"
-      borderRadius="0"
-      borderColor="border.DEFAULT"
-      color="primary"
+      px={4}
+      py={2}
       onClick={handleDownload}
       disabled={isPending}
     >
@@ -44,3 +41,4 @@ export function SubmissionDownloadButton({ jobId }: Props) {
     </Button>
   );
 }
+

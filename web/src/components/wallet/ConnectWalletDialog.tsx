@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  Button,
   CloseButton,
   Dialog,
   Portal,
@@ -10,6 +9,7 @@ import {
 } from "@chakra-ui/react";
 import { useEffect } from "react";
 import { useAccount, useConnect } from "wagmi";
+import { Button } from "@/components/common/Button";
 
 type Props = {
   open: boolean;
@@ -41,35 +41,35 @@ export function ConnectWalletDialog({ open, onOpenChange }: Props) {
         <Dialog.Positioner>
           <Dialog.Content
             bg="bg.panel"
-            borderWidth="1px"
-            borderColor="border"
+            border="1px solid"
+            borderColor="primary"
+            borderRadius="0"
             maxW="sm"
           >
             <Dialog.Header pb={2}>
-              <Dialog.Title fontWeight="500">Connect a wallet</Dialog.Title>
+              <Dialog.Title textStyle="headline-md" color="primary">Connect a Wallet</Dialog.Title>
             </Dialog.Header>
             <Dialog.Body pb={6}>
-              <Text fontSize="sm" color="fg.muted" mb={5}>
-                Maverick never takes custody. Funds move between your wallet and
-                the escrow contract directly.
+              <Text fontSize="14px" color="fg.muted" mb={5} lineHeight="1.5">
+                Maverick never takes custody. Funds move directly between your wallet and the ERC-8183 escrow contract.
               </Text>
 
               {available.length === 0 ? (
-                <Text fontSize="sm" color="fg.muted">
-                  No wallet detected in this browser. Install a wallet
-                  extension, then reload.
+                <Text fontSize="14px" color="fg.muted">
+                  No web3 wallet detected in this browser. Install MetaMask, Rabby, or Coinbase Wallet, then reload.
                 </Text>
               ) : (
-                <VStack gap={2} align="stretch">
+                <VStack gap={3} align="stretch">
                   {available.map((connector) => (
                     <Button
                       key={connector.uid}
                       variant="outline"
-                      borderColor="border"
+                      px={5}
+                      py={5}
+                      fontSize="sm"
                       justifyContent="flex-start"
                       loading={isPending}
                       onClick={() => connect({ connector })}
-                      _hover={{ bg: "bg.emphasized", borderColor: "brand.600" }}
                     >
                       {connector.name}
                     </Button>
@@ -78,7 +78,7 @@ export function ConnectWalletDialog({ open, onOpenChange }: Props) {
               )}
 
               {error && (
-                <Text fontSize="sm" color="warn.fg" mt={4}>
+                <Text fontSize="14px" color="red.600" fontWeight="600" mt={4}>
                   {error.message}
                 </Text>
               )}
@@ -92,3 +92,4 @@ export function ConnectWalletDialog({ open, onOpenChange }: Props) {
     </Dialog.Root>
   );
 }
+

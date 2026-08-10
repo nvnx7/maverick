@@ -1,6 +1,6 @@
 import type { Address, Chain, } from "viem";
 import { anvil, arcTestnet as arcTestnetChain } from "viem/chains";
-import { env, rpcArcTestnet, rpcLocal } from "./env";
+import { rpcArcTestnet, rpcLocal } from "./env";
 
 export type NetworkConfig = {
   chain: Chain;
@@ -49,5 +49,6 @@ const networkConfigs: Record<number, NetworkConfig> = {
   [arcTestnetChain.id]: arcTestnet,
 };
 
-const chainId = env === "production" ? arcTestnet.chain.id : local.chain.id;
+// const chainId = env === "production" ? arcTestnet.chain.id : local.chain.id;
+const chainId =  arcTestnet.chain.id;
 export const networkConfig = networkConfigs[chainId] as NetworkConfig;

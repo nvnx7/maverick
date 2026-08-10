@@ -18,54 +18,64 @@ export function FundedRequestCard({ request }: { request: FundedRequest }) {
   return (
     <LinkBox
       as="article"
-      bg="bg.panel"
-      borderWidth="1px"
-      borderColor="border"
-      p={6}
-      transition="border-color 0.15s, background 0.15s"
-      _hover={{ borderColor: "brand.600", bg: "bg.subtle" }}
+      bg="surfaceNeutral"
+      border="1px solid"
+      borderColor="primary"
+      borderRadius="0"
+      p={7}
+      transition="all 0.25s cubic-bezier(0.4, 0, 0.2, 1)"
+      _hover={{
+        bg: "bg.panel",
+        transform: "translate(-3px, -3px)",
+        boxShadow: "5px 5px 0px 0px #000000",
+      }}
     >
       <Flex justify="space-between" align="start" gap={4} mb={4}>
         <Box>
-          <Heading size="md" fontWeight="500">
+          <Heading textStyle="body-lg" fontWeight="700" color="primary" fontSize="18px">
             <LinkOverlay asChild>
               <NextLink href={routes.contributor.fulfill(request.id)}>
                 {MODALITY_LABELS[request.spec.modality]}
               </NextLink>
             </LinkOverlay>
           </Heading>
-          <Mono color="fg.muted" fontSize="xs" mt={1}>
-            #{request.id}
+          <Mono color="fg.subtle" fontSize="11px" mt={1} fontWeight="600">
+            REQ #{request.id}
           </Mono>
         </Box>
         <JobStatusBadge status={request.status} />
       </Flex>
 
-      <UsdcAmount
-        value={request.pricePerItem}
-        fontSize="2xl"
-        color="brand.fg"
-        display="block"
-      />
-      <Text fontSize="xs" color="fg.muted" mt={1} mb={4}>
-        per accepted item
-      </Text>
+      <Box bg="primary" color="onPrimary" p={4} my={4}>
+        <Text textStyle="label-mono" color="#888888" fontSize="10px" mb={1}>
+          PAYOUT PER ITEM
+        </Text>
+        <UsdcAmount
+          value={request.pricePerItem}
+          fontSize="22px"
+          fontWeight="800"
+          color="onPrimary"
+          display="block"
+        />
+      </Box>
 
-      <Text fontSize="sm" color="fg.muted" lineHeight="1.6" mb={4}>
+      <Text textStyle="body-sm" color="fg.muted" lineHeight="1.6" mb={4} fontSize="14px">
         {request.spec.deviceRequirements}
       </Text>
 
       <Flex
         justify="space-between"
-        borderTopWidth="1px"
-        borderColor="border.muted"
-        pt={3}
+        align="center"
+        borderTop="1px solid"
+        borderColor="border.chrome"
+        pt={3.5}
       >
-        <Text fontSize="xs" color="fg.muted">
-          Budget remaining
+        <Text textStyle="label-mono" fontSize="11px" color="fg.subtle">
+          BUDGET REMAINING
         </Text>
-        <UsdcAmount value={request.budgetRemaining} fontSize="xs" />
+        <UsdcAmount value={request.budgetRemaining} fontSize="12px" fontWeight="700" color="primary" />
       </Flex>
     </LinkBox>
   );
 }
+

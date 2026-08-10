@@ -3,17 +3,16 @@
 import {
   Badge,
   Box,
-  Button,
   Flex,
   Heading,
   HStack,
   Icon,
-  SimpleGrid,
   Text,
 } from "@chakra-ui/react";
 import Image from "next/image";
 import NextLink from "next/link";
-import { LuArrowRight, LuShieldCheck, LuZap, LuLock } from "react-icons/lu";
+import { LuArrowRight } from "react-icons/lu";
+import { Button } from "@/components/common/Button";
 import { routes } from "@/config/routes";
 
 export function HeroSection() {
@@ -69,19 +68,10 @@ export function HeroSection() {
           <HStack gap={4} mb={10} flexWrap="wrap">
             <Button
               asChild
-              bg="primary"
-              color="onPrimary"
-              borderRadius="0"
+              variant="primary"
               px={8}
               py={7}
               fontSize="md"
-              fontWeight="600"
-              transition="all 0.2s cubic-bezier(0.4, 0, 0.2, 1)"
-              _hover={{
-                bg: "onSurfaceVariant",
-                transform: "translate(-3px, -3px)",
-                boxShadow: "5px 5px 0px 0px #000000",
-              }}
             >
               <NextLink href={routes.buyer.newRequest}>
                 Post Data Job <Icon as={LuArrowRight} ml={2} />
@@ -90,20 +80,9 @@ export function HeroSection() {
             <Button
               asChild
               variant="outline"
-              borderColor="primary"
-              borderWidth="1px"
-              color="primary"
-              borderRadius="0"
               px={8}
               py={7}
               fontSize="md"
-              fontWeight="600"
-              transition="all 0.2s cubic-bezier(0.4, 0, 0.2, 1)"
-              _hover={{
-                bg: "surfaceNeutral",
-                transform: "translate(-3px, -3px)",
-                boxShadow: "5px 5px 0px 0px #000000",
-              }}
             >
               <NextLink href={routes.contributor.browse}>
                 Become Contributor <Icon as={LuArrowRight} ml={2} />

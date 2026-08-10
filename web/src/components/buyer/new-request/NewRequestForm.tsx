@@ -2,7 +2,6 @@
 
 import {
   Box,
-  Button,
   Field,
   Input,
   NativeSelect,
@@ -14,6 +13,7 @@ import {
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useCreateJob } from "@/api/jobs";
+import { Button } from "@/components/common/Button";
 import { Panel } from "@/components/common/Panel";
 import {
   MAX_JOB_BUDGET,
@@ -76,7 +76,7 @@ export function NewRequestForm() {
   }
 
   return (
-    <Panel as="form" onSubmit={handleSubmit} p={{ base: 8, md: 12 }} borderRadius="0" bg="bg.panel" borderColor="border.DEFAULT" borderWidth="1px">
+    <Panel as="form" onSubmit={handleSubmit} p={{ base: 8, md: 12 }}>
       <Stack gap={8}>
         <SimpleGrid columns={{ base: 1, md: 2 }} gap={6}>
           <Field.Root>
@@ -85,7 +85,7 @@ export function NewRequestForm() {
               <NativeSelect.Field
                 value={modality}
                 bg="bg.panel"
-                borderColor="border.input"
+                borderColor="primary"
                 borderRadius="0"
                 fontFamily="body"
                 onChange={(event) =>
@@ -108,7 +108,7 @@ export function NewRequestForm() {
               type="number"
               value={minItems}
               bg="bg.panel"
-              borderColor="border.input"
+              borderColor="primary"
               borderRadius="0"
               fontFamily="mono"
               onChange={(event) => setMinItems(event.currentTarget.value)}
@@ -123,7 +123,7 @@ export function NewRequestForm() {
             rows={4}
             value={deviceRequirements}
             bg="bg.panel"
-            borderColor="border.input"
+            borderColor="primary"
             borderRadius="0"
             fontFamily="body"
             placeholder="Head-mounted camera, 1080p minimum, 30fps"
@@ -141,7 +141,7 @@ export function NewRequestForm() {
             step="0.01"
             value={budget}
             bg="bg.panel"
-            borderColor="border.input"
+            borderColor="primary"
             borderRadius="0"
             fontFamily="mono"
             placeholder="0.00"
@@ -153,28 +153,24 @@ export function NewRequestForm() {
           <Field.ErrorText>{errors.budget}</Field.ErrorText>
         </Field.Root>
 
-        <Box borderTopWidth="1px" borderColor="border.DEFAULT" />
+        <Box borderTopWidth="1px" borderColor="border.chrome" />
 
         <Button
           type="submit"
-          bg="primary"
-          color="onPrimary"
-          borderRadius="0"
+          variant="primary"
           px={8}
           py={6}
-          textStyle="body-md"
-          fontWeight="500"
+          fontSize="md"
           alignSelf="flex-start"
           disabled={invalid}
           loading={createJob.isPending}
-          loadingText="Confirm in your wallet"
-          _hover={{ bg: "onSurfaceVariant" }}
+          loadingText="Confirming Transaction"
         >
-          Create request
+          Create Request
         </Button>
 
         {createJob.isError && (
-          <Text fontSize="sm" color="warn.fg">
+          <Text fontSize="sm" color="red.600" fontWeight="600">
             {createJob.error.message}
           </Text>
         )}
@@ -182,3 +178,4 @@ export function NewRequestForm() {
     </Panel>
   );
 }
+

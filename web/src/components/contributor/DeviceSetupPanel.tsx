@@ -1,7 +1,8 @@
 "use client";
 
-import { Button, Stack, Text } from "@chakra-ui/react";
+import { Stack, Text, Heading } from "@chakra-ui/react";
 import { useRegisterDevice } from "@/api/devices";
+import { Button } from "@/components/common/Button";
 import { Panel } from "@/components/common/Panel";
 import { LoadingBlock } from "@/components/common/QueryState";
 import { useDevice } from "@/hooks/useDevice";
@@ -11,7 +12,7 @@ export function DeviceSetupPanel() {
   const { device, ready, provision } = useDevice();
   const registerDevice = useRegisterDevice();
 
-  if (!ready) return <LoadingBlock label="Checking this device" />;
+  if (!ready) return <LoadingBlock label="Checking device hardware status" />;
   if (device) return <DeviceRegisteredCard />;
 
   async function handleSetup() {
@@ -23,27 +24,30 @@ export function DeviceSetupPanel() {
   }
 
   return (
-    <Panel maxW="2xl">
+    <Panel maxW="2xl" p={8}>
       <Stack gap={5} align="flex-start">
-        <Text fontWeight="500">Set up this device</Text>
+        <Heading textStyle="headline-md" color="primary" fontSize="22px" fontWeight="700">
+          Set Up Contributor Hardware Device
+        </Heading>
 
-        <Text color="fg.muted" lineHeight="1.7">
-          This creates a signing key on this device. It stays on this device —
-          we never see your private key. Every capture you submit gets signed
-          with it, and that signature is what releases your payout.
+        <Text textStyle="body-md" color="fg.muted" lineHeight="1.7" fontSize="15px">
+          This provisions an isolated cryptographic signing key on your local device. Your private key remains strictly on this device. Every dataset submission is signed by this enclave key to verify proof of hardware capture before disburser payouts are unlocked.
         </Text>
 
         <Button
-          colorPalette="brand"
+          variant="primary"
+          px={8}
+          py={6}
+          fontSize="md"
           onClick={handleSetup}
           loading={registerDevice.isPending}
-          loadingText="Registering"
+          loadingText="Registering Device Key"
         >
-          Set up this device
+          Set Up Hardware Device
         </Button>
 
         {registerDevice.isError && (
-          <Text fontSize="sm" color="warn.fg">
+          <Text fontSize="sm" color="red.500" fontWeight="600">
             {registerDevice.error.message}
           </Text>
         )}
@@ -51,3 +55,4 @@ export function DeviceSetupPanel() {
     </Panel>
   );
 }
+

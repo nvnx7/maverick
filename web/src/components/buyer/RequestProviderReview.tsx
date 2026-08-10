@@ -1,9 +1,10 @@
 "use client";
 
-import { Box, Button, Heading, HStack, Stack, Text } from "@chakra-ui/react";
+import { Box, Heading, HStack, Stack, Text } from "@chakra-ui/react";
 import { useState } from "react";
 import { useFundJob, useGetJob } from "@/api/jobs";
 import { useActivateRequest, useGetRequestStatus } from "@/api/review";
+import { Button } from "@/components/common/Button";
 import { DataRow } from "@/components/common/DataRow";
 import { ExplorerLink } from "@/components/common/ExplorerLink";
 import { Mono } from "@/components/common/Mono";
@@ -39,58 +40,58 @@ export function RequestProviderReview() {
   }
 
   return (
-    <Panel mb={6}>
-      <Heading size="sm" fontWeight="500" color="fg.muted" mb={2}>
-        Provider review
+    <Panel mb={6} p={8}>
+      <Heading textStyle="body-lg" fontWeight="700" color="primary" mb={2}>
+        Provider Agent Review & Quote
       </Heading>
 
-      <Text fontSize="sm" color="fg.muted" mb={4}>
-        Check the provider's quote before writing a budget on-chain.
+      <Text fontSize="14px" color="fg.muted" mb={4} lineHeight="1.6">
+        Inspect the provider agent's quote and decision status before writing an escrow budget on-chain.
       </Text>
 
       {report && (
-        <Box mb={4}>
+        <Stack gap={1} mb={4} bg="surfaceNeutral" p={4} border="1px solid" borderColor="border.chrome">
           <DataRow label="On-chain status">
-            <Mono>{report.onChainStatus}</Mono>
+            <Mono color="primary" fontWeight="700">{report.onChainStatus}</Mono>
           </DataRow>
           <DataRow label="Budget set on-chain">
-            <UsdcAmount value={report.budget} />
+            <UsdcAmount value={report.budget} color="primary" fontWeight="700" fontSize="14px" />
           </DataRow>
-          <DataRow label="Decision">
-            <Mono color={declined ? "warn.fg" : "fg"}>
-              {report.providerDecision}
+          <DataRow label="Provider decision">
+            <Mono color={declined ? "red.600" : "secondary"} fontWeight="700">
+              {report.providerDecision.toUpperCase()}
             </Mono>
           </DataRow>
-        </Box>
+        </Stack>
       )}
 
       {agreed && quotedBudget !== undefined && (
         <Box
-          borderWidth="1px"
-          borderColor="brand.muted"
-          bg="brand.subtle"
+          border="1px solid"
+          borderColor="primary"
+          bg="surfaceNeutral"
           p={4}
           mb={4}
         >
-          <Text fontSize="sm" color="fg.muted" mb={1}>
-            Provider quoted
+          <Text fontSize="12px" textStyle="label-mono" color="fg.subtle" fontWeight="700" mb={1}>
+            PROVIDER QUOTED BUDGET
           </Text>
-          <UsdcAmount value={quotedBudget} color="brand.fg" fontSize="xl" />
+          <UsdcAmount value={quotedBudget} color="primary" fontSize="20px" fontWeight="800" />
         </Box>
       )}
 
       {declined && (
         <Box
-          borderWidth="1px"
-          borderColor="warn.muted"
-          bg="warn.subtle"
+          border="1px solid"
+          borderColor="red.600"
+          bg="surfaceNeutral"
           p={4}
           mb={4}
         >
-          <Text fontSize="sm" color="fg.muted" mb={2}>
+          <Text fontSize="14px" color="primary" fontWeight="600" mb={2}>
             {declineCopy(report?.declineReason)}
           </Text>
-          <Mono fontSize="xs" color="warn.fg">
+          <Mono fontSize="12px" color="red.600" fontWeight="700">
             {report?.declineReason}
           </Mono>
         </Box>
@@ -98,16 +99,15 @@ export function RequestProviderReview() {
 
       {activate.data?.txHash && (
         <Box mb={4}>
-          <DataRow label="Activation tx">
+          <DataRow label="Activation Tx">
             <ExplorerLink value={activate.data.txHash} kind="tx" />
           </DataRow>
         </Box>
       )}
 
       {activate.data?.alreadyActivated && (
-        <Text fontSize="sm" color="fg.muted" mb={4}>
-          Already acted on — the provider reported current state instead of
-          resending a transaction.
+        <Text fontSize="14px" color="fg.subtle" mb={4}>
+          Already acted on — provider reported current state.
         </Text>
       )}
 
@@ -116,15 +116,17 @@ export function RequestProviderReview() {
           <HStack gap={3} wrap="wrap">
             <Button
               variant="outline"
-              borderColor="border"
+              px={5}
+              py={4}
+              fontSize="sm"
               onClick={() => {
                 setChecked(true);
                 if (checked) status.refetch();
               }}
               loading={status.isFetching}
-              loadingText="Checking"
+              loadingText="Checking Status"
             >
-              Check Status
+              Check Provider Status
             </Button>
           </HStack>
         )}
@@ -132,15 +134,18 @@ export function RequestProviderReview() {
         {agreed && (
           <HStack gap={3} wrap="wrap">
             <Button
-              colorPalette="brand"
+              variant="primary"
+              px={6}
+              py={5}
+              fontSize="sm"
               onClick={handleAgreeAndFund}
               loading={busy}
               loadingText={activate.isPending ? "Activating" : "Funding"}
             >
-              Agree And Fund
+              Agree & Lock Escrow
             </Button>
-            <Button variant="outline" borderColor="border">
-              Decline
+            <Button variant="outline" px={5} py={5} fontSize="sm">
+              Decline Quote
             </Button>
           </HStack>
         )}
