@@ -1,10 +1,10 @@
 "use client";
 
 import { Heading, Stack } from "@chakra-ui/react";
+import { Panel } from "@/components/common/Panel";
 import { CaptureUploader } from "./CaptureUploader";
 import { FulfillProvider } from "./FulfillContext";
 import { FulfillRequestSummary } from "./FulfillRequestSummary";
-import { Panel } from "@/components/common/Panel";
 import { SubmitCaptureSteps } from "./SubmitCaptureSteps";
 
 export function FulfillFlow() {
@@ -25,4 +25,3 @@ export function FulfillFlow() {
     </FulfillProvider>
   );
 }
-

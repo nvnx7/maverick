@@ -40,4 +40,3 @@ export function ModalityFilter({ value, onChange }: Props) {
     </HStack>
   );
 }
-

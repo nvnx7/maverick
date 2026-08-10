@@ -1,4 +1,4 @@
-import { Box, Container, Flex, Text, HStack, Link } from "@chakra-ui/react";
+import { Box, Container, Flex, HStack, Link, Text } from "@chakra-ui/react";
 import NextLink from "next/link";
 import { routes } from "@/config/routes";
 
@@ -20,7 +20,9 @@ export function Footer() {
               <NextLink href={routes.contributor.browse}>Marketplace</NextLink>
             </Link>
             <Link asChild _hover={{ color: "primary" }}>
-              <NextLink href="https://github.com/nvnx7/maverick#readme">Docs</NextLink>
+              <NextLink href="https://github.com/nvnx7/maverick#readme">
+                Docs
+              </NextLink>
             </Link>
           </HStack>
         </Flex>

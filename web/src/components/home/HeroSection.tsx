@@ -43,7 +43,12 @@ export function HeroSection() {
               bg="successGreen"
               boxShadow="0 0 8px #10B981"
             />
-            <Text textStyle="label-mono" color="primary" fontSize="11px" fontWeight="600">
+            <Text
+              textStyle="label-mono"
+              color="primary"
+              fontSize="11px"
+              fontWeight="600"
+            >
               ERC-8183 DATA ESCROW LIVE ON ARC TESTNET
             </Text>
           </HStack>
@@ -60,30 +65,25 @@ export function HeroSection() {
             Democratize The World’s AI Data
           </Heading>
 
-          <Text textStyle="body-lg" color="fg.muted" mb={8} fontSize={{ base: "16px", md: "18px" }}>
-            An open decentralized protocol where AI builders source verifiable training datasets, and contributors earn transparent USDC disburser payouts.
+          <Text
+            textStyle="body-lg"
+            color="fg.muted"
+            mb={8}
+            fontSize={{ base: "16px", md: "18px" }}
+          >
+            An open decentralized protocol where AI builders source verifiable
+            training datasets, and contributors earn transparent USDC disburser
+            payouts.
           </Text>
 
           {/* Action Buttons */}
           <HStack gap={4} mb={10} flexWrap="wrap">
-            <Button
-              asChild
-              variant="primary"
-              px={8}
-              py={7}
-              fontSize="md"
-            >
+            <Button asChild variant="primary" px={8} py={7} fontSize="md">
               <NextLink href={routes.buyer.newRequest}>
                 Post Data Job <Icon as={LuArrowRight} ml={2} />
               </NextLink>
             </Button>
-            <Button
-              asChild
-              variant="outline"
-              px={8}
-              py={7}
-              fontSize="md"
-            >
+            <Button asChild variant="outline" px={8} py={7} fontSize="md">
               <NextLink href={routes.contributor.browse}>
                 Become Contributor <Icon as={LuArrowRight} ml={2} />
               </NextLink>
@@ -91,11 +91,54 @@ export function HeroSection() {
           </HStack>
 
           {/* Protocol Tags */}
-          <HStack gap={3} textStyle="label-mono" color="fg.subtle" flexWrap="wrap" pt={4} borderTop="1px solid" borderColor="border.chrome">
-            <Text mr={1} fontWeight="700">BUILT ON</Text>
-            <Badge bg="surfaceNeutral" color="primary" border="1px solid" borderColor="border.DEFAULT" borderRadius="0" px={2.5} py={1} textStyle="label-mono">Arc Testnet</Badge>
-            <Badge bg="surfaceNeutral" color="primary" border="1px solid" borderColor="border.DEFAULT" borderRadius="0" px={2.5} py={1} textStyle="label-mono">ERC-8183 Escrow</Badge>
-            <Badge bg="surfaceNeutral" color="primary" border="1px solid" borderColor="border.DEFAULT" borderRadius="0" px={2.5} py={1} textStyle="label-mono">USDC Rails</Badge>
+          <HStack
+            gap={3}
+            textStyle="label-mono"
+            color="fg.subtle"
+            flexWrap="wrap"
+            pt={4}
+            borderTop="1px solid"
+            borderColor="border.chrome"
+          >
+            <Text mr={1} fontWeight="700">
+              BUILT ON
+            </Text>
+            <Badge
+              bg="surfaceNeutral"
+              color="primary"
+              border="1px solid"
+              borderColor="border.DEFAULT"
+              borderRadius="0"
+              px={2.5}
+              py={1}
+              textStyle="label-mono"
+            >
+              Arc Testnet
+            </Badge>
+            <Badge
+              bg="surfaceNeutral"
+              color="primary"
+              border="1px solid"
+              borderColor="border.DEFAULT"
+              borderRadius="0"
+              px={2.5}
+              py={1}
+              textStyle="label-mono"
+            >
+              ERC-8183 Escrow
+            </Badge>
+            <Badge
+              bg="surfaceNeutral"
+              color="primary"
+              border="1px solid"
+              borderColor="border.DEFAULT"
+              borderRadius="0"
+              px={2.5}
+              py={1}
+              textStyle="label-mono"
+            >
+              USDC Rails
+            </Badge>
           </HStack>
         </Box>
 
@@ -126,17 +169,37 @@ export function HeroSection() {
                 <Box w="10px" h="10px" borderRadius="full" bg="#FF5F56" />
                 <Box w="10px" h="10px" borderRadius="full" bg="#FFBD2E" />
                 <Box w="10px" h="10px" borderRadius="full" bg="#27C93F" />
-                <Text textStyle="label-mono" color="#888888" fontSize="11px" ml={2}>
+                <Text
+                  textStyle="label-mono"
+                  color="#888888"
+                  fontSize="11px"
+                  ml={2}
+                >
                   maverick-protocol-v1.0 --arc-testnet
                 </Text>
               </HStack>
-              <Badge bg="#1E293B" color="#60A5FA" border="1px solid" borderColor="#334155" borderRadius="0" px={2} py={0.5} textStyle="label-mono" fontSize="10px">
+              <Badge
+                bg="#1E293B"
+                color="#60A5FA"
+                border="1px solid"
+                borderColor="#334155"
+                borderRadius="0"
+                px={2}
+                py={0.5}
+                textStyle="label-mono"
+                fontSize="10px"
+              >
                 ACTIVE PIPELINE
               </Badge>
             </Flex>
 
             {/* Architecture Canvas */}
-            <Box p={4} bg="bg.panel" position="relative" minH={{ base: "320px", lg: "480px" }}>
+            <Box
+              p={4}
+              bg="bg.panel"
+              position="relative"
+              minH={{ base: "320px", lg: "480px" }}
+            >
               <Image
                 src="/hero.png"
                 alt="Maverick Architecture Diagram"
@@ -158,12 +221,26 @@ export function HeroSection() {
               flexWrap="wrap"
               gap={2}
             >
-              <HStack gap={2} textStyle="label-mono" fontSize="11px" color="fg.subtle">
-                <Text color="primary" fontWeight="700">COMMERCE</Text>
+              <HStack
+                gap={2}
+                textStyle="label-mono"
+                fontSize="11px"
+                color="fg.subtle"
+              >
+                <Text color="primary" fontWeight="700">
+                  COMMERCE
+                </Text>
                 <Text>0xB77D...6b5e</Text>
               </HStack>
-              <HStack gap={2} textStyle="label-mono" fontSize="11px" color="fg.subtle">
-                <Text color="successGreen" fontWeight="700">STATUS</Text>
+              <HStack
+                gap={2}
+                textStyle="label-mono"
+                fontSize="11px"
+                color="fg.subtle"
+              >
+                <Text color="successGreen" fontWeight="700">
+                  STATUS
+                </Text>
                 <Text>VERIFIED AGENT RELEASE</Text>
               </HStack>
             </Flex>
@@ -173,4 +250,3 @@ export function HeroSection() {
     </Box>
   );
 }
-

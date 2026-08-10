@@ -6,8 +6,8 @@ import { LuArrowLeft } from "react-icons/lu";
 import { useGetJob } from "@/api/jobs";
 import { JobStatusBadge } from "@/components/common/JobStatusBadge";
 import { Panel } from "@/components/common/Panel";
-import { UsdcAmount } from "@/components/common/UsdcAmount";
 import { ErrorBlock, LoadingBlock } from "@/components/common/QueryState";
+import { UsdcAmount } from "@/components/common/UsdcAmount";
 import { routes } from "@/config/routes";
 import { useRequestId } from "@/hooks/useRequestId";
 import { RequestSpendBar } from "./RequestSpendBar";
@@ -48,35 +48,49 @@ export function RequestDetailHeader() {
               Request #{data.id}
             </Heading>
             <Text fontSize="sm" color="fg.muted">
-              {data.submissionCount} submission{data.submissionCount !== 1 && "s"}
+              {data.submissionCount} submission
+              {data.submissionCount !== 1 && "s"}
             </Text>
           </Box>
-          <JobStatusBadge
-            status={data.status}
-            fontSize="sm"
-            px={4}
-            py={1.5}
-          />
+          <JobStatusBadge status={data.status} fontSize="sm" px={4} py={1.5} />
         </Flex>
 
         {hasBudget && (
-          <Box
-            borderTopWidth="1px"
-            borderColor="border.DEFAULT"
-            pt={5}
-          >
+          <Box borderTopWidth="1px" borderColor="border.DEFAULT" pt={5}>
             <Flex gap={8} wrap="wrap" mb={4}>
               <Box>
-                <Text fontSize="xs" color="fg.muted" textTransform="uppercase" letterSpacing="wider" mb={1}>
+                <Text
+                  fontSize="xs"
+                  color="fg.muted"
+                  textTransform="uppercase"
+                  letterSpacing="wider"
+                  mb={1}
+                >
                   Total Budget
                 </Text>
-                <UsdcAmount value={data.budget} fontSize="2xl" fontWeight="600" color="primary" />
+                <UsdcAmount
+                  value={data.budget}
+                  fontSize="2xl"
+                  fontWeight="600"
+                  color="primary"
+                />
               </Box>
               <Box>
-                <Text fontSize="xs" color="fg.muted" textTransform="uppercase" letterSpacing="wider" mb={1}>
+                <Text
+                  fontSize="xs"
+                  color="fg.muted"
+                  textTransform="uppercase"
+                  letterSpacing="wider"
+                  mb={1}
+                >
                   Spent
                 </Text>
-                <UsdcAmount value={data.spent} fontSize="2xl" fontWeight="600" color="brand.fg" />
+                <UsdcAmount
+                  value={data.spent}
+                  fontSize="2xl"
+                  fontWeight="600"
+                  color="brand.fg"
+                />
               </Box>
             </Flex>
             <RequestSpendBar budget={data.budget} spent={data.spent} />

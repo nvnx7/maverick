@@ -136,4 +136,3 @@ export function useGetContributorClaims(params: {
     error: claimsQuery.error,
   };
 }
-

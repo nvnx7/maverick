@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  CloseButton,
-  Dialog,
-  Portal,
-  Stack,
-  Text,
-} from "@chakra-ui/react";
+import { CloseButton, Dialog, Portal, Stack, Text } from "@chakra-ui/react";
 import { useState } from "react";
 import type { ContributorClaim } from "@/api/jobs";
 import { useRequestEvaluatorReview } from "@/api/submissions";
@@ -62,12 +56,23 @@ export function ContributorClaimDialog({ claim, open, onOpenChange }: Props) {
             maxW="xl"
           >
             <Dialog.Header pb={2}>
-              <Dialog.Title textStyle="headline-md" color="primary">Submission Details</Dialog.Title>
+              <Dialog.Title textStyle="headline-md" color="primary">
+                Submission Details
+              </Dialog.Title>
             </Dialog.Header>
             <Dialog.Body pb={6}>
-              <Stack gap={1} mb={6} bg="surfaceNeutral" p={4} border="1px solid" borderColor="border.chrome">
+              <Stack
+                gap={1}
+                mb={6}
+                bg="surfaceNeutral"
+                p={4}
+                border="1px solid"
+                borderColor="border.chrome"
+              >
                 <DataRow label="Request ID">
-                  <Mono color="primary" fontWeight="700">#{claim.jobId}</Mono>
+                  <Mono color="primary" fontWeight="700">
+                    #{claim.jobId}
+                  </Mono>
                 </DataRow>
                 <DataRow label="Contributor Address">
                   <ExplorerLink value={claim.contributor} kind="address" />
@@ -76,26 +81,41 @@ export function ContributorClaimDialog({ claim, open, onOpenChange }: Props) {
                   <CopyableHash value={claim.deliverable} />
                 </DataRow>
                 <DataRow label="Block Number">
-                  <Mono color="primary" fontWeight="700">{claim.blockNumber.toString()}</Mono>
+                  <Mono color="primary" fontWeight="700">
+                    {claim.blockNumber.toString()}
+                  </Mono>
                 </DataRow>
                 <DataRow label="Transaction Hash">
                   <ExplorerLink value={claim.transactionHash} kind="tx" />
                 </DataRow>
                 <DataRow label="Claimed Amount">
                   {isPaid ? (
-                    <UsdcAmount value={claim.delta} unit={false} color="primary" fontWeight="700" fontSize="14px" />
+                    <UsdcAmount
+                      value={claim.delta}
+                      unit={false}
+                      color="primary"
+                      fontWeight="700"
+                      fontSize="14px"
+                    />
                   ) : (
                     <Text color="fg.subtle">--</Text>
                   )}
                 </DataRow>
                 <DataRow label="Cumulative Claimed">
-                  <UsdcAmount value={claim.cumulativeAmount} unit={false} color="primary" fontWeight="700" fontSize="14px" />
+                  <UsdcAmount
+                    value={claim.cumulativeAmount}
+                    unit={false}
+                    color="primary"
+                    fontWeight="700"
+                    fontSize="14px"
+                  />
                 </DataRow>
               </Stack>
 
               {isPaid ? (
                 <Text textStyle="body-sm" color="successGreen" fontWeight="700">
-                  ✓ Settled — USDC payout has been released directly to your wallet.
+                  ✓ Settled — USDC payout has been released directly to your
+                  wallet.
                 </Text>
               ) : (
                 <Button

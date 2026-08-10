@@ -13,7 +13,7 @@ export function SubmissionDownloadButton({ jobId }: Props) {
 
   const handleDownload = () => {
     if (!files) return;
-    
+
     // Trigger download for each file
     files.forEach((file) => {
       const a = document.createElement("a");
@@ -41,4 +41,3 @@ export function SubmissionDownloadButton({ jobId }: Props) {
     </Button>
   );
 }
-

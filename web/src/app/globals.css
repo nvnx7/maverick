@@ -22,20 +22,20 @@ body {
  */
 .uppy-Dashboard-inner,
 .uppy-Dashboard-AddFiles {
-  background-color: #FFFFFF !important;
-  border-color: #E5E5E5 !important;
+  background-color: #ffffff !important;
+  border-color: #e5e5e5 !important;
   border-radius: 0 !important;
 }
 
 .uppy-Dashboard-dropFilesHereHint {
-  border-color: #B0B0B0 !important;
+  border-color: #b0b0b0 !important;
   border-radius: 0 !important;
 }
 
 .uppy-StatusBar,
 .uppy-DashboardContent-bar {
-  background-color: #F9F9F9 !important;
-  border-color: #E5E5E5 !important;
+  background-color: #f9f9f9 !important;
+  border-color: #e5e5e5 !important;
 }
 
 .uppy-StatusBar-progress {
@@ -45,14 +45,13 @@ body {
 .uppy-c-btn-primary {
   background-color: #000000 !important;
   border-radius: 0 !important;
-  color: #FFFFFF !important;
+  color: #ffffff !important;
 }
 
 .uppy-Dashboard-AddFiles-title {
-  color: #1C1B1B !important;
+  color: #1c1b1b !important;
 }
 
 .uppy-Dashboard-note {
   color: #666666 !important;
 }
-

@@ -31,21 +31,41 @@ export function FundRequestStep() {
       <StepLabel step={2} label="Fund this request into ERC-8183 Escrow" />
 
       <Text color="fg.muted" fontSize="14px" mb={5} lineHeight="1.6">
-        The provider agent approved your request specs. Approving this transaction transfers USDC from your wallet into the on-chain escrow contract, unlocking contributor collection.
+        The provider agent approved your request specs. Approving this
+        transaction transfers USDC from your wallet into the on-chain escrow
+        contract, unlocking contributor collection.
       </Text>
 
-      <Stack gap={1} mb={6} bg="surfaceNeutral" p={4} border="1px solid" borderColor="border.chrome">
+      <Stack
+        gap={1}
+        mb={6}
+        bg="surfaceNeutral"
+        p={4}
+        border="1px solid"
+        borderColor="border.chrome"
+      >
         <DataRow label="Request ID">
-          <Mono color="primary" fontWeight="700">#{created.jobId}</Mono>
+          <Mono color="primary" fontWeight="700">
+            #{created.jobId}
+          </Mono>
         </DataRow>
         <DataRow label="Data Modality">
-          <Text fontSize="14px" fontWeight="600" color="primary">{MODALITY_LABELS[created.spec.modality]}</Text>
+          <Text fontSize="14px" fontWeight="600" color="primary">
+            {MODALITY_LABELS[created.spec.modality]}
+          </Text>
         </DataRow>
         <DataRow label="Minimum Quota">
-          <Mono color="primary" fontWeight="700">{created.spec.minItems.toLocaleString("en-US")} items</Mono>
+          <Mono color="primary" fontWeight="700">
+            {created.spec.minItems.toLocaleString("en-US")} items
+          </Mono>
         </DataRow>
         <DataRow label="Amount to Escrow">
-          <UsdcAmount value={created.budget} color="primary" fontSize="16px" fontWeight="800" />
+          <UsdcAmount
+            value={created.budget}
+            color="primary"
+            fontSize="16px"
+            fontWeight="800"
+          />
         </DataRow>
       </Stack>
 
@@ -70,4 +90,3 @@ export function FundRequestStep() {
     </Panel>
   );
 }
-

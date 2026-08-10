@@ -47,7 +47,8 @@ export function SubmitCaptureSteps() {
           Device Signing Key Required
         </Text>
         <Text fontSize="14px" color="fg.muted" mb={5}>
-          Captures are signed locally by your hardware enclave before submission. Please set up your device first to generate a keypair.
+          Captures are signed locally by your hardware enclave before
+          submission. Please set up your device first to generate a keypair.
         </Text>
         <Button
           asChild
@@ -58,7 +59,11 @@ export function SubmitCaptureSteps() {
           py={5}
           fontSize="sm"
           fontWeight="600"
-          _hover={{ bg: "onSurfaceVariant", transform: "translate(-2px, -2px)", boxShadow: "4px 4px 0px 0px #000" }}
+          _hover={{
+            bg: "onSurfaceVariant",
+            transform: "translate(-2px, -2px)",
+            boxShadow: "4px 4px 0px 0px #000",
+          }}
         >
           <NextLink href={routes.contributor.device}>
             Set Up Device Key
@@ -137,12 +142,19 @@ export function SubmitCaptureSteps() {
       </Heading>
 
       {files.length === 0 ? (
-        <Box py={8} textAlign="center" border="1px solid" borderColor="border.chrome" bg="surfaceNeutral">
+        <Box
+          py={8}
+          textAlign="center"
+          border="1px solid"
+          borderColor="border.chrome"
+          bg="surfaceNeutral"
+        >
           <Text fontWeight="700" color="primary" mb={1}>
             No Files Selected
           </Text>
           <Text fontSize="14px" color="fg.subtle">
-            Drop or select files above to initiate hardware signing and submission.
+            Drop or select files above to initiate hardware signing and
+            submission.
           </Text>
         </Box>
       ) : (
@@ -180,7 +192,11 @@ export function SubmitCaptureSteps() {
               onClick={handleStartUpload}
               loading={busy}
               loadingText={busy ? PHASE_LABEL[phase] : undefined}
-              _hover={{ bg: "onSurfaceVariant", transform: "translate(-2px, -2px)", boxShadow: "4px 4px 0px 0px #000" }}
+              _hover={{
+                bg: "onSurfaceVariant",
+                transform: "translate(-2px, -2px)",
+                boxShadow: "4px 4px 0px 0px #000",
+              }}
             >
               Start Uploading
             </Button>
@@ -201,4 +217,3 @@ export function SubmitCaptureSteps() {
     </Panel>
   );
 }
-

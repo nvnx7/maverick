@@ -32,7 +32,12 @@ export function FundedRequestCard({ request }: { request: FundedRequest }) {
     >
       <Flex justify="space-between" align="start" gap={4} mb={4}>
         <Box>
-          <Heading textStyle="body-lg" fontWeight="700" color="primary" fontSize="18px">
+          <Heading
+            textStyle="body-lg"
+            fontWeight="700"
+            color="primary"
+            fontSize="18px"
+          >
             <LinkOverlay asChild>
               <NextLink href={routes.contributor.fulfill(request.id)}>
                 {MODALITY_LABELS[request.spec.modality]}
@@ -59,7 +64,13 @@ export function FundedRequestCard({ request }: { request: FundedRequest }) {
         />
       </Box>
 
-      <Text textStyle="body-sm" color="fg.muted" lineHeight="1.6" mb={4} fontSize="14px">
+      <Text
+        textStyle="body-sm"
+        color="fg.muted"
+        lineHeight="1.6"
+        mb={4}
+        fontSize="14px"
+      >
         {request.spec.deviceRequirements}
       </Text>
 
@@ -73,9 +84,13 @@ export function FundedRequestCard({ request }: { request: FundedRequest }) {
         <Text textStyle="label-mono" fontSize="11px" color="fg.subtle">
           BUDGET REMAINING
         </Text>
-        <UsdcAmount value={request.budgetRemaining} fontSize="12px" fontWeight="700" color="primary" />
+        <UsdcAmount
+          value={request.budgetRemaining}
+          fontSize="12px"
+          fontWeight="700"
+          color="primary"
+        />
       </Flex>
     </LinkBox>
   );
 }
-

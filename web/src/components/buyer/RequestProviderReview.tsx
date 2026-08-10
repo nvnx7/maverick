@@ -46,16 +46,31 @@ export function RequestProviderReview() {
       </Heading>
 
       <Text fontSize="14px" color="fg.muted" mb={4} lineHeight="1.6">
-        Inspect the provider agent's quote and decision status before writing an escrow budget on-chain.
+        Inspect the provider agent's quote and decision status before writing an
+        escrow budget on-chain.
       </Text>
 
       {report && (
-        <Stack gap={1} mb={4} bg="surfaceNeutral" p={4} border="1px solid" borderColor="border.chrome">
+        <Stack
+          gap={1}
+          mb={4}
+          bg="surfaceNeutral"
+          p={4}
+          border="1px solid"
+          borderColor="border.chrome"
+        >
           <DataRow label="On-chain status">
-            <Mono color="primary" fontWeight="700">{report.onChainStatus}</Mono>
+            <Mono color="primary" fontWeight="700">
+              {report.onChainStatus}
+            </Mono>
           </DataRow>
           <DataRow label="Budget set on-chain">
-            <UsdcAmount value={report.budget} color="primary" fontWeight="700" fontSize="14px" />
+            <UsdcAmount
+              value={report.budget}
+              color="primary"
+              fontWeight="700"
+              fontSize="14px"
+            />
           </DataRow>
           <DataRow label="Provider decision">
             <Mono color={declined ? "red.600" : "secondary"} fontWeight="700">
@@ -73,10 +88,21 @@ export function RequestProviderReview() {
           p={4}
           mb={4}
         >
-          <Text fontSize="12px" textStyle="label-mono" color="fg.subtle" fontWeight="700" mb={1}>
+          <Text
+            fontSize="12px"
+            textStyle="label-mono"
+            color="fg.subtle"
+            fontWeight="700"
+            mb={1}
+          >
             PROVIDER QUOTED BUDGET
           </Text>
-          <UsdcAmount value={quotedBudget} color="primary" fontSize="20px" fontWeight="800" />
+          <UsdcAmount
+            value={quotedBudget}
+            color="primary"
+            fontSize="20px"
+            fontWeight="800"
+          />
         </Box>
       )}
 

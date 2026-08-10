@@ -1,6 +1,6 @@
 "use client";
 
-import { HStack, Stack, Text, Heading } from "@chakra-ui/react";
+import { Heading, HStack, Stack, Text } from "@chakra-ui/react";
 import NextLink from "next/link";
 import { Button } from "@/components/common/Button";
 import { DataRow } from "@/components/common/DataRow";
@@ -22,15 +22,30 @@ export function RequestFundedSummary() {
         Request Funded & Active in Escrow
       </Heading>
       <Text fontSize="14px" color="fg.muted" mb={5} lineHeight="1.6">
-        Contributors can now capture and submit data against this request. Payouts disburse automatically upon verification.
+        Contributors can now capture and submit data against this request.
+        Payouts disburse automatically upon verification.
       </Text>
 
-      <Stack gap={1} mb={6} bg="surfaceNeutral" p={4} border="1px solid" borderColor="border.chrome">
+      <Stack
+        gap={1}
+        mb={6}
+        bg="surfaceNeutral"
+        p={4}
+        border="1px solid"
+        borderColor="border.chrome"
+      >
         <DataRow label="Request ID">
-          <Mono color="primary" fontWeight="700">#{created.jobId}</Mono>
+          <Mono color="primary" fontWeight="700">
+            #{created.jobId}
+          </Mono>
         </DataRow>
         <DataRow label="Escrow Locked">
-          <UsdcAmount value={created.budget} color="primary" fontWeight="700" fontSize="14px" />
+          <UsdcAmount
+            value={created.budget}
+            color="primary"
+            fontWeight="700"
+            fontSize="14px"
+          />
         </DataRow>
         <DataRow label="Funding Tx Hash">
           <ExplorerLink value={fundTxHash} kind="tx" />
@@ -50,4 +65,3 @@ export function RequestFundedSummary() {
     </Panel>
   );
 }
-

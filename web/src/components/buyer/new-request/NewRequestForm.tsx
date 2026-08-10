@@ -80,7 +80,9 @@ export function NewRequestForm() {
       <Stack gap={8}>
         <SimpleGrid columns={{ base: 1, md: 2 }} gap={6}>
           <Field.Root>
-            <Field.Label textStyle="body-md" fontWeight="600" color="primary">Modality</Field.Label>
+            <Field.Label textStyle="body-md" fontWeight="600" color="primary">
+              Modality
+            </Field.Label>
             <NativeSelect.Root>
               <NativeSelect.Field
                 value={modality}
@@ -103,7 +105,9 @@ export function NewRequestForm() {
           </Field.Root>
 
           <Field.Root invalid={Boolean(errors.minItems)}>
-            <Field.Label textStyle="body-md" fontWeight="600" color="primary">Minimum items</Field.Label>
+            <Field.Label textStyle="body-md" fontWeight="600" color="primary">
+              Minimum items
+            </Field.Label>
             <Input
               type="number"
               value={minItems}
@@ -118,7 +122,9 @@ export function NewRequestForm() {
         </SimpleGrid>
 
         <Field.Root invalid={Boolean(errors.deviceRequirements)}>
-          <Field.Label textStyle="body-md" fontWeight="600" color="primary">Device requirements</Field.Label>
+          <Field.Label textStyle="body-md" fontWeight="600" color="primary">
+            Device requirements
+          </Field.Label>
           <Textarea
             rows={4}
             value={deviceRequirements}
@@ -135,7 +141,9 @@ export function NewRequestForm() {
         </Field.Root>
 
         <Field.Root invalid={Boolean(errors.budget)}>
-          <Field.Label textStyle="body-md" fontWeight="600" color="primary">Budget (USDC)</Field.Label>
+          <Field.Label textStyle="body-md" fontWeight="600" color="primary">
+            Budget (USDC)
+          </Field.Label>
           <Input
             type="number"
             step="0.01"
@@ -148,7 +156,8 @@ export function NewRequestForm() {
             onChange={(event) => setBudget(event.currentTarget.value)}
           />
           <Field.HelperText textStyle="body-sm" color="fg.subtle" mt={3}>
-            Provider quotes {formatUsdc(quote)} USDC for {items || 0} {MODALITY_LABELS[modality].toLowerCase()} items.
+            Provider quotes {formatUsdc(quote)} USDC for {items || 0}{" "}
+            {MODALITY_LABELS[modality].toLowerCase()} items.
           </Field.HelperText>
           <Field.ErrorText>{errors.budget}</Field.ErrorText>
         </Field.Root>
@@ -178,4 +187,3 @@ export function NewRequestForm() {
     </Panel>
   );
 }
-

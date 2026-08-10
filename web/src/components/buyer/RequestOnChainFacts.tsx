@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, Heading, Stack, Text, SimpleGrid } from "@chakra-ui/react";
+import { Box, Heading, SimpleGrid, Stack, Text } from "@chakra-ui/react";
 import { useState } from "react";
 import { LuChevronDown, LuChevronUp } from "react-icons/lu";
 import { useGetJob } from "@/api/jobs";
@@ -13,7 +13,13 @@ import { MODALITY_LABELS } from "@/config/constants";
 import { useRequestId } from "@/hooks/useRequestId";
 import { formatDate } from "@/utils/format";
 
-function InfoCard({ label, children }: { label: string; children: React.ReactNode }) {
+function InfoCard({
+  label,
+  children,
+}: {
+  label: string;
+  children: React.ReactNode;
+}) {
   return (
     <Box
       border="1px solid"
@@ -21,7 +27,13 @@ function InfoCard({ label, children }: { label: string; children: React.ReactNod
       bg="surfaceNeutral"
       p={4}
     >
-      <Text textStyle="label-mono" fontSize="10px" color="fg.subtle" fontWeight="700" mb={1}>
+      <Text
+        textStyle="label-mono"
+        fontSize="10px"
+        color="fg.subtle"
+        fontWeight="700"
+        mb={1}
+      >
         {label}
       </Text>
       {children}
@@ -66,8 +78,20 @@ export function RequestOnChainFacts() {
       </SimpleGrid>
 
       {data.description && (
-        <Box border="1px solid" borderColor="border.chrome" bg="surfaceNeutral" p={4} mb={4}>
-          <Text textStyle="label-mono" fontSize="10px" color="fg.subtle" fontWeight="700" mb={2}>
+        <Box
+          border="1px solid"
+          borderColor="border.chrome"
+          bg="surfaceNeutral"
+          p={4}
+          mb={4}
+        >
+          <Text
+            textStyle="label-mono"
+            fontSize="10px"
+            color="fg.subtle"
+            fontWeight="700"
+            mb={2}
+          >
             DESCRIPTION
           </Text>
           <Text textStyle="body-md" color="primary">
@@ -86,12 +110,20 @@ export function RequestOnChainFacts() {
           px={3}
           py={3}
         >
-          <Text textStyle="label-mono" fontSize="11px" fontWeight="700">ADVANCED ON-CHAIN FACTS</Text>
+          <Text textStyle="label-mono" fontSize="11px" fontWeight="700">
+            ADVANCED ON-CHAIN FACTS
+          </Text>
           {showAdvanced ? <LuChevronUp /> : <LuChevronDown />}
         </Button>
 
         {showAdvanced && (
-          <Stack gap={0} mt={4} pt={4} borderTopWidth="1px" borderColor="border.DEFAULT">
+          <Stack
+            gap={0}
+            mt={4}
+            pt={4}
+            borderTopWidth="1px"
+            borderColor="border.DEFAULT"
+          >
             <DataRow label="Escrow contract">
               <ExplorerLink value={data.contract} kind="address" />
             </DataRow>
@@ -115,4 +147,3 @@ export function RequestOnChainFacts() {
     </Panel>
   );
 }
-

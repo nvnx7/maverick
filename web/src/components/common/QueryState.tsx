@@ -2,10 +2,21 @@ import { Center, Spinner, Text, VStack } from "@chakra-ui/react";
 
 export function LoadingBlock({ label = "Loading" }: { label?: string }) {
   return (
-    <Center py={16} border="1px solid" borderColor="primary" bg="surfaceNeutral" borderRadius="0">
+    <Center
+      py={16}
+      border="1px solid"
+      borderColor="primary"
+      bg="surfaceNeutral"
+      borderRadius="0"
+    >
       <VStack gap={3}>
         <Spinner size="sm" color="primary" />
-        <Text textStyle="label-mono" fontSize="12px" color="fg.subtle" fontWeight="600">
+        <Text
+          textStyle="label-mono"
+          fontSize="12px"
+          color="fg.subtle"
+          fontWeight="600"
+        >
           {label.toUpperCase()}
         </Text>
       </VStack>
@@ -34,4 +45,3 @@ export function ErrorBlock({ message }: { message?: string }) {
     </VStack>
   );
 }
-

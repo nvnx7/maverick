@@ -1,7 +1,16 @@
 "use client";
 
-import { Badge, Box, SimpleGrid, Heading, Text, Flex, Icon, HStack } from "@chakra-ui/react";
-import { LuFileText, LuWallet, LuUsers, LuBanknote } from "react-icons/lu";
+import {
+  Badge,
+  Box,
+  Flex,
+  Heading,
+  HStack,
+  Icon,
+  SimpleGrid,
+  Text,
+} from "@chakra-ui/react";
+import { LuBanknote, LuFileText, LuUsers, LuWallet } from "react-icons/lu";
 
 const steps = [
   {
@@ -40,19 +49,33 @@ const steps = [
 
 export function ProtocolSection() {
   return (
-    <Box py={{ base: 16, md: 24 }} bg="bg" borderBottomWidth="1px" borderColor="border.DEFAULT">
+    <Box
+      py={{ base: 16, md: 24 }}
+      bg="bg"
+      borderBottomWidth="1px"
+      borderColor="border.DEFAULT"
+    >
       <Flex direction="column" mb={12}>
         <HStack gap={2} mb={2}>
           <Text textStyle="label-mono" color="secondary" fontWeight="700">
             // HOW IT WORKS
           </Text>
         </HStack>
-        <Heading as="h2" textStyle="headline-lg" color="primary" fontSize={{ base: "28px", md: "36px" }}>
+        <Heading
+          as="h2"
+          textStyle="headline-lg"
+          color="primary"
+          fontSize={{ base: "28px", md: "36px" }}
+        >
           Autonomous 4-Step Verification & Disbursal
         </Heading>
       </Flex>
 
-      <SimpleGrid columns={{ base: 1, md: 2, lg: 4 }} gap={6} alignContent="stretch">
+      <SimpleGrid
+        columns={{ base: 1, md: 2, lg: 4 }}
+        gap={6}
+        alignContent="stretch"
+      >
         {steps.map((step) => (
           <Flex
             key={step.num}
@@ -122,15 +145,31 @@ export function ProtocolSection() {
               </Flex>
 
               <Flex align="center" gap={3} mb={3}>
-                <Box p={2} bg="bg.panel" border="1px solid" borderColor="border.DEFAULT">
+                <Box
+                  p={2}
+                  bg="bg.panel"
+                  border="1px solid"
+                  borderColor="border.DEFAULT"
+                >
                   <Icon as={step.icon} boxSize={5} color="primary" />
                 </Box>
-                <Heading as="h3" textStyle="body-lg" fontWeight="700" color="primary" fontSize="18px">
+                <Heading
+                  as="h3"
+                  textStyle="body-lg"
+                  fontWeight="700"
+                  color="primary"
+                  fontSize="18px"
+                >
                   {step.title}
                 </Heading>
               </Flex>
 
-              <Text textStyle="body-md" color="fg.muted" fontSize="14px" lineHeight="1.6">
+              <Text
+                textStyle="body-md"
+                color="fg.muted"
+                fontSize="14px"
+                lineHeight="1.6"
+              >
                 {step.body}
               </Text>
             </Box>
@@ -140,5 +179,3 @@ export function ProtocolSection() {
     </Box>
   );
 }
-
-

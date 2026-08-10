@@ -4,7 +4,12 @@ export type PanelProps = BoxProps & {
   interactive?: boolean;
 };
 
-export function Panel({ interactive, _hover, transition, ...props }: PanelProps) {
+export function Panel({
+  interactive,
+  _hover,
+  transition,
+  ...props
+}: PanelProps) {
   return (
     <Box
       bg="bg.panel"
@@ -12,7 +17,9 @@ export function Panel({ interactive, _hover, transition, ...props }: PanelProps)
       borderColor="primary"
       borderRadius="0"
       p={6}
-      transition={interactive ? "all 0.25s cubic-bezier(0.4, 0, 0.2, 1)" : transition}
+      transition={
+        interactive ? "all 0.25s cubic-bezier(0.4, 0, 0.2, 1)" : transition
+      }
       _hover={
         interactive
           ? {
@@ -26,4 +33,3 @@ export function Panel({ interactive, _hover, transition, ...props }: PanelProps)
     />
   );
 }
-

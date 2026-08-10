@@ -51,10 +51,39 @@ const config = defineConfig({
           solid: { value: "{colors.primary}" },
           contrast: { value: "{colors.onPrimary}" },
           fg: { value: "{colors.primary}" },
+          subtle: { value: "{colors.surfaceNeutral}" },
           muted: { value: "{colors.borderSubtle}" },
+          border: { value: "{colors.primary}" },
           500: { value: "{colors.primary}" },
           600: { value: "{colors.primary}" },
           700: { value: "{colors.primary}" },
+        },
+        warn: {
+          solid: { value: "#D97706" },
+          contrast: { value: "#FFFFFF" },
+          fg: { value: "#B45309" },
+          subtle: { value: "#FEF3C7" },
+          muted: { value: "#FDE68A" },
+          border: { value: "#F59E0B" },
+          500: { value: "#D97706" },
+        },
+        chain: {
+          solid: { value: "{colors.secondary}" },
+          contrast: { value: "#FFFFFF" },
+          fg: { value: "#0055CC" },
+          subtle: { value: "#EFF6FF" },
+          muted: { value: "#DBEAFE" },
+          border: { value: "#60A5FA" },
+          500: { value: "{colors.secondary}" },
+        },
+        gray: {
+          solid: { value: "#4B5563" },
+          contrast: { value: "#FFFFFF" },
+          fg: { value: "#374151" },
+          subtle: { value: "#F3F4F6" },
+          muted: { value: "#E5E7EB" },
+          border: { value: "#D1D5DB" },
+          500: { value: "#6B7280" },
         },
       },
     },
@@ -145,4 +174,3 @@ const config = defineConfig({
 });
 
 export const system = createSystem(defaultConfig, config);
-

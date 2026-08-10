@@ -36,19 +36,43 @@ export function ContributorClaimsTable() {
 
   return (
     <>
-      <Table.Root size="md" interactive border="1px solid" borderColor="primary">
+      <Table.Root
+        size="md"
+        interactive
+        border="1px solid"
+        borderColor="primary"
+      >
         <Table.Header bg="primary">
-          <Table.Row>
-            <Table.ColumnHeader color="onPrimary" textStyle="label-mono" fontSize="11px" fontWeight="700">
+          <Table.Row bg="primary">
+            <Table.ColumnHeader
+              bg="primary"
+              color="onPrimary"
+              textStyle="label-mono"
+              fontSize="11px"
+              fontWeight="700"
+            >
               DELIVERABLE PROVENANCE
             </Table.ColumnHeader>
-            <Table.ColumnHeader color="onPrimary" textStyle="label-mono" fontSize="11px" fontWeight="700">
+            <Table.ColumnHeader
+              bg="primary"
+              color="onPrimary"
+              textStyle="label-mono"
+              fontSize="11px"
+              fontWeight="700"
+            >
               BLOCK
             </Table.ColumnHeader>
-            <Table.ColumnHeader color="onPrimary" textStyle="label-mono" fontSize="11px" fontWeight="700">
+            <Table.ColumnHeader
+              bg="primary"
+              color="onPrimary"
+              textStyle="label-mono"
+              fontSize="11px"
+              fontWeight="700"
+            >
               TRANSACTION HASH
             </Table.ColumnHeader>
             <Table.ColumnHeader
+              bg="primary"
               color="onPrimary"
               textStyle="label-mono"
               fontSize="11px"
@@ -58,6 +82,7 @@ export function ContributorClaimsTable() {
               CUMULATIVE
             </Table.ColumnHeader>
             <Table.ColumnHeader
+              bg="primary"
               color="onPrimary"
               textStyle="label-mono"
               fontSize="11px"
@@ -82,16 +107,27 @@ export function ContributorClaimsTable() {
                 setSelected(claim);
               }}
             >
-              <Table.Cell borderBottom="1px solid" borderColor="border.chrome" onClick={(event) => event.stopPropagation()}>
+              <Table.Cell
+                borderBottom="1px solid"
+                borderColor="border.chrome"
+                onClick={(event) => event.stopPropagation()}
+              >
                 <CopyableHash value={claim.deliverable} />
               </Table.Cell>
               <Table.Cell borderBottom="1px solid" borderColor="border.chrome">
-                <Mono color="primary" fontWeight="700">{claim.blockNumber.toString()}</Mono>
+                <Mono color="primary" fontWeight="700">
+                  {claim.blockNumber.toString()}
+                </Mono>
               </Table.Cell>
               <Table.Cell borderBottom="1px solid" borderColor="border.chrome">
                 <ExplorerLink value={claim.transactionHash} kind="tx" />
               </Table.Cell>
-              <Table.Cell textAlign="end" color="primary" borderBottom="1px solid" borderColor="border.chrome">
+              <Table.Cell
+                textAlign="end"
+                color="primary"
+                borderBottom="1px solid"
+                borderColor="border.chrome"
+              >
                 <UsdcAmount
                   value={claim.cumulativeAmount}
                   unit={false}
@@ -99,7 +135,12 @@ export function ContributorClaimsTable() {
                   fontWeight="700"
                 />
               </Table.Cell>
-              <Table.Cell textAlign="end" color="primary" borderBottom="1px solid" borderColor="border.chrome">
+              <Table.Cell
+                textAlign="end"
+                color="primary"
+                borderBottom="1px solid"
+                borderColor="border.chrome"
+              >
                 {claim.settled || claim.approved ? (
                   <UsdcAmount
                     value={claim.delta}

@@ -89,15 +89,28 @@ export function SubmissionDetailDialog({
             maxW="xl"
           >
             <Dialog.Header pb={2}>
-              <Dialog.Title textStyle="headline-md" color="primary">Submission Details</Dialog.Title>
+              <Dialog.Title textStyle="headline-md" color="primary">
+                Submission Details
+              </Dialog.Title>
             </Dialog.Header>
             <Dialog.Body pb={6}>
-              <Stack gap={1} mb={6} bg="surfaceNeutral" p={4} border="1px solid" borderColor="border.chrome">
+              <Stack
+                gap={1}
+                mb={6}
+                bg="surfaceNeutral"
+                p={4}
+                border="1px solid"
+                borderColor="border.chrome"
+              >
                 <DataRow label="Submission ID">
-                  <Mono color="primary" fontWeight="700">{submission.id}</Mono>
+                  <Mono color="primary" fontWeight="700">
+                    {submission.id}
+                  </Mono>
                 </DataRow>
                 <DataRow label="Request ID">
-                  <Mono color="primary" fontWeight="700">#{submission.jobId}</Mono>
+                  <Mono color="primary" fontWeight="700">
+                    #{submission.jobId}
+                  </Mono>
                 </DataRow>
                 <DataRow label="Contributor Address">
                   <ExplorerLink value={submission.contributor} kind="address" />
@@ -111,10 +124,18 @@ export function SubmissionDetailDialog({
                   </Mono>
                 </DataRow>
                 <DataRow label="Claim Status">
-                  <Mono color="secondary" fontWeight="700">{submission.status.toUpperCase()}</Mono>
+                  <Mono color="secondary" fontWeight="700">
+                    {submission.status.toUpperCase()}
+                  </Mono>
                 </DataRow>
                 <DataRow label="Claim Amount">
-                  <UsdcAmount value={submission.amount} unit={false} color="primary" fontWeight="700" fontSize="14px" />
+                  <UsdcAmount
+                    value={submission.amount}
+                    unit={false}
+                    color="primary"
+                    fontWeight="700"
+                    fontSize="14px"
+                  />
                 </DataRow>
                 <DataRow label="Cumulative Claimed">
                   <UsdcAmount
@@ -203,4 +224,3 @@ export function SubmissionDetailDialog({
     </Dialog.Root>
   );
 }
-

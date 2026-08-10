@@ -30,7 +30,9 @@ export function ProviderReviewStep() {
       <StepLabel step={1} label="Request Registered On-Chain" />
 
       <HStack gap={3} mb={4}>
-        <Mono fontSize="lg" color="primary" fontWeight="700">#{created.jobId}</Mono>
+        <Mono fontSize="lg" color="primary" fontWeight="700">
+          #{created.jobId}
+        </Mono>
         <ExplorerLink value={created.txHash} kind="tx" />
       </HStack>
 
@@ -52,7 +54,14 @@ export function ProviderReviewStep() {
           </HStack>
         </Box>
       ) : (
-        <HStack gap={3} color="primary" bg="surfaceNeutral" p={4} border="1px solid" borderColor="border.chrome">
+        <HStack
+          gap={3}
+          color="primary"
+          bg="surfaceNeutral"
+          p={4}
+          border="1px solid"
+          borderColor="border.chrome"
+        >
           <Spinner size="sm" color="secondary" />
           <Text fontSize="14px" fontWeight="600">
             Waiting for provider agent review. No USDC has been transferred yet.
@@ -62,4 +71,3 @@ export function ProviderReviewStep() {
     </Panel>
   );
 }
-

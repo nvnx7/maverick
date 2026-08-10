@@ -31,4 +31,3 @@ export function EmptyState({ title, description, children }: Props) {
     </VStack>
   );
 }
-
