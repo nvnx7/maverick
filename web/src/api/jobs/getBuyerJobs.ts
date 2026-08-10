@@ -1,8 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
 import type { Address } from "viem";
-import { useContractEvents, usePublicClient, useReadContracts } from "wagmi";
-import { agenticCommerceAbi, dataCommerceAbi } from "@/abi";
+import { usePublicClient, useReadContracts } from "wagmi";
+import { dataCommerceAbi } from "@/abi";
+import { useJobCreatedLogs } from "@/api/blockscout/getJobCreatedLogs";
 import { networkConfig } from "@/config/network";
 import type { BuyerRequest, JobStatus, RequestSpec } from "@/types";
 import { decodeSpec } from "@/utils/spec";
@@ -18,14 +19,7 @@ export function useGetBuyerJobs(params: { buyer?: Address }) {
   const dataCommerce = networkConfig.contracts.dataCommerce as `0x${string}`;
   const publicClient = usePublicClient();
 
-  const createdQuery = useContractEvents({
-    address: networkConfig.contracts.escrow,
-    abi: agenticCommerceAbi,
-    eventName: "JobCreated",
-    args: { client: buyer, provider: networkConfig.contracts.provider },
-    fromBlock: networkConfig.deployedBlock,
-    query: { enabled: !!buyer },
-  });
+  const createdQuery = useJobCreatedLogs({ client: buyer });
 
   const logs = createdQuery.data ?? [];
   const jobIds = useMemo(
