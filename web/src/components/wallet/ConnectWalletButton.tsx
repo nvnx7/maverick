@@ -1,20 +1,26 @@
 "use client";
 
 import { HStack, IconButton, Text } from "@chakra-ui/react";
+import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { LuLogOut, LuWallet } from "react-icons/lu";
 import { useAccount, useDisconnect } from "wagmi";
 import { Button } from "@/components/common/Button";
 import { truncateMiddle } from "@/utils/format";
-import { useWalletDialog } from "./WalletDialogProvider";
 
 export function ConnectWalletButton() {
   const { address, isConnected } = useAccount();
   const { disconnect } = useDisconnect();
-  const { openConnect } = useWalletDialog();
+  const { openConnectModal } = useConnectModal();
 
   if (!isConnected || !address) {
     return (
-      <Button size="sm" variant="primary" px={4} py={2} onClick={openConnect}>
+      <Button
+        size="sm"
+        variant="primary"
+        px={4}
+        py={2}
+        onClick={openConnectModal}
+      >
         <LuWallet /> Connect Wallet
       </Button>
     );

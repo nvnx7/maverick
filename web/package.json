@@ -13,7 +13,10 @@
   },
   "dependencies": {
     "@chakra-ui/react": "^3.36.1",
+    "@coinbase/wallet-sdk": "^4.3.6",
     "@emotion/react": "^11.14.0",
+    "@metamask/connect-evm": "^2.1.0",
+    "@rainbow-me/rainbowkit": "^2.2.11",
     "@repo/sdk": "workspace:*",
     "@tanstack/react-query": "^5.101.4",
     "@uppy/core": "^5.2.0",
