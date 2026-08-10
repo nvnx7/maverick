@@ -64,6 +64,7 @@ export const claims = new Hono()
 
     const body = await c.req.json().catch(() => null);
     const parsed = approveSchema.safeParse(body);
+    console.log('parsed', parsed)
     if (!parsed.success) {
       return c.json(
         { error: parsed.error.issues[0]?.message ?? "invalid request body" },
@@ -72,6 +73,7 @@ export const claims = new Hono()
     }
 
     const job = await getJob(jobId);
+    console.log('job', job);
     if (job.client === zeroAddress) {
       return c.json({ error: "job not found" }, 404);
     }
@@ -89,6 +91,7 @@ export const claims = new Hono()
 
     // Fetch the upload manifest written by the provider and verify the hash.
     const manifest = await getStoredManifest(jobId.toString(), dataHash);
+    console.log('manifest', manifest)
     if (!manifest) return c.json({ error: "upload manifest not found" }, 404);
 
     // Re-derive the data hash from the stored files to confirm the manifest

@@ -1,9 +1,11 @@
 import { useMemo } from "react";
 import type { Address, Hash } from "viem";
 import { decodeAbiParameters } from "viem";
-import { useContractEvents } from "wagmi";
-import { agenticCommerceAbi } from "@/abi";
-import { networkConfig } from "@/config/network";
+import {
+  useClaimApprovedLogs,
+  useClaimSettledLogs,
+  useClaimSubmittedLogs,
+} from "@/api/blockscout/getClaimLogs";
 
 export type ContributorClaim = {
   jobId: string;
@@ -41,36 +43,10 @@ export function useGetContributorClaims(params: {
   const { jobId, contributor } = params;
   const jobIdBigInt = jobId ? BigInt(jobId) : undefined;
 
-  const claimsQuery = useContractEvents({
-    address: networkConfig.contracts.escrow,
-    abi: agenticCommerceAbi,
-    eventName: "ClaimSubmitted",
-    args: {
-      jobId: jobIdBigInt,
-      provider: networkConfig.contracts.provider,
-    },
-    fromBlock: networkConfig.deployedBlock,
-    query: { enabled: jobIdBigInt !== undefined && Boolean(contributor) },
-  });
-
-  const approvedQuery = useContractEvents({
-    address: networkConfig.contracts.escrow,
-    abi: agenticCommerceAbi,
-    eventName: "ClaimApproved",
-    args: { jobId: jobIdBigInt },
-    fromBlock: networkConfig.deployedBlock,
-    query: { enabled: jobIdBigInt !== undefined && Boolean(contributor) },
-  });
-
-  /** ClaimSettled carries the deliverable so we can match it to a submitted claim. */
-  const settledQuery = useContractEvents({
-    address: networkConfig.contracts.escrow,
-    abi: agenticCommerceAbi,
-    eventName: "ClaimSettled",
-    args: { jobId: jobIdBigInt },
-    fromBlock: networkConfig.deployedBlock,
-    query: { enabled: jobIdBigInt !== undefined && Boolean(contributor) },
-  });
+  const enabled = jobIdBigInt !== undefined && Boolean(contributor);
+  const claimsQuery = useClaimSubmittedLogs({ jobId: jobIdBigInt, enabled });
+  const approvedQuery = useClaimApprovedLogs({ jobId: jobIdBigInt, enabled });
+  const settledQuery = useClaimSettledLogs({ jobId: jobIdBigInt, enabled });
 
   const data = useMemo<ContributorClaim[]>(() => {
     if (!claimsQuery.data || !contributor) return [];
