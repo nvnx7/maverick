@@ -18,7 +18,7 @@ export function NavLink({ href, label }: Props) {
       asChild
       fontSize="sm"
       color={active ? "fg" : "fg.muted"}
-      fontWeight={active ? "500" : "400"}
+      fontWeight={active ? "700" : "600"}
       _hover={{ color: "fg", textDecoration: "none" }}
     >
       <NextLink href={href}>{label}</NextLink>
