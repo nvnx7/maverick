@@ -1,64 +1,127 @@
 "use client";
 
-import { Badge, Box, Heading, Icon, Link, SimpleGrid, Text } from "@chakra-ui/react";
+import { Badge, Box, Heading, Icon, SimpleGrid, Text, VStack, HStack, Button } from "@chakra-ui/react";
 import NextLink from "next/link";
-import { LuArrowRight } from "react-icons/lu";
+import { LuArrowRight, LuCheck } from "react-icons/lu";
 import { routes } from "@/config/routes";
 
 export function AudienceCards() {
   return (
-    <Box py={{ base: 16, md: 24 }} borderBottomWidth="1px" borderColor="border.DEFAULT">
+    <Box py={{ base: 16, md: 24 }} bg="bg" borderBottomWidth="1px" borderColor="border.DEFAULT">
       <SimpleGrid columns={{ base: 1, md: 2 }} gap={8}>
         {/* Buyers Card */}
         <Box 
           p={{ base: 8, md: 12 }} 
-          bg="surfaceNeutral" 
-          borderWidth="1px" 
-          borderColor="border.DEFAULT"
-        >
-          <Badge 
-            bg="#E6F0FF" 
-            color="secondary" 
-            textStyle="label-mono" 
-            px={2} 
-            py={1} 
-            mb={8} 
-            borderWidth="1px" 
-            borderColor="transparent"
-          >
-            FOR BUYERS
-          </Badge>
-          
-          <Heading as="h3" textStyle="headline-lg" color="primary" mb={4} maxW="300px">
-            Get the data your AI needs.
-          </Heading>
-          <Text textStyle="body-lg" color="fg.muted" mb={12} maxW="380px">
-            Tap into a global network of contributors ready to source, label, and verify high-quality datasets.
-          </Text>
-
-          <Link asChild textStyle="body-sm" fontWeight="500" color="primary" _hover={{ color: "secondary" }}>
-            <NextLink href={routes.buyer.newRequest}>
-              Post Data Job <Icon as={LuArrowRight} ml={1} />
-            </NextLink>
-          </Link>
-        </Box>
-
-        {/* Contributors Card */}
-        <Box 
-          p={{ base: 8, md: 12 }} 
-          bg="bg.subtle" 
-          borderWidth="1px" 
-          borderColor="border.DEFAULT"
+          bg="surfaceNeutral"
+          border="1px solid" 
+          borderColor="primary"
           position="relative"
           overflow="hidden"
+          transition="all 0.3s cubic-bezier(0.4, 0, 0.2, 1)"
+          _hover={{
+            bg: "bg.panel",
+            transform: "translate(-4px, -4px)",
+            borderColor: "secondary",
+            boxShadow: "8px 8px 0px 0px #0066FF",
+          }}
         >
           {/* Subtle Grid Pattern Overlay */}
           <Box 
             position="absolute" 
             inset={0} 
-            opacity={0.4} 
+            opacity={0.25} 
             backgroundImage="linear-gradient(to right, #E5E5E5 1px, transparent 1px), linear-gradient(to bottom, #E5E5E5 1px, transparent 1px)" 
-            backgroundSize="40px 40px" 
+            backgroundSize="30px 30px" 
+            zIndex={0}
+            pointerEvents="none"
+          />
+          <Box position="relative" zIndex={1}>
+            <Badge 
+              bg="#E6F0FF" 
+              color="secondary" 
+              textStyle="label-mono" 
+              px={3} 
+              py={1} 
+              mb={6} 
+              borderWidth="1px" 
+              borderColor="transparent"
+              fontSize="11px"
+              fontWeight="700"
+            >
+              FOR AI BUILDERS & ENTERPRISE
+            </Badge>
+            
+            <Heading as="h3" textStyle="headline-lg" color="primary" mb={4} fontSize={{ base: "26px", md: "32px" }}>
+              Source Verified AI Data at Scale
+            </Heading>
+
+            <Text textStyle="body-lg" color="fg.muted" mb={8} fontSize="16px">
+              Tap into a global network of contributors ready to capture, label, and verify high-quality datasets under programmable smart escrow.
+            </Text>
+
+            {/* Capability Checklist */}
+            <VStack align="flex-start" gap={3} mb={10} borderTop="1px solid" borderColor="border.chrome" pt={6}>
+              <HStack gap={2.5}>
+                <Icon as={LuCheck} color="secondary" boxSize={4} />
+                <Text textStyle="body-md" color="primary" fontSize="14px" fontWeight="600">
+                  Hardware-attested cryptographic device provenance
+                </Text>
+              </HStack>
+              <HStack gap={2.5}>
+                <Icon as={LuCheck} color="secondary" boxSize={4} />
+                <Text textStyle="body-md" color="primary" fontSize="14px" fontWeight="600">
+                  Custom AI Evaluator Agent verification rules
+                </Text>
+              </HStack>
+              <HStack gap={2.5}>
+                <Icon as={LuCheck} color="secondary" boxSize={4} />
+                <Text textStyle="body-md" color="primary" fontSize="14px" fontWeight="600">
+                  Guaranteed ERC-8183 escrow refund if quota unfulfilled
+                </Text>
+              </HStack>
+            </VStack>
+
+            <Button
+              asChild
+              bg="primary"
+              color="onPrimary"
+              borderRadius="0"
+              px={6}
+              py={6}
+              fontSize="sm"
+              fontWeight="600"
+              _hover={{ bg: "secondary", color: "onPrimary" }}
+            >
+              <NextLink href={routes.buyer.newRequest}>
+                Post Data Job <Icon as={LuArrowRight} ml={2} />
+              </NextLink>
+            </Button>
+          </Box>
+        </Box>
+
+        {/* Contributors Card */}
+        <Box 
+          p={{ base: 8, md: 12 }} 
+          bg="surfaceNeutral"
+          border="1px solid" 
+          borderColor="primary"
+          position="relative"
+          overflow="hidden"
+          transition="all 0.3s cubic-bezier(0.4, 0, 0.2, 1)"
+          _hover={{
+            bg: "bg.panel",
+            transform: "translate(-4px, -4px)",
+            borderColor: "successGreen",
+            boxShadow: "8px 8px 0px 0px #10B981",
+          }}
+        >
+          {/* Subtle Grid Pattern Overlay */}
+          <Box 
+            position="absolute" 
+            inset={0} 
+            opacity={0.25} 
+            backgroundImage="linear-gradient(to right, #E5E5E5 1px, transparent 1px), linear-gradient(to bottom, #E5E5E5 1px, transparent 1px)" 
+            backgroundSize="30px 30px" 
             zIndex={0}
             pointerEvents="none"
           />
@@ -68,30 +131,68 @@ export function AudienceCards() {
               bg="#E7F8F2" 
               color="successGreen" 
               textStyle="label-mono" 
-              px={2} 
+              px={3} 
               py={1} 
-              mb={8} 
+              mb={6} 
               borderWidth="1px" 
               borderColor="transparent"
+              fontSize="11px"
+              fontWeight="700"
             >
-              FOR CONTRIBUTORS
+              FOR DATA COLLECTORS & OPERATORS
             </Badge>
             
-            <Heading as="h3" textStyle="headline-lg" color="primary" mb={4} maxW="340px">
-              Turn your data into opportunity.
+            <Heading as="h3" textStyle="headline-lg" color="primary" mb={4} fontSize={{ base: "26px", md: "32px" }}>
+              Turn Your Captures into Opportunity
             </Heading>
-            <Text textStyle="body-lg" color="fg.muted" mb={12} maxW="380px">
-              Contribute to open AI development and earn transparent USDC payouts for verified work.
+
+            <Text textStyle="body-lg" color="fg.muted" mb={8} fontSize="16px">
+              Contribute to open AI development and receive instant, transparent USDC payouts directly to your wallet upon verification.
             </Text>
 
-            <Link asChild textStyle="body-sm" fontWeight="500" color="primary" _hover={{ color: "successGreen" }}>
+            {/* Capability Checklist */}
+            <VStack align="flex-start" gap={3} mb={10} borderTop="1px solid" borderColor="border.chrome" pt={6}>
+              <HStack gap={2.5}>
+                <Icon as={LuCheck} color="successGreen" boxSize={4} />
+                <Text textStyle="body-md" color="primary" fontSize="14px" fontWeight="600">
+                  Instant Arc USDC disbursal (&lt; 500ms finality)
+                </Text>
+              </HStack>
+              <HStack gap={2.5}>
+                <Icon as={LuCheck} color="successGreen" boxSize={4} />
+                <Text textStyle="body-md" color="primary" fontSize="14px" fontWeight="600">
+                  Native EIP-712 device signature verification
+                </Text>
+              </HStack>
+              <HStack gap={2.5}>
+                <Icon as={LuCheck} color="successGreen" boxSize={4} />
+                <Text textStyle="body-md" color="primary" fontSize="14px" fontWeight="600">
+                  Zero platform middleman deduction on verified claims
+                </Text>
+              </HStack>
+            </VStack>
+
+            <Button
+              asChild
+              variant="outline"
+              borderColor="primary"
+              borderWidth="1px"
+              color="primary"
+              borderRadius="0"
+              px={6}
+              py={6}
+              fontSize="sm"
+              fontWeight="600"
+              _hover={{ bg: "successGreen", color: "white", borderColor: "successGreen" }}
+            >
               <NextLink href={routes.contributor.browse}>
-                Explore Jobs <Icon as={LuArrowRight} ml={1} />
+                Explore Open Jobs <Icon as={LuArrowRight} ml={2} />
               </NextLink>
-            </Link>
+            </Button>
           </Box>
         </Box>
       </SimpleGrid>
     </Box>
   );
 }
+
