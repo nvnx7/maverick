@@ -19,7 +19,7 @@ export function useGetBuyerJobs(params: { buyer?: Address }) {
   const dataCommerce = networkConfig.contracts.dataCommerce as `0x${string}`;
   const publicClient = usePublicClient();
 
-  const createdQuery = useJobCreatedLogs({ client: buyer });
+  const createdQuery = useJobCreatedLogs({ client: buyer, enabled: !!buyer });
 
   const logs = createdQuery.data ?? [];
   const jobIds = useMemo(

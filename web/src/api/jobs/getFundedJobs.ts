@@ -1,6 +1,7 @@
 import { useMemo } from "react";
-import { useContractEvents, useReadContracts } from "wagmi";
-import { agenticCommerceAbi, dataCommerceAbi } from "@/abi";
+import { useReadContracts } from "wagmi";
+import { dataCommerceAbi } from "@/abi";
+import { useJobCreatedLogs } from "@/api/blockscout/getJobCreatedLogs";
 import type { Modality } from "@/config/constants";
 import { PRICE_PER_ITEM } from "@/config/constants";
 import { networkConfig } from "@/config/network";
@@ -20,13 +21,7 @@ const FALLBACK_SPEC: RequestSpec = {
  */
 export function useGetFundedJobs(modality?: Modality) {
   const dataCommerce = networkConfig.contracts.dataCommerce as `0x${string}`;
-  const createdQuery = useContractEvents({
-    address: networkConfig.contracts.escrow,
-    abi: agenticCommerceAbi,
-    eventName: "JobCreated",
-    args: { provider: networkConfig.contracts.provider },
-    fromBlock: networkConfig.deployedBlock,
-  });
+  const createdQuery = useJobCreatedLogs({});
 
   const jobIds = useMemo(
     () =>

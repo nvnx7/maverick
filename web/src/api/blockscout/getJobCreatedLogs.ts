@@ -66,10 +66,13 @@ async function getJobCreatedLogs(params: {
   });
 }
 
-export function useJobCreatedLogs(params: { client?: Address }) {
+export function useJobCreatedLogs(params: {
+  client?: Address;
+  enabled?: boolean;
+}) {
   return useQuery({
     queryKey: ["blockscout-job-created", params.client],
     queryFn: () => getJobCreatedLogs(params),
-    enabled: Boolean(params.client),
+    enabled: params.enabled ?? true,
   });
 }
