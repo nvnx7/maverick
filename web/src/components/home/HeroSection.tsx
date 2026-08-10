@@ -7,7 +7,6 @@ import {
   Heading,
   HStack,
   Icon,
-  Link,
   Text,
 } from "@chakra-ui/react";
 import Image from "next/image";
@@ -25,7 +24,7 @@ export function HeroSection() {
       <Flex direction={{ base: "column", lg: "row" }} gap={16} align="center">
         <Box flex="1" maxW="600px">
           <Heading as="h1" textStyle="display-lg" color="primary" mb={6}>
-            Democratise the World’s AI Data
+            Democratize The World’s AI Data
           </Heading>
           <Text textStyle="body-lg" color="fg.muted" mb={10}>
             An open marketplace where AI builders can source the data they need,
@@ -65,9 +64,9 @@ export function HeroSection() {
 
           <HStack gap={4} textStyle="label-mono" color="fg.subtle">
             <Text>BUILT ON</Text>
-            <Text color="primary">ERC-8183</Text>
-            <Text>·</Text>
             <Text color="primary">Arc</Text>
+            <Text>·</Text>
+            <Text color="primary">ERC-8183</Text>
             <Text>·</Text>
             <Text color="primary">USDC</Text>
           </HStack>
