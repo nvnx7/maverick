@@ -14,6 +14,10 @@ Maverick is a decentralized protocol for procuring on-demand AI training data wi
 | ProviderAgent | `0x00E779d185e815620B18021566bC2A9D0AE85aBA` |
 | USDC | `0x3600000000000000000000000000000000000000` |
 
+## Architecture
+
+![Maverick Architecture](web/public/arch.jpg)
+
 ## Modules
 
 Flat Bun/Turborepo workspace, packages named `@repo/*`. See [SPEC.md](SPEC.md) for the full protocol spec.
