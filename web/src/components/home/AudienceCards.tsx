@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, Flex, Heading, Text, SimpleGrid, Link, Icon, Badge } from "@chakra-ui/react";
+import { Badge, Box, Heading, Icon, Link, SimpleGrid, Text } from "@chakra-ui/react";
 import NextLink from "next/link";
 import { LuArrowRight } from "react-icons/lu";
 import { routes } from "@/config/routes";
@@ -38,7 +38,7 @@ export function AudienceCards() {
 
           <Link asChild textStyle="body-sm" fontWeight="500" color="primary" _hover={{ color: "secondary" }}>
             <NextLink href={routes.buyer.newRequest}>
-              Post a Data Job <Icon as={LuArrowRight} ml={1} />
+              Post Data Job <Icon as={LuArrowRight} ml={1} />
             </NextLink>
           </Link>
         </Box>

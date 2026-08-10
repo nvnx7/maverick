@@ -42,7 +42,7 @@ export function HeroSection() {
               _hover={{ bg: "onSurfaceVariant", color: "onPrimary" }}
             >
               <NextLink href={routes.buyer.newRequest}>
-                Post a Data Job <Icon as={LuArrowRight} ml={1} />
+                Post Data Job <Icon as={LuArrowRight} ml={1} />
               </NextLink>
             </Button>
             <Button
@@ -57,7 +57,7 @@ export function HeroSection() {
               _hover={{ bg: "surfaceNeutral" }}
             >
               <NextLink href={routes.contributor.browse}>
-                Become a Contributor <Icon as={LuArrowRight} ml={1} />
+                Become Contributor <Icon as={LuArrowRight} ml={1} />
               </NextLink>
             </Button>
           </HStack>
