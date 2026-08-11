@@ -20,7 +20,9 @@ export function RequestSubmissionsTable() {
   const { data, isPending, isError } = useGetRequestSubmissions(id);
   const [selected, setSelected] = useState<Submission | null>(null);
 
-  const firstSubmission = data?.[0];
+  // Previews and downloads are scoped to what was actually claimed on-chain, so a
+  // request with no submissions shows nothing rather than the job's raw uploads.
+  const dataHashes = (data ?? []).map((submission) => submission.dataHash);
 
   return (
     <Box>
@@ -28,15 +30,15 @@ export function RequestSubmissionsTable() {
         <Heading textStyle="body-md" fontWeight="600" color="primary">
           Submissions
         </Heading>
-        <SubmissionDownloadButton jobId={id} />
+        <SubmissionDownloadButton jobId={id} dataHashes={dataHashes} />
       </Flex>
 
-      <SubmissionPreview jobId={id} />
+      <SubmissionPreview jobId={id} dataHashes={dataHashes} />
 
       {isPending && <LoadingBlock label="Reading the submission ledger" />}
       {isError && <ErrorBlock />}
 
-      {data && data.length === 0 && (
+      {!isPending && !isError && data.length === 0 && (
         <Box
           border="1px solid"
           borderColor="primary"

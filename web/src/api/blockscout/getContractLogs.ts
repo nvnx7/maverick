@@ -13,6 +13,18 @@ import { buildTopicParams } from "./topicParams";
 import type { BlockscoutLogsResponse } from "./types";
 
 /**
+ * A decoded log, plus the block time Blockscout returns alongside it. Event data alone
+ * carries no timestamp, and fetching one block per log just to date a row is wasteful
+ * when the API already includes it.
+ */
+export type DecodedLog<
+  abi extends Abi,
+  eventName extends ContractEventName<abi>,
+> = GetContractEventsReturnType<abi, eventName>[number] & {
+  blockTimestamp: number;
+};
+
+/**
  * Fetches and decodes contract event logs from Blockscout instead of eth_getLogs — the
  * RPC caps a single query to a 100_000 block range, which any fromBlock..latest span
  * since deployment is prone to exceed. Shared by every api/jobs event query.
@@ -26,7 +38,7 @@ export async function getContractLogs<
   eventName: eventName;
   args?: GetContractEventsParameters<abi, eventName>["args"];
   fromBlock: bigint;
-}): Promise<GetContractEventsReturnType<abi, eventName>> {
+}): Promise<DecodedLog<abi, eventName>[]> {
   const topics = encodeEventTopics({
     abi: params.abi,
     eventName: params.eventName,
@@ -44,9 +56,14 @@ export async function getContractLogs<
     },
   });
 
+  // An empty match is a normal result, not a failure. Blockscout signals it with
+  // status "0" and a not-found message whose exact wording varies by deployment and
+  // endpoint ("No logs found", "No records found"), so match the shape rather than one
+  // literal — treating it as an error surfaced a red failure block on every job that
+  // simply had no claims yet.
   if (data.status !== "1") {
-    if (data.message === "No records found") {
-      return [] as unknown as GetContractEventsReturnType<abi, eventName>;
+    if (/^no .*found$/i.test(data.message?.trim() ?? "")) {
+      return [];
     }
     throw new Error(data.message || "Blockscout getLogs request failed");
   }
@@ -63,6 +80,8 @@ export async function getContractLogs<
       ...decoded,
       blockNumber: BigInt(log.blockNumber),
       transactionHash: log.transactionHash as Hash,
+      // Hex ("0x…") or decimal, depending on the deployment; Number handles both.
+      blockTimestamp: Number(log.timeStamp),
     };
-  }) as unknown as GetContractEventsReturnType<abi, eventName>;
+  }) as unknown as DecodedLog<abi, eventName>[];
 }

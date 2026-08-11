@@ -1,15 +1,18 @@
 "use client";
 
 import { LuDownload } from "react-icons/lu";
-import { useGetSubmissionFiles } from "@/api/submissions/getSubmissionFiles";
+import type { Hash } from "viem";
+import { useGetClaimFiles } from "@/api/submissions/getClaimFiles";
 import { Button } from "@/components/common/Button";
 
 type Props = {
   jobId: string;
+  /** Deliverables of claims actually submitted on-chain for this job. */
+  dataHashes: Hash[];
 };
 
-export function SubmissionDownloadButton({ jobId }: Props) {
-  const { data: files, isPending } = useGetSubmissionFiles(jobId);
+export function SubmissionDownloadButton({ jobId, dataHashes }: Props) {
+  const { data: files, isPending } = useGetClaimFiles({ jobId, dataHashes });
 
   const handleDownload = () => {
     if (!files) return;

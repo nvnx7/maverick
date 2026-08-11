@@ -1,23 +1,21 @@
 "use client";
 
-import {
-  Box,
-  Button,
-  Flex,
-  Image,
-  SimpleGrid,
-  Spinner,
-  Text,
-} from "@chakra-ui/react";
-import { LuDownload } from "react-icons/lu";
-import { useGetSubmissionFiles } from "@/api/submissions/getSubmissionFiles";
+import { Box, Flex, Image, SimpleGrid, Spinner, Text } from "@chakra-ui/react";
+import type { Hash } from "viem";
+import { useGetClaimFiles } from "@/api/submissions/getClaimFiles";
 
 type Props = {
   jobId: string;
+  /** Deliverables of claims actually submitted on-chain for this job. */
+  dataHashes: Hash[];
 };
 
-export function SubmissionPreview({ jobId }: Props) {
-  const { data: files, isPending } = useGetSubmissionFiles(jobId);
+export function SubmissionPreview({ jobId, dataHashes }: Props) {
+  const { data: files, isPending } = useGetClaimFiles({ jobId, dataHashes });
+
+  // Nothing claimed means nothing to preview — don't spin, and don't fall back to
+  // listing the job's storage prefix, which would surface unclaimed uploads.
+  if (dataHashes.length === 0) return null;
 
   if (isPending) {
     return (
@@ -39,7 +37,7 @@ export function SubmissionPreview({ jobId }: Props) {
       <SimpleGrid columns={{ base: 2, md: 5 }} gap={4}>
         {previewFiles.map((file) => (
           <Box
-            key={file.name}
+            key={file.url}
             borderWidth="1px"
             borderColor="border.DEFAULT"
             borderRadius="0"
