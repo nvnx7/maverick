@@ -1,5 +1,4 @@
-// export const env = process.env.NODE_ENV as string;
-export const env = 'production' as string;
+export const env = process.env.NODE_ENV as string;
 export const isDev = env === "development";
 
 export const rpcLocal = process.env.NEXT_PUBLIC_RPC_LOCAL as string;
