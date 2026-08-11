@@ -17,13 +17,8 @@ const nextConfig: NextConfig = {
   // API key server-side instead of shipping it in the client bundle.
   async rewrites() {
     if (!process.env.NEXT_PUBLIC_API_KEY_BLOCKSCOUT) {
-      const nearMatches = Object.keys(process.env).filter((key) =>
-        key.toUpperCase().includes("BLOCKSCOUT"),
-      );
       throw new Error(
-        `NEXT_PUBLIC_API_KEY_BLOCKSCOUT is not set. Env keys containing "BLOCKSCOUT": ${JSON.stringify(nearMatches)}. ` +
-          `Control check, NEXT_PUBLIC_API_PROVIDER is set: ${Boolean(process.env.NEXT_PUBLIC_API_PROVIDER)}. ` +
-          `Total env var count: ${Object.keys(process.env).length}.`,
+        "NEXT_PUBLIC_API_KEY_BLOCKSCOUT is not set — Blockscout requests would silently go out unauthenticated.",
       );
     }
 
