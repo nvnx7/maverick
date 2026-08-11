@@ -16,12 +16,12 @@ const nextConfig: NextConfig = {
   // api.blockscout.com directly: sidesteps their CORS restrictions and keeps the paid
   // API key server-side instead of shipping it in the client bundle.
   async rewrites() {
-    if (!process.env.BLOCKSCOUT_API_KEY) {
+    if (!process.env.NEXT_PUBLIC_API_KEY_BLOCKSCOUT) {
       const nearMatches = Object.keys(process.env).filter((key) =>
         key.toUpperCase().includes("BLOCKSCOUT"),
       );
       throw new Error(
-        `BLOCKSCOUT_API_KEY is not set. Env keys containing "BLOCKSCOUT": ${JSON.stringify(nearMatches)}. ` +
+        `NEXT_PUBLIC_API_KEY_BLOCKSCOUT is not set. Env keys containing "BLOCKSCOUT": ${JSON.stringify(nearMatches)}. ` +
           `Control check, NEXT_PUBLIC_API_PROVIDER is set: ${Boolean(process.env.NEXT_PUBLIC_API_PROVIDER)}. ` +
           `Total env var count: ${Object.keys(process.env).length}.`,
       );
@@ -30,7 +30,7 @@ const nextConfig: NextConfig = {
     return [
       {
         source: "/api/blockscout",
-        destination: `https://api.blockscout.com/v2/api?apikey=${process.env.BLOCKSCOUT_API_KEY}`,
+        destination: `https://api.blockscout.com/v2/api?apikey=${process.env.NEXT_PUBLIC_API_KEY_BLOCKSCOUT}`,
       },
     ];
   },
