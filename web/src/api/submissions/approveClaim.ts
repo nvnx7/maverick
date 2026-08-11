@@ -1,8 +1,8 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { writeContractSync } from "@wagmi/core";
 import type { Address, Hash } from "viem";
 import { useConfig } from "wagmi";
 import { dataCommerceAbi } from "@/abi";
+import { writeAndWait } from "@/api/tx";
 import { networkConfig } from "@/config/network";
 
 export type ApproveClaimParams = {
@@ -23,7 +23,7 @@ export function useApproveClaim() {
       deliverable,
       contributor,
     }: ApproveClaimParams): Promise<{ txHash: Hash }> => {
-      const receipt = await writeContractSync(config, {
+      const receipt = await writeAndWait(config, {
         address: networkConfig.contracts.dataCommerce,
         abi: dataCommerceAbi,
         functionName: "approveJobClaim",

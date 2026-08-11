@@ -1,9 +1,10 @@
 import { useMutation } from "@tanstack/react-query";
-import { signTypedData, writeContractSync } from "@wagmi/core";
+import { signTypedData } from "@wagmi/core";
 import type { Address, Hash } from "viem";
 import { keccak256, parseEventLogs, stringToBytes, zeroAddress } from "viem";
 import { type Config, useAccount, useConfig } from "wagmi";
 import { dataCommerceAbi } from "@/abi";
+import { writeAndWait } from "@/api/tx";
 import { networkConfig } from "@/config/network";
 import type { RequestSpec } from "@/types";
 import { encodeSpec } from "@/utils/spec";
@@ -111,14 +112,12 @@ export function useCreateJob() {
       });
 
       // budget is not part of the authorization: the typehash never covers it.
-      const receipt = await writeContractSync(config, {
+      const receipt = await writeAndWait(config, {
         address: networkConfig.contracts.dataCommerce,
         abi: dataCommerceAbi,
         functionName: "createDataJob",
         args: [{ ...job }, auth],
       });
-
-      console.log("createDataJob txHash", receipt);
 
       const [created] = parseEventLogs({
         abi: dataCommerceAbi,

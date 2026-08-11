@@ -1,8 +1,8 @@
 import { useMutation } from "@tanstack/react-query";
-import { writeContractSync } from "@wagmi/core";
 import { erc20Abi, type Hash } from "viem";
 import { useConfig } from "wagmi";
 import { agenticCommerceAbi } from "@/abi";
+import { writeAndWait } from "@/api/tx";
 import { networkConfig } from "@/config/network";
 
 export type FundJobParams = {
@@ -22,14 +22,14 @@ export function useFundJob() {
       const escrow = networkConfig.contracts.escrow as `0x${string}`;
       const usdc = networkConfig.contracts.usdc as `0x${string}`;
 
-      await writeContractSync(config, {
+      await writeAndWait(config, {
         address: usdc,
         abi: erc20Abi,
         functionName: "approve",
         args: [escrow, amount],
       });
 
-      const receipt = await writeContractSync(config, {
+      const receipt = await writeAndWait(config, {
         address: escrow,
         abi: agenticCommerceAbi,
         functionName: "fund",

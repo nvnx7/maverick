@@ -51,3 +51,6 @@ const networkConfigs: Record<number, NetworkConfig> = {
 
 const chainId = env === "production" ? arcTestnet.chain.id : local.chain.id;
 export const networkConfig = networkConfigs[chainId] as NetworkConfig;
+
+console.log('env:', env);
+console.log('network:', networkConfig);

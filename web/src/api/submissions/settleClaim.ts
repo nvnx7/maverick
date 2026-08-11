@@ -1,8 +1,8 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { writeContractSync } from "@wagmi/core";
 import { type Address, encodeAbiParameters, type Hash } from "viem";
 import { useConfig } from "wagmi";
 import { agenticCommerceAbi } from "@/abi";
+import { writeAndWait } from "@/api/tx";
 import { networkConfig } from "@/config/network";
 
 export type SettleClaimParams = {
@@ -23,7 +23,7 @@ export function useSettleClaim() {
       deliverable,
       contributor,
     }: SettleClaimParams): Promise<{ txHash: Hash }> => {
-      const receipt = await writeContractSync(config, {
+      const receipt = await writeAndWait(config, {
         address: networkConfig.contracts.escrow,
         abi: agenticCommerceAbi,
         functionName: "settleClaim",
