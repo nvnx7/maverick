@@ -21,7 +21,9 @@ const nextConfig: NextConfig = {
         key.toUpperCase().includes("BLOCKSCOUT"),
       );
       throw new Error(
-        `BLOCKSCOUT_API_KEY is not set. Env keys containing "BLOCKSCOUT": ${JSON.stringify(nearMatches)}`,
+        `BLOCKSCOUT_API_KEY is not set. Env keys containing "BLOCKSCOUT": ${JSON.stringify(nearMatches)}. ` +
+          `Control check, NEXT_PUBLIC_API_PROVIDER is set: ${Boolean(process.env.NEXT_PUBLIC_API_PROVIDER)}. ` +
+          `Total env var count: ${Object.keys(process.env).length}.`,
       );
     }
 
