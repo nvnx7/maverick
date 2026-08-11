@@ -16,6 +16,12 @@ const nextConfig: NextConfig = {
   // api.blockscout.com directly: sidesteps their CORS restrictions and keeps the paid
   // API key server-side instead of shipping it in the client bundle.
   async rewrites() {
+    if (!process.env.BLOCKSCOUT_API_KEY) {
+      throw new Error(
+        "BLOCKSCOUT_API_KEY is not set.",
+      );
+    }
+
     return [
       {
         source: "/api/blockscout",
