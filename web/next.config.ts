@@ -12,6 +12,17 @@ const nextConfig: NextConfig = {
     useTypeScriptCli: true,
     optimizePackageImports: ["@chakra-ui/react"],
   },
+  // Proxies Blockscout calls through our own origin so the browser never talks to
+  // api.blockscout.com directly: sidesteps their CORS restrictions and keeps the paid
+  // API key server-side instead of shipping it in the client bundle.
+  async rewrites() {
+    return [
+      {
+        source: "/api/blockscout",
+        destination: `https://api.blockscout.com/v2/api?apikey=${process.env.BLOCKSCOUT_API_KEY}`,
+      },
+    ];
+  },
 };
 
 export default nextConfig;
