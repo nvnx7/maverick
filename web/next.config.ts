@@ -17,8 +17,11 @@ const nextConfig: NextConfig = {
   // API key server-side instead of shipping it in the client bundle.
   async rewrites() {
     if (!process.env.BLOCKSCOUT_API_KEY) {
+      const nearMatches = Object.keys(process.env).filter((key) =>
+        key.toUpperCase().includes("BLOCKSCOUT"),
+      );
       throw new Error(
-        "BLOCKSCOUT_API_KEY is not set.",
+        `BLOCKSCOUT_API_KEY is not set. Env keys containing "BLOCKSCOUT": ${JSON.stringify(nearMatches)}`,
       );
     }
 
